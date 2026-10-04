@@ -540,155 +540,22 @@ app.get('/api', async (req, res) => {
         }
 
         if (action === 'notices') {
-            const result = await db.execute(`
-                SELECT * FROM notices 
-                WHERE is_show = 1
-                ORDER BY posted_date DESC
-            `);
-            const notices = [];
-            const ticker = [];
-            
-            result.rows.forEach(row => {
-                const item = {
-                    noticeId: row.notice_id,
-                    title: row.title,
-                    body: row.body,
-                    postedDate: row.posted_date,
-                    fileUrl: row.file_url,
-                    fileType: row.file_type,
-                    viewUrl: row.file_id ? "https://drive.google.com/uc?export=view&id=" + row.file_id : row.file_url,
-                    downloadUrl: row.file_id ? "https://drive.google.com/uc?export=download&id=" + row.file_id : "",
-                    pinned: row.is_pinned === 1,
-                    kind: row.kind
-                };
-                if (row.kind === 'Ticker') {
-                    ticker.push({
-                        noticeId: row.notice_id,
-                        text: row.title || row.body,
-                        postedDate: row.posted_date
-                    });
-                } else {
-                    notices.push(item);
-                }
-            });
-            return res.json({ success: true, notices, ticker });
-        }
-
-        if (action === 'socialposts') {
-            const result = await db.execute(`
-                SELECT * FROM social_posts 
-                WHERE is_show = 1
-                ORDER BY posted_date DESC
-            `);
-            const posts = result.rows.map(row => ({
-                postId: row.post_id,
-                kind: row.kind,
-                title: row.title,
-                caption: row.caption,
-                link: row.link,
-                image: row.image_url,
-                health: row.health
-            }));
-            return res.json({ success: true, posts });
-        }
-
-        if (action === 'slideshow') {
-            const result = await db.execute(`
-                SELECT * FROM slideshow 
-                WHERE is_show = 1
-                ORDER BY sort_order ASC
-            `);
-            const places = { home: [], pdacc: [] };
-            result.rows.forEach(row => {
-                const place = (row.place || 'home').toLowerCase();
-                if (!places[place]) places[place] = [];
-                places[place].push({
-                    id: row.file_id,
-                    url: "https://drive.google.com/uc?export=view&id=" + row.file_id,
-                    caption: row.caption,
-                    badge: row.badge
-                });
-            });
-            return res.json({ success: true, slides: places.home, places });
-        }
-
-        // --- PDACC PUBLIC APIs ---
-        if (action === 'pdacc') {
-            const updatesResult = await db.execute(`
-                SELECT * FROM pdacc_updates WHERE is_show = 1 ORDER BY posted_date DESC
-            `);
-            const noticesResult = await db.execute(`
-                SELECT * FROM pdacc_notices WHERE is_show = 1 ORDER BY posted_date DESC
-            `);
-
-            return res.json({
-                success: true,
-                ticker: noticesResult.rows.map(row => ({
-                    lineId: row.line_id,
-                    text: row.notice_text
-                })),
-                updates: updatesResult.rows.map(row => ({
-                    updateId: row.update_id,
-                    title: row.title,
-                    description: row.description,
-                    link: row.link,
-                    image: row.image_id ? `https://drive.google.com/uc?export=view&id=${row.image_id}` : row.image_url,
-                    postedDate: row.posted_date
-                }))
-            });
-        }
-
-        if (action === 'pdaccstats') {
-            const statsResult = await db.execute(`SELECT * FROM pdacc_stats`);
-            const stats = {};
-            statsResult.rows.forEach(row => {
-                const k = row.stat_key;
-                if (k === 'chance' || k === 'success' || k === 'teachers') {
-                    stats[k] = {
-                        kicker: row.kicker,
-                        title: row.title,
-                        figure: row.figure,
-                        unit: row.unit,
-                        note: row.note
-                    };
-                } else if (k === 'timeline') {
-                    stats[k] = {
-                        years: row.years,
-                        yearsFrom: row.years_from
-                    };
-                }
-            });
-            return res.json({ success: true, stats });
-        }
-        // -------------------------
-
-        
-        // === PUBLIC CONFIG ===
-        if (action === 'getconfig') {
-            const configRows = await db.execute("SELECT config_key, config_value FROM config");
-            const settingsRows = await db.execute("SELECT setting_key, setting_value FROM settings");
-            const seriesRes = await db.execute("SELECT DISTINCT series FROM alumni WHERE status = 'APPROVED' AND series IS NOT NULL ORDER BY CAST(series AS INTEGER) ASC");
-            const seriesList = seriesRes.rows.map(r => r.series).filter(Boolean);
-            return res.json({
-                success: true,
-                activeMaxSeries: seriesList.length ? seriesList[seriesList.length - 1] : '25',
-                seriesList
-            });
-        }
-
-        // === PUBLIC NOTICES ===
-        if (action === 'notices') {
             const resData = await db.execute("SELECT * FROM notices WHERE is_show = 1 ORDER BY posted_date DESC");
-            const data = resData.rows.map(r => ({
+            const notices = resData.rows.map(r => ({
                 noticeId: r.notice_id,
-                kind: r.kind,
-                title: r.title,
-                body: r.body,
-                fileUrl: r.file_url,
-                fileId: r.file_id,
-                postedDate: r.posted_date
+                kind: r.kind || 'TEXT',
+                title: r.title || '',
+                body: r.body || '',
+                fileUrl: r.file_url || '',
+                fileType: '',
+                viewUrl: r.file_url || '',
+                downloadUrl: r.file_url || '',
+                postedDate: r.posted_date || '',
+                pinned: false
             }));
-            return res.json({ success: true, data });
+            const tickerData = await db.execute("SELECT * FROM pdacc_notices WHERE is_show = 1 ORDER BY posted_date DESC");
+            const ticker = tickerData.rows.map(r => ({ lineId: r.line_id, text: r.notice_text }));
+            return res.json({ success: true, notices, ticker });
         }
 
         // === PUBLIC SOCIAL POSTS ===
@@ -728,10 +595,27 @@ app.get('/api', async (req, res) => {
         // === PDACC STATS (public) ===
         if (action === 'pdaccstats') {
             const statsData = await db.execute("SELECT * FROM pdacc_stats");
-            const stats = statsData.rows.map(r => ({
-                key: r.stat_key, kicker: r.kicker, title: r.title, figure: r.figure,
-                unit: r.unit, note: r.note, years: r.years, yearsFrom: r.years_from
-            }));
+            const stats = {};
+            statsData.rows.forEach(r => {
+                const k = r.stat_key;
+                if (k === 'timeline') {
+                    stats[k] = { years: r.years, yearsFrom: r.years_from };
+                } else {
+                    stats[k] = {
+                        kicker: r.kicker, title: r.title, figure: r.figure,
+                        unit: r.unit, note: r.note
+                    };
+                }
+            });
+            const chData = await db.execute("SELECT * FROM pdacc_chance ORDER BY sort ASC");
+            const series = [];
+            const depts = [];
+            chData.rows.forEach(r => {
+                const item = { label: r.label, sub: r.sub, count: r.count };
+                if (r.type === 'series') series.push(item);
+                else depts.push(item);
+            });
+            stats['chance'] = { series, depts };
             return res.json({ success: true, stats });
         }
 
@@ -1647,6 +1531,8 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 export default app;
+
+
 
 
 
