@@ -1053,7 +1053,7 @@ app.post('/api', async (req, res) => {
                 adminEmail = await verifyGoogleToken(payload.adminToken || req.query.adminToken);
             }
             
-            if (['membersaveprofile', 'membersavephoto', 'setbloodbankvisibility', 'pollvote'].includes(lowerAction)) {
+            if (['membersaveprofile', 'membersavephoto', 'setbloodbankvisibility', 'pollvote', 'memberlinkstart', 'memberlinkverify'].includes(lowerAction)) {
                 if (!memberEmail && !adminRole) {
                     return res.status(403).json({ success: false, message: 'Unauthorized member action' });
                 }
