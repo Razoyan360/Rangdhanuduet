@@ -56,8 +56,9 @@ async function logAdminActivity(db, adminEmail, actionType, targetId, details) {
 
 // PUBLIC POST ACTIONS that do not require auth
 const PUBLIC_POST_ACTIONS = [
-    'submitregistration', 'submitexecutivecommittee', 'submitevent', 
-    'requestemailotp', 'verifyemailotp', 'verifymemberforupdate', 'updatememberinfo'
+    'adminrole', 'membersignin', 'getemailhint', 'memberemailstart', 'memberemailverify',
+    'submitregistration', 'submitexecutivecommittee', 'submitevent',
+    'requestemailotp', 'verifyemailotp', 'verifymemberforupdate', 'updatememberinfo', 'verifyupdateotp'
 ];
 
 
@@ -82,6 +83,7 @@ async function getSetting(key, defaultValue) {
 
 // Master API Endpoint (Replicating Apps Script doGet/doPost)
 app.get('/api', async (req, res) => {
+    const payload = req.query || {};
     try {
         const action = (req.query.action || '').toLowerCase();
 
@@ -1196,19 +1198,22 @@ app.post('/api', async (req, res) => {
 
             // Insert new ones
             if (Array.isArray(data.gallery) && data.gallery.length > 0) {
-                for (const base64Img of data.gallery) {
+                for (const imgData of data.gallery) {
+                    let finalImg = imgData;
+                    if (imgData && !imgData.startsWith('http')) {
+                        const res = await uploadBase64ToCloudinary(imgData, 'Reunion');
+                        if (res.success) finalImg = res.url;
+                    }
                     const photoId = 'REU-' + Date.now() + Math.floor(Math.random() * 1000);
                     await db.execute({
                         sql: 'INSERT INTO reunion_photos (photo_id, part_number, image_url, sort_order) VALUES (?, ?, ?, ?)',
-                        args: [photoId, part, base64Img, 999] // Default sort order
+                        args: [photoId, part, finalImg, 999] // Default sort order
                     });
                 }
             }
             return res.json({ success: true, message: 'Reunion photos saved.' });
         }
 
-        
-        
         if (action === 'saveslide') {
             const data = payload.data || {};
             if (data.id) {
