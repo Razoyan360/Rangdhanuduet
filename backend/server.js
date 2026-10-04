@@ -126,6 +126,67 @@ app.get('/api', async (req, res) => {
                 };
             });
 
+            
+            // Fetch public unclaimed profiles
+            const uncResult = await db.execute("SELECT * FROM unclaimed_profiles WHERE status = 'OPEN' OR status = 'KEPT_SEPARATE'");
+            const uncData = uncResult.rows.map(row => {
+                const rawSeries = row.series || '';
+                let isAlumni = false;
+                const s = Number(rawSeries);
+                if (rawSeries === '97' || rawSeries === '98' || rawSeries === '99') {
+                    isAlumni = true;
+                } else if (s > 0 && s <= cutoffSeries) {
+                    isAlumni = true;
+                }
+                const viewStatus = isAlumni ? 'Alumni' : 'Running Member';
+
+                const commStr = String(row.committee || '').toLowerCase();
+                const posStr = String(row.position || '').toLowerCase();
+                const isPdacc = commStr.includes('pdacc') || commStr.includes('coaching') || commStr.includes('admission') || commStr.includes('prokoushali') || posStr.includes('director');
+                const isAlumniComm = !isPdacc && commStr.includes('alumni');
+                const bodyKey = isPdacc ? 'PDACC' : (isAlumniComm ? 'ALUMNI' : 'RANGDHANU');
+                const orgName = bodyKey === 'PDACC' ? 'PDACC' : (bodyKey === 'ALUMNI' ? 'Rangdhanu Alumni Association' : 'Rangdhanu');
+                const posList = [{
+                    body: bodyKey,
+                    session: String(row.session || '').trim(),
+                    post: String(row.position || '').trim(),
+                    entryId: row.source_entry_id || ''
+                }];
+                let formerPos = String(row.position || '').trim();
+                if (formerPos) {
+                    formerPos = formerPos + ', ' + orgName + (row.session ? ' (' + row.session + ')' : '');
+                }
+
+                return {
+                    'Member ID': row.unclaimed_id,
+                    'Full Name (English)': row.full_name,
+                    'Mobile Number': row.mobile_number,
+                    'WhatsApp Number': '',
+                    'Email': row.email,
+                    'Permanent Address': '',
+                    'Blood Group': '',
+                    'Department': row.department,
+                    'Series': row.series,
+                    'Batch': '',
+                    'Employment Type': '',
+                    'Current Organization / Company': '',
+                    'Current Designation': '',
+                    'Work Location (Division / Country)': '',
+                    'Former Position at Rangdhanu / PDACC': formerPos,
+                    'Passport Size Image': row.photo,
+                    'Cover Photo': '',
+                    'Cover Position': '',
+                    'Positions': JSON.stringify(posList),
+                    'Work History': '',
+                    'Education': '',
+                    'Papers': '',
+                    'Thesis Topic': '',
+                    'Thesis Details': '',
+                    'viewStatus': viewStatus
+                };
+            });
+            data.push(...uncData);
+
             return res.json({ data });
         }
 
