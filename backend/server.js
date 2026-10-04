@@ -2588,7 +2588,7 @@ app.post('/api', async (req, res) => {
                             if (res.success) galImg = res.url;
                         }
                         await db.execute({
-                            sql: "INSERT INTO event_gallery (gallery_id, event_id, file_id, uploaded_date, status, sort_order) VALUES (?, ?, ?, ?, 'APPROVED', 99)",
+                            sql: "INSERT INTO event_gallery (gallery_id, event_id, image_url, uploaded_date, status, sort_order) VALUES (?, ?, ?, ?, 'APPROVED', 99)",
                             args: [galId, d.eventId, galImg, new Date().toISOString()]
                         });
                     }
