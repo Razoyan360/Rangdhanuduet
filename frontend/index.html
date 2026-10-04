@@ -3293,30 +3293,30 @@
   </div>
 
   <!-- ================= SUB-PAGE: PHOTO VIEWER ================= -->
-  <div id="lightbox-overlay" style="z-index: 9999; background-color: rgba(2, 6, 23, 0.95); backdrop-filter: blur(4px);" class="fixed inset-0 flex flex-col hidden opacity-0 transition-opacity duration-300 overflow-y-auto">
-    <div style="z-index: 10; background-color: rgba(2, 6, 23, 0.8); backdrop-filter: blur(12px);" class="sticky top-0 border-b border-white/10">
+  <div id="lightbox-overlay" style="z-index: 9999; background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px);" class="fixed inset-0 flex flex-col hidden opacity-0 transition-opacity duration-300 overflow-y-auto">
+    <div style="z-index: 10; background-color: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px);" class="sticky top-0 border-b border-slate-200 shadow-sm">
       <div class="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
-        <button type="button" onclick="closeLightbox()" class="text-white hover:text-blue-400 font-bold text-sm flex items-center gap-2 transition px-3 py-1.5 rounded-lg hover:bg-white/10"><i data-lucide="arrow-left" class="w-4 h-4"></i> ফিরে যান</button>
-        <span class="text-sm font-bold text-slate-300 truncate min-w-0">ফটো ভিউয়ার</span>
+        <button type="button" onclick="closeLightbox()" class="text-slate-800 hover:text-blue-600 font-bold text-sm flex items-center gap-2 transition px-3 py-1.5 rounded-lg hover:bg-slate-100"><i data-lucide="arrow-left" class="w-4 h-4"></i> ফিরে যান</button>
+        <span class="text-sm font-bold text-slate-900 truncate min-w-0">ফটো ভিউয়ার</span>
       </div>
     </div>
     <section class="flex-1 flex flex-col justify-center py-6 sm:py-8 min-h-[70vh]">
-      <div class="max-w-5xl mx-auto px-4">
-        <div class="flex items-center justify-between gap-3 mb-5">
-          <span id="lightbox-counter" class="text-xs font-bold text-slate-400 font-mono"></span>
+      <div class="max-w-7xl mx-auto px-4 w-full">
+        <div class="flex items-center justify-between gap-3 mb-4 px-2">
+          <span id="lightbox-counter" class="text-sm font-bold text-slate-600 font-mono"></span>
           <div class="flex items-center gap-2">
-            <span class="hidden sm:inline text-[11px] text-slate-500 font-medium mr-1">← → কী চাপুন, বা সোয়াইপ করুন</span>
-            <button type="button" class="lb-ctrl" onclick="downloadLightboxPhoto()" title="ডাউনলোড" aria-label="ডাউনলোড"><i data-lucide="download" class="w-5 h-5"></i></button>
+            <span class="hidden sm:inline text-xs text-slate-500 font-medium mr-2">← → কী চাপুন, বা সোয়াইপ করুন</span>
+            <button type="button" class="text-slate-600 hover:text-blue-600 transition p-2 rounded-lg hover:bg-slate-100" onclick="downloadLightboxPhoto()" title="ডাউনলোড" aria-label="ডাউনলোড"><i data-lucide="download" class="w-5 h-5"></i></button>
           </div>
         </div>
-        <div class="rounded-3xl bg-slate-900/60 border border-white/10 p-3 sm:p-5">
-          <div class="relative flex items-center justify-center">
-            <button type="button" class="lb-nav lb-nav-prev" onclick="prevLightboxPhoto()" title="আগের ছবি" aria-label="আগের ছবি"><i data-lucide="chevron-left" class="w-6 h-6"></i></button>
-            <img id="lightbox-img" src="" alt="Moment" style="height: 85vh;" class="w-full rounded-2xl shadow-2xl object-contain">
-            <button type="button" class="lb-nav lb-nav-next" onclick="nextLightboxPhoto()" title="পরের ছবি" aria-label="পরের ছবি"><i data-lucide="chevron-right" class="w-6 h-6"></i></button>
-          </div>
-          <p id="lightbox-caption" class="text-slate-300 text-sm font-medium mt-4 text-center leading-relaxed"></p>
+        <div class="relative flex items-center justify-center group">
+          <button type="button" class="absolute left-2 sm:left-4 z-10 text-slate-700 bg-white/80 hover:bg-white shadow-lg p-3 rounded-full transition-transform hover:scale-110" onclick="prevLightboxPhoto()" title="আগের ছবি" aria-label="আগের ছবি"><i data-lucide="chevron-left" class="w-6 h-6"></i></button>
+          
+          <img id="lightbox-img" src="" alt="Moment" style="height: 80vh;" class="w-full rounded-2xl shadow-2xl object-contain bg-slate-50">
+          
+          <button type="button" class="absolute right-2 sm:right-4 z-10 text-slate-700 bg-white/80 hover:bg-white shadow-lg p-3 rounded-full transition-transform hover:scale-110" onclick="nextLightboxPhoto()" title="পরের ছবি" aria-label="পরের ছবি"><i data-lucide="chevron-right" class="w-6 h-6"></i></button>
         </div>
+        <p id="lightbox-caption" class="text-slate-800 text-sm sm:text-base font-semibold mt-6 text-center leading-relaxed px-4"></p>
       </div>
     </section>
   </div>
@@ -3432,7 +3432,7 @@ Do not modify social links or structure without permission.
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" defer></script>
 <!-- JAVASCRIPT LOGIC -->
-<script src="script.js?v=20261005-0059" defer></script>
+<script src="script.js?v=20261005-0108" defer></script>
 
   <!-- PREMIUM GLOBAL LOADER (owner-authorised overlay; all styles in custom.css .rd-gl*) -->
   <div id="demo-loader" class="rd-gl" aria-hidden="true">
