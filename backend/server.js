@@ -77,7 +77,7 @@ app.get('/api', async (req, res) => {
                 const fs = await import('fs');
                 if (!fs.existsSync('local.db')) return res.json({error: 'local.db not found in ' + process.cwd()});
                 
-                const localDb = await import('@libsql/client').createClient({ url: 'file:local.db' });
+                const localDb = await import('@libsql/client').createClient({ url: 'file:' + path.join(__dirname, 'local.db') });
                 const tablesRes = await localDb.execute("SELECT name FROM sqlite_master WHERE type='table' AND name != 'sqlite_sequence'");
                 const allTables = tablesRes.rows.map(row => row.name);
 
@@ -114,7 +114,7 @@ app.get('/api', async (req, res) => {
 
                 if (action === 'migrate_all_tables') {
             try {
-                const localDb = createClient({ url: 'file:local.db' });
+                const localDb = createClient({ url: 'file:' + path.join(__dirname, 'local.db') });
                 const tablesRes = await localDb.execute("SELECT name FROM sqlite_master WHERE type='table' AND name != 'sqlite_sequence'");
                 const allTables = tablesRes.rows.map(row => row.name);
 
