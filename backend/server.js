@@ -41,6 +41,19 @@ async function getMemberEmail(req, payload) {
     return await verifyGoogleToken(token);
 }
 
+
+// Utility to log admin activity
+async function logAdminActivity(db, adminEmail, actionType, targetId, details) {
+    try {
+        await db.execute({
+            sql: "INSERT INTO activity_log (admin_email, action_type, target_id, details) VALUES (?, ?, ?, ?)",
+            args: [adminEmail, actionType, targetId, details]
+        });
+    } catch (e) {
+        console.error('Failed to log admin activity:', e);
+    }
+}
+
 // PUBLIC POST ACTIONS that do not require auth
 const PUBLIC_POST_ACTIONS = [
     'submitregistration', 'submitexecutivecommittee', 'submitevent', 
@@ -991,7 +1004,7 @@ app.post('/api', async (req, res) => {
 
         if (action === 'approveexecutivecommittee') {
             const id = payload.data ? payload.data.entryId : null;
-            if (id) await db.execute({ sql: "UPDATE executive_committee SET status = 'APPROVED' WHERE entry_id = ?", args: [id] });
+            if (id) { await db.execute({ sql: "UPDATE executive_committee SET status = 'APPROVED' WHERE entry_id = ?", args: [id] }); await logAdminActivity(db, adminEmail, 'APPROVE_EC', id, 'Approved EC member'); }
             return res.json({ success: true, message: 'Committee member approved.' });
         }
         if (action === 'rejectexecutivecommittee') {
@@ -1023,6 +1036,7 @@ app.post('/api', async (req, res) => {
                     args: [newId, data.kind, data.title, data.body, data.fileUrl, data.pinned ? 1 : 0, data.isShow ? 1 : 0]
                 });
             }
+            await logAdminActivity(db, adminEmail, 'SAVE_NOTICE', noticeId, 'Saved notice');
             return res.json({ success: true, message: 'Notice saved.' });
         }
         if (action === 'setnoticeshow') {
@@ -1031,6 +1045,7 @@ app.post('/api', async (req, res) => {
         }
         if (action === 'deletenotice') {
             await db.execute({ sql: "DELETE FROM notices WHERE notice_id = ?", args: [payload.noticeId] });
+            await logAdminActivity(db, adminEmail, 'DELETE_NOTICE', payload.data.noticeId, 'Deleted notice');
             return res.json({ success: true, message: 'Notice deleted.' });
         }
 
