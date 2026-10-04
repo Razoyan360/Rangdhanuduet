@@ -14,8 +14,7 @@
     const staticEvents = [];
 
     /* Reunion 2024 album — ordered by how the day actually unfolded. */
-    const RD_REUNION_PARTS = [{"n": 1, "icon": "flag", "bn": "উদ্বোধন ও বর্ণিল র‍্যালি", "en": "Opening Ceremony & Grand Rally"}, {"n": 2, "icon": "users", "bn": "ক্যাম্পাস আড্ডা, স্মৃতিস্তম্ভ ও মুক্তাঙ্গন", "en": "Campus Hangout & Outdoor Group Photos"}, {"n": 3, "icon": "book-open", "bn": "প্রকৌশলী কোচিং সেন্টার পরিদর্শন", "en": "PDACC Visit & Directors' Meetup"}, {"n": 4, "icon": "award", "bn": "অডিটোরিয়াম সেশন ও সংবর্ধনা", "en": "Auditorium Session & Award Ceremony"}, {"n": 5, "icon": "sparkles", "bn": "মঞ্চের স্মৃতি ও পরিসমাপ্তি", "en": "Stage Group Photos & Closing"}];
-    const reunionPhotos = [{"id": 1, "part": 1, "file": "02.jpg", "caption": "উচ্ছ্বাসের রঙে রঙিন ক্যাম্পাস: বেলুন উড়িয়ে পুনর্মিলনী ২০২৪-এর আনুষ্ঠানিক উদ্বোধন।"}, {"id": 2, "part": 1, "file": "03.jpg", "caption": "শান্তি ও সম্প্রীতির বার্তা: নীল আকাশে শান্তির পায়রা উড়িয়ে উৎসবের সূচনা।"}, {"id": 3, "part": 1, "file": "04.jpg", "caption": "মিষ্টি স্মৃতির শুভক্ষণ: অতিথি ও অগ্রজদের সঙ্গে আনন্দঘন কেক কাটার মুহূর্ত।"}, {"id": 4, "part": 1, "file": "01.jpg", "caption": "স্মৃতির রাজপথে মেলবন্ধন: রংধনুর বর্ণিল পতাকাতলে প্রাণের গ্র্যান্ড র‍্যালি।"}, {"id": 5, "part": 1, "file": "DSC02128.JPG", "caption": "পদচারণায় মুখরিত প্রিয় ক্যাম্পাস: উল্লাসে ভরপুর গ্র্যান্ড র‍্যালির স্মারক মুহূর্ত।"}, {"id": 6, "part": 1, "file": "DSC02142.JPG", "caption": "রঙিন স্বপ্নের শুরু: উদ্বোধনী মঞ্চে নতুন অধ্যায় ও উৎসবের বাঁধভাঙা আমেজ।"}, {"id": 7, "part": 2, "file": "05.jpg", "caption": "ভালোবাসা ও শ্রদ্ধার মেলবন্ধন: ক্যাম্পাসের প্রিয় প্রাঙ্গণে সম্মানিত শিক্ষক ও অতিথিবৃন্দ।"}, {"id": 8, "part": 2, "file": "06.jpg", "caption": "ঐতিহ্যের স্মারকস্তম্ভে Rangdhanu Family: শিকড়ের টানে প্রবীণ-নবীনদের মিলনমেলা।"}, {"id": 9, "part": 2, "file": "24.jpg", "caption": "শহীদ মিনারের সান্নিধ্যে একাত্মতা: Rangdhanu Familyের গর্বিত সদস্যদের উপস্থিতি।"}, {"id": 10, "part": 2, "file": "25.jpg", "caption": "সবুজ প্রাঙ্গণে মহোৎসব: সুবর্ণ দিনে পুরো Rangdhanu Familyের ঐতিহাসিক মহামিলন।"}, {"id": 11, "part": 2, "file": "07.jpg", "caption": "সবুজ চত্বরে প্রাণের স্পন্দন: একই পরিচয়ে এক সুতোয় বাঁধা Rangdhanu Family।"}, {"id": 12, "part": 2, "file": "10.jpg", "caption": "একতাই আমাদের শক্তি: প্রিয় ক্যাম্পাসের মাঠে ভালোবাসার মানববলয়।"}, {"id": 13, "part": 2, "file": "11.jpg", "caption": "ছায়াবীথি তলে হাসিমুখ: ফেলে আসা সোনালী দিনগুলোর খোঁজে একদল স্বপ্নবাজ।"}, {"id": 14, "part": 2, "file": "12.jpg", "caption": "বন্ধুর কাঁধে বন্ধুর হাত: বহু বছর পরও অমলিন সেই পুরোনো বন্ধুত্ব ও ভ্রাতৃত্ব।"}, {"id": 15, "part": 2, "file": "DSC02197.JPG", "caption": "অক্ষরে অক্ষরে প্রাণের আবেগ: RANGDHANU টাইপোগ্রাফির সামনে বর্ণিল স্মৃতিকথা।"}, {"id": 16, "part": 2, "file": "DSC01817.JPG", "caption": "ইভেন্ট কর্নারে স্মৃতি ধরে রাখা: পুনর্মিলনীর স্মারক ব্যানারের সামনে প্রাণবন্ত ফ্রেম।"}, {"id": 17, "part": 2, "file": "DSC01989.JPG", "caption": "মাঠজুড়ে স্মৃতির উল্লাস: উৎসবের বিকেলে বন্ধুদের বাঁধভাঙা আনন্দ।"}, {"id": 18, "part": 2, "file": "DSC01889.JPG", "caption": "ডিজিটাল স্মৃতির ফ্রেমে আনন্দ: ৩৬০° ভিডিও বুথে বন্ধুদের উচ্ছ্বসিত সময়।"}, {"id": 19, "part": 2, "file": "DSC01891.JPG", "caption": "উৎসবের প্রতিটি কোণে আনন্দ: ফটোবুথ কর্নারে তারুণ্যের প্রাণবন্ত মুহূর্ত।"}, {"id": 20, "part": 3, "file": "19.jpg", "caption": "শিকড়ের কাছে ফেরা: প্রকৌশলী কোচিং সেন্টার ভবনের সামনে পরিচালকদের দলগত স্মৃতিচিত্র।"}, {"id": 21, "part": 3, "file": "13.jpg", "caption": "স্মৃতির অলিন্দে পিডিএসিসি: প্রকৌশলী কোচিং সেন্টার প্রাঙ্গণে পরিচালকদের সৌজন্য সাক্ষাৎ ও আড্ডা।"}, {"id": 22, "part": 3, "file": "15.jpg", "caption": "কর্মজীবনের গল্পে পুরোনো আড্ডা: পিডিএসিসি শাখায় পরিচালকদের প্রাণের মিলনমেলা।"}, {"id": 23, "part": 3, "file": "17.jpg", "caption": "কৃতজ্ঞতার স্মারক: পিডিএসিসি কার্যালয়ে অবদান ও পথচলার স্বীকৃতি সম্মাননা।"}, {"id": 24, "part": 3, "file": "18.jpg", "caption": "ঐতিহ্যের ধারাবাহিকতা: পিডিএসিসি প্রাঙ্গণে পারস্পরিক শুভেচ্ছা ও ক্রেস্ট প্রদান।"}, {"id": 25, "part": 4, "file": "08.jpg", "caption": "মিলনায়তনে স্মৃতির সুর: অডিটোরিয়ামে পুনর্মিলনীর মূল অধিবেশন ও স্মৃতিচারণ।"}, {"id": 26, "part": 4, "file": "09.jpg", "caption": "মঞ্চজুড়ে শ্রদ্ধা ও অভিজ্ঞতা: সম্মানিত অতিথিদের উপস্থিতিতে মূল আনুষ্ঠানিকতা।"}, {"id": 27, "part": 4, "file": "21.jpg", "caption": "শ্রদ্ধা ও ভালোবাসার নিবেদন: আমন্ত্রিত অতিথিকে ফুলেল শুভেচ্ছায় উষ্ণ অভ্যর্থনা।"}, {"id": 28, "part": 4, "file": "22.jpg", "caption": "গুণিজন সম্মাননা: দিকনির্দেশনামূলক অবদানের জন্য অতিথিদের হাতে সম্মাননা স্মারক অর্পণ।"}, {"id": 29, "part": 4, "file": "23.jpg", "caption": "সর্বোচ্চ শ্রদ্ধাঞ্জলি: প্রধান অতিথি মাননীয় ভিসি স্যারের হাতে বিশেষ সম্মাননা স্মারক প্রদান।"}, {"id": 30, "part": 5, "file": "20.jpg", "caption": "সজ্জিত মঞ্চে স্মৃতির বাঁধন: আলো-ঝলমলে অডিটোরিয়ামে আনন্দঘন গ্রুপ ফটো।"}, {"id": 31, "part": 5, "file": "DSC03350.JPG", "caption": "ফুলেল মঞ্চে চিরসবুজ স্মৃতি: পুনর্মিলনী ২০২৪-এর আনুষ্ঠানিক পরিসমাপ্তির স্মৃতিচিত্র।"}];
+    
 
     function escapeHtml(value) { return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;'); }
     
@@ -1341,39 +1340,6 @@
        fallback. Every photo ends up as { part, file, local, caption, src }. */
     let RD_REUNION_VIEW = { parts: [], photos: [] };
 
-    function rdReunionModel() {
-      const groups = (RD_DRIVE.groups && RD_DRIVE.groups.reunion) || [];
-      if (groups.length) {
-        const parts = [], photos = [];
-        groups.forEach((g, gi) => {
-          const known = RD_REUNION_PARTS.filter(p => p.n === g.order)[0] || RD_REUNION_PARTS[gi] || {};
-          parts.push({
-            n: gi + 1,
-            icon: known.icon || 'image',
-            bn: g.title || known.bn || ('পর্ব ' + (gi + 1)),
-            en: known.en || ''
-          });
-          (g.images || []).forEach(im => {
-            const local = reunionPhotos[photos.length];
-            photos.push({
-              id: photos.length + 1, part: gi + 1, file: im.name, local: '',
-              caption: im.caption || (local && local.caption) || '',
-              src: im.url, fallbackUrl: im.fallbackUrl || ''
-            });
-          });
-        });
-        if (photos.length) return { parts: parts, photos: photos };
-      }
-      return {
-        parts: RD_REUNION_PARTS,
-        photos: reunionPhotos.map(p => ({
-          id: p.id, part: p.part, file: p.file,
-          local: 'Images/Reunion Photo/' + p.file, caption: p.caption,
-          src: rdImageUrl('Images/Reunion Photo/' + p.file), fallbackUrl: ''
-        }))
-      };
-    }
-
     /* REUNION ALBUM RENDERER — grouped into the chapters of the day.
        The caption sits on the card, not in a hover overlay: phones have no hover,
        so on mobile the captions used to be invisible. */
@@ -1400,32 +1366,64 @@
         </figure>`;
     }
 
-    function renderReunionPhotos() {
+    async function renderReunionPhotos() {
       const container = document.getElementById("reunion-photo-grid");
       if (!container) return;
-      RD_REUNION_VIEW = rdReunionModel();
-      const all = RD_REUNION_VIEW.photos;
-      let html = '';
-      RD_REUNION_VIEW.parts.forEach(part => {
-        const shots = all.filter(p => p.part === part.n);
-        if (!shots.length) return;
-        html += `
-        <section class="mb-12 last:mb-0">
-          <div class="flex items-center gap-3.5 mb-5">
-            <span class="shrink-0 w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-sky-500 text-white flex items-center justify-center shadow-md"><i data-lucide="${part.icon}" class="w-5 h-5"></i></span>
-            <div class="min-w-0">
-              <h3 class="text-base sm:text-lg font-extrabold text-slate-900 leading-snug">${escapeHtml(part.bn)}</h3>
-              <p class="text-[11px] sm:text-xs text-slate-500 font-semibold">${escapeHtml(part.en)} • ${bnNum(shots.length)} টি ছবি</p>
-            </div>
-            <span class="ml-auto shrink-0 px-3 py-1 rounded-full bg-white border border-slate-200 text-[10px] sm:text-[11px] font-bold text-slate-500 tracking-wide">পর্ব ${bnNum(part.n)}</span>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            ${shots.map(p => reunionCardHtml(p, all.indexOf(p))).join('')}
-          </div>
-        </section>`;
-      });
-      container.innerHTML = html;
-      lucide.createIcons();
+      
+      container.innerHTML = '<div class="flex justify-center items-center py-20"><div class="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div></div>';
+      
+      try {
+          const res = await apiGet('reunion');
+          const rawParts = Array.isArray(res.parts) ? res.parts : [];
+          const rawPhotos = Array.isArray(res.photos) ? res.photos : [];
+          
+          const parts = rawParts.map(p => ({
+              n: p.n || p.part_number,
+              icon: p.icon || 'image',
+              bn: p.bn || p.title_bn,
+              en: p.en || p.title_en
+          }));
+          
+          const photos = rawPhotos.map((p, idx) => ({
+              id: p.id || idx + 1,
+              part: p.part || p.part_number,
+              file: p.file || p.photo_id,
+              caption: p.caption || '',
+              src: normalizeAlumniImage(p.file || p.image_url)
+          }));
+          
+          RD_REUNION_VIEW = { parts, photos };
+          
+          let html = '';
+          parts.forEach(part => {
+              const shots = photos.filter(p => p.part === part.n);
+              if (!shots.length) return;
+              html += `
+              <section class="mb-12 last:mb-0">
+                <div class="flex items-center gap-3.5 mb-5">
+                  <span class="shrink-0 w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-sky-500 text-white flex items-center justify-center shadow-md"><i data-lucide="${part.icon}" class="w-5 h-5"></i></span>
+                  <div class="min-w-0">
+                    <h3 class="text-base sm:text-lg font-extrabold text-slate-900 leading-snug">${escapeHtml(part.bn)}</h3>
+                    <p class="text-[11px] sm:text-xs text-slate-500 font-semibold">${escapeHtml(part.en)} &bull; ${bnNum(shots.length)} টি ছবি</p>
+                  </div>
+                  <span class="ml-auto shrink-0 px-3 py-1 rounded-full bg-white border border-slate-200 text-[10px] sm:text-[11px] font-bold text-slate-500 tracking-wide">পর্ব ${bnNum(part.n)}</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                  ${shots.map(p => reunionCardHtml(p, photos.indexOf(p))).join('')}
+                </div>
+              </section>`;
+          });
+          
+          if(!html) {
+              container.innerHTML = '<div class="text-center py-20 text-slate-500 font-medium">Reunion photos are coming soon!</div>';
+          } else {
+              container.innerHTML = html;
+              lucide.createIcons();
+          }
+          
+      } catch(e) {
+          container.innerHTML = '<div class="text-center py-20 text-rose-500 font-medium">Failed to load reunion photos.</div>';
+      }
     }
 
     /* LIGHTBOX LOGIC FOR BOTH STATIC AND DYNAMIC EVENTS */
@@ -1445,7 +1443,7 @@
     }
     
     function openLightbox(index) {
-      if (!RD_REUNION_VIEW.photos.length) RD_REUNION_VIEW = rdReunionModel();
+      if (!RD_REUNION_VIEW || !RD_REUNION_VIEW.photos) return;
       lightboxItems = RD_REUNION_VIEW.photos.map(photo => ({
         src: photo.src,
         caption: photo.caption ? `${photo.caption} (${photo.file})` : photo.file
