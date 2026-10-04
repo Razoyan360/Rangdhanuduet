@@ -4,14 +4,55 @@
        here, and store the same value in the Apps Script project with
        rdSetAdminClientId('...'). Left empty, the admin page falls back to
        the old behaviour. Nothing else on the site uses this. */
-    const RD_ADMIN_CLIENT_ID = '849137353830-55alqovkjo713pr94v65k2ld8sidekq8.apps.googleusercontent.com';
+    const RD_ADMIN_CLIENT_ID = '206805550122-qfbd6lu9ol02liho53sercrcf98pako5.apps.googleusercontent.com';
     let RD_ADMIN_TOKEN = '';
     const RD_ADMIN_KEY = 'rd_admin_token';
     const RD_ADMIN_KEEP = 'rd_admin_keep';
     const RD_ADMIN_PROFILE_KEY = 'rd_admin_profile';
     const ALUMNI_API_URL = API_BASE_URL + '?action=alumni';
 
-    const staticEvents = [];
+    const staticEvents = [
+      {
+        eventId: 'STATIC-1', eventName: 'ক্যাম্পাসে বৃক্ষরোপণ কর্মসূচি ২০২৬', category: 'পরিবেশ ও সমাজকল্যাণ',
+        eventDate: '2026-08-05', venue: 'ডুয়েট ক্যাম্পাস প্রাঙ্গণ, গাজীপুর',
+        shortDescription: 'নতুন চান্স পাওয়া শিক্ষার্থীদের সঙ্গে ক্যাম্পাসে তিনটি গাছ লাগানো হয়।',
+        fullDescription: 'জুলাই গণ-অভ্যুত্থান দিবস আর ডুয়েটের ২০২৫–২৬ শিক্ষাবর্ষের ভর্তি পরীক্ষার ফলাফল প্রকাশ উপলক্ষে নতুন চান্স পাওয়া শিক্ষার্থীদের সঙ্গে ক্যাম্পাসে বৃক্ষরোপণ করা হয়।\n\nযে তিনটি চারা লাগানো হয়েছে:\n১. নিম\n২. কদবেল\n৩. জাম্বুরা',
+        driveFolder: 'Tree Plantation 2026',
+        mainImage: 'Images/Tree Plantation/Tree Plantation 1.jpg',
+        gallery: [
+          {image: 'Images/Tree Plantation/Tree Plantation 1.jpg', caption: 'বৃক্ষরোপণ কর্মসূচি ২০২৬ — ১'},
+          {image: 'Images/Tree Plantation/Tree Plantation 2.jpg', caption: 'বৃক্ষরোপণ কর্মসূচি ২০২৬ — ২'},
+          {image: 'Images/Tree Plantation/Tree Plantation 3.jpg', caption: 'বৃক্ষরোপণ কর্মসূচি ২০২৬ — ৩'}
+        ]
+      },
+      {
+        eventId: 'STATIC-2', eventName: 'RANGDHANU Tour & Freshers\' Reception 2024', category: 'Tour',
+        eventDate: '2024-12-15', venue: 'কুয়াকাটা সমুদ্র সৈকত, পটুয়াখালী',
+        shortDescription: 'কুয়াকাটায় দুই দিনের বার্ষিক ট্যুর, সঙ্গে নবীনদের ফ্রেশার্স রিসেপশন।',
+        fullDescription: 'রংধনু পরিবারের আয়োজনে কুয়াকাটায় বার্ষিক ট্যুর, সঙ্গে ২০২৪-এর নবীনদের ফ্রেশার্স রিসেপশন।\n\nযেখানে যেখানে যাওয়া হয়েছে:\n• Kuakata Sea Beach\n• Jhaubon\n• Shutki Palli\n• Fatrar Char\n• Gangamati Reserved Forest\n• Red Crab Island\n• Kuakata Well\n• Kuakata Buddhist Temple\n• Rakhain Community Village',
+        driveFolder: 'Kuakata Tour 2024',
+        mainImage: 'Images/Kuakata Tour/01.jpg',
+        gallery: [
+          {image: 'Images/Kuakata Tour/01.jpg'}, {image: 'Images/Kuakata Tour/IMG_8266.JPG'}, 
+          {image: 'Images/Kuakata Tour/1734363039644.JPG'}, {image: 'Images/Kuakata Tour/IMG (13).JPG'},
+          {image: 'Images/Kuakata Tour/IMG (30).JPG'}, {image: 'Images/Kuakata Tour/IMG (76).JPG'}, 
+          {image: 'Images/Kuakata Tour/IMG (79).JPG'}, {image: 'Images/Kuakata Tour/IMG (84).JPG'}, 
+          {image: 'Images/Kuakata Tour/IMG_0241.JPG'}, {image: 'Images/Kuakata Tour/IMG_8260.JPG'}
+        ]
+      },
+      {
+        eventId: 'STATIC-3', eventName: 'RANGDHANU Tour & Freshers\' Reception 2025', category: 'Tour',
+        eventDate: '2025-12-19', venue: 'কক্সবাজার সমুদ্র সৈকত, কক্সবাজার',
+        shortDescription: 'কক্সবাজারে দুই দিনের বার্ষিক ট্যুর, সঙ্গে নবীনদের ফ্রেশার্স রিসেপশন।',
+        fullDescription: 'রংধনু পরিবারের আয়োজনে ১৯ ও ২০ ডিসেম্বর ২০২৫, কক্সবাজারে বার্ষিক ট্যুর, সঙ্গে নবীনদের ফ্রেশার্স রিসেপশন।\n\nযেখানে যেখানে যাওয়া হয়েছে:\n• কক্সবাজার সি বিচ\n• সুগন্ধা বিচ\n• হিমছড়ি ওয়াটারফল ও হিল\n• মেরিন ড্রাইভ রোড\n• ইনানী বিচ\n• হিমছড়ি ভিউ পয়েন্ট\n• কলাতলী বিচ\n• ফিশ মার্কেট',
+        driveFolder: 'Cox Bazar Tour 2025',
+        mainImage: 'Images/Cox Bazar/C 1.jpg',
+        gallery: [
+          {image: 'Images/Cox Bazar/C 1.jpg'}, {image: 'Images/Cox Bazar/DSC_2950.JPG'},
+          {image: 'Images/Cox Bazar/DSC_2997.JPG'}, {image: 'Images/Cox Bazar/DSC_2756.JPG'}
+        ]
+      }
+    ];
 
     /* Reunion 2024 album — ordered by how the day actually unfolded. */
     const RD_REUNION_PARTS = [{"n": 1, "icon": "flag", "bn": "উদ্বোধন ও বর্ণিল র‍্যালি", "en": "Opening Ceremony & Grand Rally"}, {"n": 2, "icon": "users", "bn": "ক্যাম্পাস আড্ডা, স্মৃতিস্তম্ভ ও মুক্তাঙ্গন", "en": "Campus Hangout & Outdoor Group Photos"}, {"n": 3, "icon": "book-open", "bn": "প্রকৌশলী কোচিং সেন্টার পরিদর্শন", "en": "PDACC Visit & Directors' Meetup"}, {"n": 4, "icon": "award", "bn": "অডিটোরিয়াম সেশন ও সংবর্ধনা", "en": "Auditorium Session & Award Ceremony"}, {"n": 5, "icon": "sparkles", "bn": "মঞ্চের স্মৃতি ও পরিসমাপ্তি", "en": "Stage Group Photos & Closing"}];
@@ -26,16 +67,6 @@
       const match = raw.match(/(?:drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:[^#]*&)?id=|thumbnail\?id=))([a-zA-Z0-9_-]+)/i) || raw.match(/\/(?:d|file\/d)\/([a-zA-Z0-9_-]+)/i) || raw.match(/[?&]id=([a-zA-Z0-9_-]+)/i);
       if (match && match[1]) return 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(match[1]) + '&sz=w500';
       if (/^[a-zA-Z0-9_-]{15,}$/.test(raw)) return 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(raw) + '&sz=w500';
-      return raw;
-    }
-    
-    function normalizeEventImage(value) {
-      const raw = String(value ?? '').trim();
-      if (!raw) return '';
-      if (/^https?:\/\//i.test(raw) && !/drive\.google\.com/i.test(raw)) return raw;
-      const match = raw.match(/(?:drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:[^#]*&)?id=|thumbnail\?id=))([a-zA-Z0-9_-]+)/i) || raw.match(/\/(?:d|file\/d)\/([a-zA-Z0-9_-]+)/i) || raw.match(/[?&]id=([a-zA-Z0-9_-]+)/i);
-      if (match && match[1]) return 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(match[1]) + '&sz=w1200';
-      if (/^[a-zA-Z0-9_-]{15,}$/.test(raw)) return 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(raw) + '&sz=w1200';
       return raw;
     }
     
@@ -94,7 +125,10 @@
          already, so a reload can land straight on it. */
       'pdacc-admission': { parent: 'prokoushali', needsData: false },
       'pdacc-committee': { parent: 'prokoushali', needsData: true  },
-
+      /* Rangdhanu Family's teacher list. needsData is false because the page
+         fetches its own feed, so a reload lands here instead of bouncing the
+         visitor out to the member directory. */
+      'family-faculty': { parent: 'alumni', needsData: false },
       'bloodbank':       { parent: 'bloodbank', needsData: false },
       /* Its own section; the page fetches its own poll feed, so a reload lands
          here instead of bouncing out. */
@@ -1407,45 +1441,32 @@
         </figure>`;
     }
 
-            async function renderReunionPhotos() {
+    function renderReunionPhotos() {
       const container = document.getElementById("reunion-photo-grid");
       if (!container) return;
-      try {
-        const res = await apiGet('reunion', {});
-        const parts = res.parts || [];
-        const photos = res.photos || [];
-        
-        let html = '';
-        parts.forEach(part => {
-          const shots = photos.filter(p => p.part === part.n);
-          if (!shots.length) return;
-          html += `
-          <section class="mb-12 last:mb-0">
-            <div class="flex items-center gap-3.5 mb-5">
-              <span class="shrink-0 w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-sky-500 text-white flex items-center justify-center shadow-md"><i data-lucide="${part.icon}" class="w-5 h-5"></i></span>
-              <div class="min-w-0">
-                <h3 class="text-base sm:text-lg font-extrabold text-slate-900 leading-snug">${escapeHtml(part.bn)}</h3>
-                <p class="text-[11px] sm:text-xs text-slate-500 font-semibold">${escapeHtml(part.en)} &bull; ${bnNum(shots.length)} টি ছবি</p>
-              </div>
-              <span class="ml-auto shrink-0 px-3 py-1 rounded-full bg-white border border-slate-200 text-[10px] sm:text-[11px] font-bold text-slate-500 tracking-wide">পর্ব ${bnNum(part.n)}</span>
+      RD_REUNION_VIEW = rdReunionModel();
+      const all = RD_REUNION_VIEW.photos;
+      let html = '';
+      RD_REUNION_VIEW.parts.forEach(part => {
+        const shots = all.filter(p => p.part === part.n);
+        if (!shots.length) return;
+        html += `
+        <section class="mb-12 last:mb-0">
+          <div class="flex items-center gap-3.5 mb-5">
+            <span class="shrink-0 w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-sky-500 text-white flex items-center justify-center shadow-md"><i data-lucide="${part.icon}" class="w-5 h-5"></i></span>
+            <div class="min-w-0">
+              <h3 class="text-base sm:text-lg font-extrabold text-slate-900 leading-snug">${escapeHtml(part.bn)}</h3>
+              <p class="text-[11px] sm:text-xs text-slate-500 font-semibold">${escapeHtml(part.en)} • ${bnNum(shots.length)} টি ছবি</p>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-              ${shots.map(p => reunionCardHtml(p, photos.indexOf(p))).join('')}
-            </div>
-          </section>`;
-        });
-        container.innerHTML = html;
-        if (window.lucide && lucide.createIcons) lucide.createIcons();
-        
-        RD_REUNION_VIEW.parts = parts;
-        // Also map file -> src for the lightbox
-        photos.forEach(ph => {
-          ph.src = normalizeEventImage(ph.file);
-        });
-        RD_REUNION_VIEW.photos = photos;
-      } catch (err) {
-        console.error(err);
-      }
+            <span class="ml-auto shrink-0 px-3 py-1 rounded-full bg-white border border-slate-200 text-[10px] sm:text-[11px] font-bold text-slate-500 tracking-wide">পর্ব ${bnNum(part.n)}</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            ${shots.map(p => reunionCardHtml(p, all.indexOf(p))).join('')}
+          </div>
+        </section>`;
+      });
+      container.innerHTML = html;
+      lucide.createIcons();
     }
 
     /* LIGHTBOX LOGIC FOR BOTH STATIC AND DYNAMIC EVENTS */
@@ -5340,7 +5361,7 @@
     }
     function closeAlumniModal() { goBackFromSubPage('profile'); }
     
-    let alumniViewFilter = 'Alumni';
+    let alumniViewFilter = 'ALL';
 
     /* ---------- from the directory to the committee page -----------------
        The directory answers "who is in Rangdhanu"; the committee page answers
@@ -5591,7 +5612,7 @@
         (alumniViewFilter === "ALL" || a.status === alumniViewFilter)
       ));
     }
-    function resetAlumniFilters() { document.getElementById("alumni-search-input").value=""; document.getElementById("alumni-filter-dept").value="ALL"; document.getElementById("alumni-filter-series").value="ALL"; document.getElementById("alumni-filter-blood").value="ALL"; setAlumniViewFilter('Alumni'); }
+    function resetAlumniFilters() { document.getElementById("alumni-search-input").value=""; document.getElementById("alumni-filter-dept").value="ALL"; document.getElementById("alumni-filter-series").value="ALL"; document.getElementById("alumni-filter-blood").value="ALL"; setAlumniViewFilter('ALL'); }
 
     /* ================= BLOOD BANK ============================================
        Full Blood Bank page: load donors from API, filter by group / location /
@@ -8122,7 +8143,7 @@
              cards had their covers swapped in after the manifest arrived; a
              script-drawn card asks for the Drive copy right here. */
           const e = rdEventFromDrive(raw);
-          const img = normalizeEventImage(e.mainImage || e['Main Image']);
+          const img = normalizeAlumniImage(e.mainImage || e['Main Image'] || '');
           /* Still a bundled path means Drive has no folder for this one yet, so
              the card carries the same fallback the hand-written markup did. */
           const local = /^Images\//.test(String(e.mainImage || '')) ? String(e.mainImage) : '';
@@ -8219,7 +8240,7 @@
       if (!e) return;
       const c = document.getElementById('dynamic-event-content');
       
-      const img = normalizeEventImage(e.mainImage || e['Main Image']);
+      const img = normalizeAlumniImage(e.mainImage || e['Main Image'] || '');
       const title = e.eventName || e['Event Name'] || 'Event';
       const id = e.eventId || e['Event ID'] || '';
       const date = e.eventDate || e['Event Date'] || '';
@@ -8231,7 +8252,7 @@
       let staticGalleryHtml = '';
       if (staticGal.length > 0) {
           staticGalleryHtml = staticGal.map(x => {
-              const src = normalizeEventImage(x.image);
+              const src = normalizeAlumniImage(x.image || '');
               return src ? `<div onclick="openCustomLightbox('${escapeHtml(src)}', '${escapeHtml(x.caption || title)}')" class="aspect-square rounded-xl overflow-hidden border border-slate-200 cursor-pointer relative group/img"><img src="${escapeHtml(src)}" alt="${escapeHtml(x.caption || title)}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover/img:scale-110 transition"><div class="absolute inset-0 bg-black/30 opacity-0 group-hover/img:opacity-100 transition flex items-center justify-center"><i data-lucide="maximize-2" class="w-5 h-5 text-white"></i></div></div>` : '';
           }).join('');
       }
@@ -8270,19 +8291,19 @@
       // Load dynamic Gallery
       if (id && !id.startsWith('STATIC-')) {
         try {
-          const q = new URLSearchParams({action: 'eventgallery', eventId: id, _: Date.now()});
+          const q = new URLSearchParams({action: 'eventGallery', eventId: id, _: Date.now()});
           const r = await fetch(API_BASE_URL + '?' + q.toString());
           const json = await r.json();
           const items = Array.isArray(json.data) ? json.data : [];
           if(items.length > 0) {
             const galHtml = items.map(x => {
-              const src = normalizeEventImage(x.image);
+              const src = normalizeAlumniImage(x.image || '');
               return src ? `<div onclick="openCustomLightbox('${escapeHtml(src)}', '${escapeHtml(title)}')" class="aspect-square rounded-xl overflow-hidden border border-slate-200 cursor-pointer relative group/img"><img src="${escapeHtml(src)}" alt="${escapeHtml(title)}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover/img:scale-110 transition"><div class="absolute inset-0 bg-black/30 opacity-0 group-hover/img:opacity-100 transition flex items-center justify-center"><i data-lucide="maximize-2" class="w-5 h-5 text-white"></i></div></div>` : '';
             }).join('');
             
             const galContainer = document.getElementById('dynamic-event-gallery');
             if(!staticGalleryHtml) {
-               galContainer.insertAdjacentHTML('beforebegin', `<h4 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2 mt-8"><i data-lucide="image" class="w-5 h-5 text-blue-600"></i> ইভেন্ট গ্যালারী</h4>`);
+               galContainer.parentElement.insertAdjacentHTML('afterbegin', `<h4 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2"><i data-lucide="image" class="w-5 h-5 text-blue-600"></i> ইভেন্ট গ্যালারি</h4>`);
                lucide.createIcons();
             }
             galContainer.innerHTML = staticGalleryHtml + galHtml;
@@ -9823,7 +9844,6 @@ f.reset();
       { key: 'slides',        label: 'Slideshows',              icon: 'images',       action: 'getadminslides',      custom: true },
       { key: 'pdacc',         label: 'PDACC Page',              icon: 'graduation-cap', action: 'getadminpdacc',     custom: true },
       { key: 'faculty',       label: 'Rangdhanu Family',        icon: 'users-round',  action: 'getadminfaculty',     custom: true },
-      { key: 'reunion',       label: 'Reunion Gallery',         icon: 'image',        action: 'getadminreunion',     custom: true },
       { key: 'activity',      label: 'Edit History',            icon: 'history',      action: 'getadminactivity',    custom: true },
       { key: 'unclaimed',     label: 'Unclaimed Profiles',       icon: 'user-round-search', action: 'adminunclaimedprofiles', custom: true },
       { key: 'unclaimed-matches', label: 'Possible Matches',      icon: 'git-compare-arrows', action: 'adminunclaimedmatches', custom: true },
@@ -10981,13 +11001,6 @@ f.reset();
                    .filter(r => r.id);
       }
 
-      if (tab === 'reunion') {
-        const res = await apiGet('getadminreunion', {});
-        RD_ADMIN.reunionParts = Array.isArray(res.parts) ? res.parts : [];
-        RD_ADMIN.reunionPhotos = Array.isArray(res.photos) ? res.photos : [];
-        return [];
-      }
-
       const res = await apiGet(adminTabMeta(tab).action, {});
       const rows = Array.isArray(res.rows) ? res.rows : [];
       return rows.map(r => Object.assign({}, r, { id: String(r.noticeId || r.postId || r.slideId || r.lineId || r.updateId || r.unclaimedId || r.matchId || r['Audit ID'] || '').trim() }))
@@ -11002,7 +11015,6 @@ f.reset();
       if (tab === 'slides') return adminSlidesHtml();
       if (tab === 'pdacc') return adminPdaccHtml();
       if (tab === 'faculty') return adminFacultyHtml();
-      if (tab === 'reunion') return adminReunionHtml();
       if (tab === 'activity') return adminActivityHtml();
       if (tab === 'unclaimed') return adminUnclaimedHtml();
       if (tab === 'unclaimed-matches') return adminUnclaimedMatchesHtml();
@@ -13249,7 +13261,7 @@ f.reset();
            galHtml += '<p class="text-[10px] text-slate-500 mb-2">Click on an image to mark it for deletion.</p><div class="flex flex-wrap gap-2 mb-3">';
            r.fetchedGallery.forEach(g => {
              galHtml += '<div class="relative group w-16 h-16 rounded-xl border border-slate-200 overflow-hidden gal-item cursor-pointer" data-id="' + escapeHtml(g.galleryId) + '" onclick="this.classList.toggle(\'opacity-30\'); this.classList.toggle(\'marked-delete\');">' +
-               '<img src="' + escapeHtml(normalizeEventImage(g.image)) + '" class="w-full h-full object-cover">' +
+               '<img src="' + escapeHtml(g.image) + '" class="w-full h-full object-cover">' +
                '<div class="absolute inset-0 bg-rose-500/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><i data-lucide="trash-2" class="w-5 h-5"></i></div>' +
                '</div>';
            });
@@ -14538,115 +14550,4 @@ function rdNavGlareSync(el) {
     bind();
   }
   window.addEventListener('load', () => rdNavGlareSync());
-  function adminReunionHtml() {
-    let parts = RD_ADMIN.reunionParts || [];
-    let photos = RD_ADMIN.reunionPhotos || [];
-    
-    let html = '<div class="max-w-4xl mx-auto space-y-6">';
-    html += '<div class="flex justify-between items-center"><h3 class="text-2xl font-bold text-slate-800">Reunion Gallery Parts</h3>';
-    html += '<button onclick="adminReunionPartEdit(0)" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-bold">+ Add New Part</button></div>';
-    
-    for (const p of parts) {
-      let pPhotos = photos.filter(x => x.part === p.n);
-      html += '<div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm">';
-      html += '<div class="flex justify-between items-start mb-4">';
-      html += '<div><div class="flex items-center gap-2"><span class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex justify-center items-center font-bold">'+p.n+'</span><h4 class="text-lg font-bold">'+escapeHtml(p.bn)+'</h4></div><p class="text-sm text-slate-500 mt-1">'+escapeHtml(p.en)+'</p></div>';
-      html += '<div><button onclick="adminReunionPartEdit('+p.n+')" class="px-3 py-1.5 text-xs font-bold border rounded-lg mr-2 hover:bg-slate-50">Edit Title</button>';
-      html += '<button onclick="adminReunionPhotosEdit('+p.n+')" class="px-3 py-1.5 text-xs font-bold border rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100">Manage Photos ('+pPhotos.length+')</button></div>';
-      html += '</div>';
-      
-      if (RD_ADMIN.reuEditPart === p.n) {
-        html += adminReunionPartForm(p);
-      }
-      
-      if (RD_ADMIN.reuEditPhotos === p.n) {
-        html += adminReunionPhotosForm(p, pPhotos);
-      }
-      
-      html += '</div>';
-    }
-    
-    if (RD_ADMIN.reuEditPart === 0) {
-      html += '<div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm">' + adminReunionPartForm(null) + '</div>';
-    }
-    
-    html += '</div>';
-    return html;
-  }
-  
-  function adminReunionPartForm(p) {
-    let n = p ? p.n : '';
-    let bn = p ? p.bn : '';
-    let en = p ? p.en : '';
-    let icon = p ? p.icon : 'image';
-    return '<div class="mt-4 p-4 bg-slate-50 border rounded-xl"><div class="grid gap-4">' +
-      '<div><label class="text-xs font-bold uppercase text-slate-500 mb-1 block">Part Number (Order)</label><input type="number" id="reu-part-n" value="'+n+'" '+(p?'disabled':'')+' class="w-full p-2 border rounded-lg"></div>' +
-      '<div><label class="text-xs font-bold uppercase text-slate-500 mb-1 block">Bengali Title</label><input type="text" id="reu-part-bn" value="'+escapeHtml(bn)+'" class="w-full p-2 border rounded-lg"></div>' +
-      '<div><label class="text-xs font-bold uppercase text-slate-500 mb-1 block">English Title</label><input type="text" id="reu-part-en" value="'+escapeHtml(en)+'" class="w-full p-2 border rounded-lg"></div>' +
-      '<div><label class="text-xs font-bold uppercase text-slate-500 mb-1 block">Lucide Icon Name</label><input type="text" id="reu-part-icon" value="'+escapeHtml(icon)+'" class="w-full p-2 border rounded-lg"></div>' +
-      '<div class="flex gap-2 mt-2"><button onclick="adminReunionPartSave('+(p?p.n:0)+')" class="px-4 py-2 bg-green-600 text-white font-bold rounded-lg">Save Part</button><button onclick="adminReunionCancel()" class="px-4 py-2 border font-bold rounded-lg">Cancel</button></div>' +
-    '</div></div>';
-  }
-  
-  function adminReunionPhotosForm(p, photos) {
-    let html = '<div class="mt-4 p-4 bg-slate-50 border rounded-xl">';
-    html += '<h5 class="font-bold mb-3">Manage Photos for Part '+p.n+'</h5>';
-    
-    html += '<div class="grid grid-cols-4 gap-3 mb-4">';
-    for (const ph of photos) {
-      let src = normalizeEventImage(ph.file);
-      html += '<div class="relative aspect-square border rounded-lg overflow-hidden group">';
-      html += '<img src="'+escapeHtml(src)+'" class="w-full h-full object-cover">';
-      html += '<button type="button" onclick="this.parentElement.classList.toggle(\'marked-delete\'); this.parentElement.classList.toggle(\'opacity-50\')" data-id="'+ph.photo_id+'" class="absolute top-1 right-1 bg-rose-500 text-white w-6 h-6 rounded flex items-center justify-center opacity-0 group-hover:opacity-100"><i data-lucide="trash" class="w-3 h-3"></i></button>';
-      html += '</div>';
-    }
-    html += '</div>';
-    
-    html += '<div><label class="text-xs font-bold uppercase text-slate-500 mb-1 block">Upload New Images (Multiple allowed)</label><input type="file" multiple id="reu-photos-input" class="w-full p-2 border rounded-lg bg-white" accept="image/*"></div>';
-    html += '<div class="flex gap-2 mt-4"><button onclick="adminReunionPhotosSave('+p.n+')" id="reu-photos-savebtn" class="px-4 py-2 bg-indigo-600 text-white font-bold rounded-lg">Save Photos</button><button onclick="adminReunionCancel()" class="px-4 py-2 border font-bold rounded-lg">Cancel</button></div>';
-    
-    html += '</div>';
-    return html;
-  }
-  
-  window.adminReunionCancel = function() { RD_ADMIN.reuEditPart = null; RD_ADMIN.reuEditPhotos = null; renderAdmin(); };
-  window.adminReunionPartEdit = function(n) { RD_ADMIN.reuEditPart = n; RD_ADMIN.reuEditPhotos = null; renderAdmin(); };
-  window.adminReunionPhotosEdit = function(n) { RD_ADMIN.reuEditPhotos = n; RD_ADMIN.reuEditPart = null; renderAdmin(); };
-  
-  window.adminReunionPartSave = async function(isUpdate) {
-    let n = document.getElementById("reu-part-n").value;
-    let bn = document.getElementById("reu-part-bn").value;
-    let en = document.getElementById("reu-part-en").value;
-    let icon = document.getElementById("reu-part-icon").value;
-    if(!n || !bn) return showToast("Number and Bengali title required", "error");
-    await apiPost("savereunionpart", { data: { id: isUpdate ? true : false, n: Number(n), bn: bn, en: en, icon: icon } });
-    RD_ADMIN.reuEditPart = null;
-    loadAdminDashboard(true);
-  };
-  
-  window.adminReunionPhotosSave = async function(partNum) {
-    let btn = document.getElementById("reu-photos-savebtn");
-    btn.disabled = true; btn.textContent = "Uploading...";
-    let fileInput = document.getElementById("reu-photos-input");
-    let markedDel = Array.from(document.querySelectorAll("#admin-tabs-content .marked-delete button")).map(b => b.getAttribute("data-id"));
-    
-    let gallery = [];
-    if (fileInput.files.length > 0) {
-      for (const f of fileInput.files) {
-        gallery.push(await filePayload(f, 4000));
-      }
-    }
-    
-    if (gallery.length === 0 && markedDel.length === 0) {
-      showToast("No changes made.", "info");
-      adminReunionCancel();
-      return;
-    }
-    
-    await apiPost("savereunionphotos", { data: { part: partNum, gallery: gallery, deleteGallery: markedDel } });
-    RD_ADMIN.reuEditPhotos = null;
-    loadAdminDashboard(true);
-  };
-
 })();
-
