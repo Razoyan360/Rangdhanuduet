@@ -1,0 +1,1815 @@
+﻿:root{
+  --rd-blue-950:#071f49;
+  --rd-blue-900:#0b2f6b;
+  --rd-blue-800:#124b9b;
+  --rd-blue-700:#1769d1;
+  --rd-blue-600:#2479df;
+  --rd-blue-500:#3e91ed;
+  --rd-blue-100:#dceeff;
+  --rd-blue-50:#f1f7ff;
+  --rd-ink:#102b52;
+  --rd-line:rgba(16,43,82,.14);
+}
+html{scroll-behavior:auto!important}
+body{
+  background:#e4f1ea !important;
+  background-image:
+    radial-gradient(1150px 640px at 12% -10%, rgba(52,211,153,.20), transparent 58%),
+    radial-gradient(1050px 760px at 104% 2%, rgba(16,185,129,.14), transparent 56%),
+    linear-gradient(180deg, #e8f4ee 0%, #eef7f1 48%, #e6f2ec 100%) !important;
+  background-attachment:fixed !important;
+  color:var(--rd-ink)
+}
+::selection{background:var(--rd-blue-700);color:#fff}
+.glass-nav{background:rgba(245,249,255,.93)!important;border-bottom-color:var(--rd-line)!important;box-shadow:0 12px 36px -28px rgba(7,31,73,.45)!important}
+.nav-accent{left:auto!important;right:-9%!important;width:39%!important;background:linear-gradient(110deg,rgba(219,234,254,.16),rgba(96,165,250,.34),rgba(30,64,175,.18))!important;box-shadow:0 10px 30px -18px rgba(37,99,235,.24);opacity:.62!important}
+.nav-accent:after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 28%,rgba(255,255,255,.16) 46%,transparent 62%);transform:translateX(-120%);animation:brandBandShine 10s cubic-bezier(.22,1,.36,1) infinite;pointer-events:none}
+/* ── Brand lockup — liquid-glass rotating-stroke chips + bonding click (2026) ── */
+.brand-lockup{position:relative}
+.brand-lockup:after{display:none}
+.brand-title-word{display:inline-block}
+/* shared glass chip: rotating conic stroke (:before) + frosted fill (:after) */
+.brand-logo,.brand-duet-crest{position:relative!important;isolation:isolate;border-radius:15px!important;background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;animation:none!important}
+.brand-logo:before,.brand-duet-crest:before{content:"";position:absolute;inset:-1.6px;border-radius:16px;z-index:0;background:conic-gradient(from 0deg,#cdeafd,#38bdf8,#8fd6fb,#e0f2fe,#7dd3fc,#38bdf8,#cdeafd);animation:rdRingSpin 3.4s linear infinite}
+.brand-logo:after,.brand-duet-crest:after{content:"";position:absolute;inset:0;border-radius:13.5px;z-index:1;background:rgba(255,255,255,.6);-webkit-backdrop-filter:blur(10px) saturate(140%);backdrop-filter:blur(10px) saturate(140%);box-shadow:inset 0 1px 0 rgba(255,255,255,.85)}
+.brand-logo img,.brand-duet-crest img{position:relative;z-index:2;width:100%;height:100%;object-fit:contain;padding:6px;filter:none!important}
+@keyframes rdRingSpin{to{transform:rotate(360deg)}}
+.group:hover .brand-logo{transform:translateY(-1px) scale(1.04)}
+/* wordmark: RANGDHANU navy->sky gradient, DUET sky ink, sweeping underline */
+.brand-word{position:relative}
+.brand-name{position:relative;color:transparent!important;text-shadow:none!important;animation:none!important;letter-spacing:.05em!important}
+.brand-title-rangdhanu{background:linear-gradient(92deg,#0f2b5c,#0284c7 85%);-webkit-background-clip:text;background-clip:text;color:transparent!important;animation:none!important}
+.brand-duet,.brand-title-duet{color:#0369a1!important;text-shadow:none!important;animation:none!important}
+.brand-name:after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent 0%,#0ea5e9 50%,transparent 100%);background-size:220% 100%;-webkit-mask:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent);mask:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent);animation:rdBrandSweep 4.6s ease-in-out infinite}
+@keyframes rdBrandSweep{0%{background-position:130% 0}100%{background-position:-130% 0}}
+/* DUET crest — hidden at rest; JS parks it over the DUET word */
+.brand-duet-crest{position:absolute!important;left:0;top:0;width:48px;height:48px;border-radius:14px!important;opacity:0;pointer-events:none;z-index:5}
+.brand-duet-crest:before{border-radius:15px}
+.brand-duet-crest:after{border-radius:13.5px}
+/* bonding click sequence — 2.6s: the DUET crest rises from its home over the
+   DUET word, flies to the RANGDHANU brand logo, nestles close, then returns
+   home and fades. The brand logo STAYS in place (a soft welcome pulse), the
+   DUET word steps aside so the crest has a clean home, RANGDHANU stays. */
+.brand-lockup.bond .brand-logo{animation:rdLogoWelcome 3.8s cubic-bezier(.5,0,.2,1)!important}
+.brand-lockup.bond .brand-duet-crest{animation:rdDuetVisit 3.8s cubic-bezier(.5,0,.2,1)!important}
+.brand-lockup.bond .brand-duet,.brand-lockup.bond .brand-title-duet{animation:rdDuetWordPush 3.8s cubic-bezier(.5,0,.2,1)!important}
+@keyframes rdDuetVisit{0%{transform:translate(0,0) scale(.6);opacity:0}14%{transform:translate(0,0) scale(1);opacity:1}46%{transform:translate(var(--duetx),var(--duety)) scale(.82);opacity:1}60%{transform:translate(var(--duetx),var(--duety)) scale(.82);opacity:1}88%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(0,0) scale(.6);opacity:0}}
+@keyframes rdLogoWelcome{0%,42%{transform:scale(1)}53%{transform:scale(1.12)}64%{transform:scale(1)}100%{transform:scale(1)}}
+@keyframes rdDuetWordPush{0%{transform:translateY(0);opacity:1}14%{transform:translateY(38px);opacity:0}86%{transform:translateY(38px);opacity:0}100%{transform:translateY(0);opacity:1}}
+@keyframes brandBandShine{0%,72%{transform:translateX(-120%)}88%,100%{transform:translateX(120%)}}
+@media(prefers-reduced-motion:reduce){
+  .nav-accent:after,.brand-logo:before,.brand-duet-crest:before,.brand-name:after{animation:none!important}
+  .brand-lockup.bond .brand-logo,.brand-lockup.bond .brand-duet-crest,.brand-lockup.bond .brand-duet,.brand-lockup.bond .brand-title-duet{animation:none!important}
+}
+.nav-strip{border-top-color:var(--rd-line)!important;background:rgba(255,255,255,.74)!important}
+.premium-nav-item:hover,.premium-nav-item.is-active{color:var(--rd-blue-700)!important}
+.premium-nav-item{position:relative}
+.premium-nav-item:after{background:var(--rd-blue-600);bottom:-.1rem;content:"";height:2px;left:1rem;position:absolute;right:1rem;transform:scaleX(0);transform-origin:center;transition:transform .24s ease}
+.premium-nav-item:hover:after,.premium-nav-item.active:after,.premium-nav-item.is-active:after{transform:scaleX(1)}
+.nav-cta{background:#000!important;box-shadow:0 12px 28px -16px rgba(0,0,0,.8)!important}
+.nav-cta:hover{background:#111!important}
+.mobile-nav-item{border-bottom:1px solid var(--rd-line)!important;color:var(--rd-ink)!important;display:block;padding:.75rem .25rem!important;text-align:left;width:100%}
+.mobile-nav-item:hover,.mobile-nav-item.active{background:var(--rd-blue-50)!important;color:var(--rd-blue-700)!important}
+.glass-nav #mobile-member-btn,.glass-nav #mobile-menu-btn{display:inline-flex;align-items:center;justify-content:center;flex:0 0 44px;width:44px;height:44px;position:relative;z-index:20}
+.glass-nav #mobile-member-btn::before,.glass-nav #mobile-menu-btn::before{content:"";position:absolute;inset:0}
+#mobile-menu{background:rgba(247,251,255,.98)!important;border-color:var(--rd-line)!important}
+#mobile-menu{left:auto!important;right:.75rem!important;width:52vw!important;max-width:18rem!important;border-radius:.9rem!important;transform:translateY(0) scale(1);opacity:1;transition:opacity 1s ease,transform 1s cubic-bezier(.22,1,.36,1);overflow:hidden}
+#mobile-menu.rd-menu-opening{animation:rdMenuPanelIn .35s steps(6,end) both}
+#mobile-menu.rd-menu-closing{animation:rdMenuPanelOut .35s steps(6,end) both;pointer-events:none}
+#mobile-menu:not(.hidden)>*{opacity:0;animation:rdMenuItemIn .2s cubic-bezier(.22,1,.36,1) both}
+#mobile-menu.rd-menu-closing>*{animation:rdMenuItemOut .18s ease both}
+#mobile-menu:not(.hidden)>:nth-child(1){animation-delay:.018s}
+#mobile-menu:not(.hidden)>:nth-child(2){animation-delay:.036s}
+#mobile-menu:not(.hidden)>:nth-child(3){animation-delay:.054s}
+#mobile-menu:not(.hidden)>:nth-child(4){animation-delay:.072s}
+#mobile-menu:not(.hidden)>:nth-child(5){animation-delay:.09s}
+#mobile-menu:not(.hidden)>:nth-child(6){animation-delay:.108s}
+#mobile-menu:not(.hidden)>:nth-child(7){animation-delay:.126s}
+#mobile-menu:not(.hidden)>:nth-child(8){animation-delay:.144s}
+#mobile-menu:not(.hidden)>:nth-child(9){animation-delay:.162s}
+#mobile-menu:not(.hidden)>:nth-child(10){animation-delay:.18s}
+#mobile-menu.rd-menu-closing>:nth-child(10){animation-delay:0s}
+#mobile-menu.rd-menu-closing>:nth-child(9){animation-delay:.019s}
+#mobile-menu.rd-menu-closing>:nth-child(8){animation-delay:.038s}
+#mobile-menu.rd-menu-closing>:nth-child(7){animation-delay:.057s}
+#mobile-menu.rd-menu-closing>:nth-child(6){animation-delay:.076s}
+#mobile-menu.rd-menu-closing>:nth-child(5){animation-delay:.095s}
+#mobile-menu.rd-menu-closing>:nth-child(4){animation-delay:.114s}
+#mobile-menu.rd-menu-closing>:nth-child(3){animation-delay:.133s}
+#mobile-menu.rd-menu-closing>:nth-child(2){animation-delay:.152s}
+#mobile-menu.rd-menu-closing>:nth-child(1){animation-delay:.171s}
+@keyframes rdMenuItemIn{from{opacity:0;transform:translateY(-9px)}to{opacity:1;transform:translateY(0)}}
+@keyframes rdMenuItemOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-9px)}}
+@keyframes rdMenuPanelIn{
+  0%{opacity:0;transform:translateY(-10px) scale(.97);clip-path:inset(0 0 100% 0)}
+  18%{opacity:.55;clip-path:inset(0 0 78% 0)}
+  36%{opacity:.78;clip-path:inset(0 0 54% 0)}
+  54%{opacity:.9;clip-path:inset(0 0 31% 0)}
+  72%{opacity:.96;clip-path:inset(0 0 12% 0)}
+  88%,100%{opacity:1;transform:translateY(0) scale(1);clip-path:inset(0)}
+}
+@keyframes rdMenuPanelOut{
+  0%{opacity:1;transform:translateY(0) scale(1);clip-path:inset(0)}
+  22%{opacity:.95;clip-path:inset(0 0 13% 0)}
+  44%{opacity:.82;clip-path:inset(0 0 34% 0)}
+  66%{opacity:.62;clip-path:inset(0 0 58% 0)}
+  84%{opacity:.35;clip-path:inset(0 0 81% 0)}
+  100%{opacity:0;transform:translateY(-10px) scale(.97);clip-path:inset(0 0 100% 0)}
+}
+@media(prefers-reduced-motion:reduce){
+  #mobile-menu.rd-menu-opening,#mobile-menu.rd-menu-closing,#mobile-menu:not(.hidden)>*,#mobile-menu.rd-menu-closing>*{animation:none!important;opacity:1!important;transform:none!important;clip-path:none!important}
+}
+#mobile-menu .nav-cta{border-radius:.85rem!important}
+.page-view.active{animation:none!important}
+@keyframes rdPageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.card-pro,.rd-tile,.rd-pd-card,.rd-dc,.rd-mp-card{border-color:var(--rd-line)!important;box-shadow:0 14px 34px -28px rgba(7,31,73,.45)!important;transition:transform .28s cubic-bezier(.22,1,.36,1),box-shadow .28s ease,border-color .28s ease!important}
+.card-pro:hover,.rd-tile:hover,.rd-pd-card:hover,.rd-dc:hover,.rd-mp-card:hover{border-color:rgba(36,121,223,.42)!important;box-shadow:0 24px 48px -28px rgba(23,105,209,.38)!important;transform:translateY(-4px)}
+button:not(:disabled),a{transition:color .22s ease,background-color .22s ease,border-color .22s ease,box-shadow .22s ease,transform .22s ease}
+.bg-blue-600,.bg-blue-700{background-color:var(--rd-blue-700)!important}
+.text-blue-600,.text-blue-700,.text-blue-800{color:var(--rd-blue-700)!important}
+.border-blue-200,.border-blue-300{border-color:rgba(36,121,223,.28)!important}
+.bg-blue-50,.bg-sky-50{background-color:var(--rd-blue-50)!important}
+.hover\:bg-blue-700:hover{background-color:var(--rd-blue-800)!important}
+.focus\:ring-blue-500:focus{--tw-ring-color:rgba(36,121,223,.38)!important}
+.rd-hero-veil{background:linear-gradient(180deg,rgba(7,31,73,.72),rgba(7,31,73,.08) 58%,rgba(7,31,73,.62))!important}
+#page-home #cover-slides,
+#page-home #cover-poster,
+#page-home #cover-skeleton{border-radius:1.75rem}
+#page-home.active,#page-profile.active{animation:none!important}
+#page-profile .rd-mp-cover>img,#page-profile .rd-mp-face,#page-profile .rd-mp-eyebrow,#page-profile .rd-mp-name,#page-profile .rd-mp-head,#page-profile .rd-mp-pillrow,#page-profile .rd-mp-rule,#page-profile .rd-mp-acts,#page-profile .rd-mp-acts2,#page-profile .rd-mp-sec,#page-my-profile .rd-mp-cover>img,#page-my-profile .rd-mp-face,#page-my-profile .rd-mp-eyebrow,#page-my-profile .rd-mp-name,#page-my-profile .rd-mp-head,#page-my-profile .rd-mp-pillrow,#page-my-profile .rd-mp-rule,#page-my-profile .rd-mp-acts,#page-my-profile .rd-mp-acts2,#page-my-profile .rd-mp-sec{animation:none!important}
+#page-home .rd-hero-anim h2{letter-spacing:-.035em;text-shadow:0 8px 26px rgba(7,31,73,.42)}
+#page-home .rd-hero-anim button{background:var(--rd-blue-50)!important;color:var(--rd-blue-950)!important;box-shadow:0 14px 30px -18px rgba(7,31,73,.8)!important}
+#page-home .rd-hero-anim button:hover{background:#fff!important;transform:translateY(-2px)}
+#page-home .reveal{transition:opacity .65s ease,transform .65s cubic-bezier(.22,1,.36,1)}
+#page-home .card-pro h3,#page-home .rd-tile h3{color:var(--rd-blue-950)!important}
+#page-home .card-pro:focus-visible,#page-home .rd-tile:focus-visible{outline:3px solid rgba(36,121,223,.42);outline-offset:3px}
+#page-home>section:not(:first-of-type){position:relative}
+#page-home>section:not(:first-of-type):before{background:linear-gradient(90deg,transparent,rgba(36,121,223,.18),transparent);content:"";height:1px;left:clamp(1rem,8vw,7rem);position:absolute;right:clamp(1rem,8vw,7rem);top:0}
+#page-home .rd-pd-guide:hover,#page-home .nav-cta:hover{transform:translateY(-2px)}
+#page-home .bg-gradient-to-r.from-blue-700{box-shadow:0 28px 60px -36px rgba(7,31,73,.72)}
+#page-home .text-indigo-600,#page-home .text-indigo-700,#page-home .text-emerald-700,#page-home .text-amber-700,#page-home .text-rose-700{color:var(--rd-blue-700)!important}
+#page-home .bg-indigo-50,#page-home .bg-emerald-50,#page-home .bg-amber-50,#page-home .bg-rose-50{background-color:var(--rd-blue-50)!important}
+#page-home .border-indigo-100,#page-home .border-indigo-200,#page-home .border-emerald-200,#page-home .border-amber-200,#page-home .border-rose-200{border-color:rgba(36,121,223,.22)!important}
+#page-home .bg-indigo-600,#page-home .bg-emerald-600,#page-home .bg-amber-500,#page-home .bg-rose-500{background-color:var(--rd-blue-700)!important}
+#page-home .from-indigo-50,#page-home .from-blue-50{--tw-gradient-from:var(--rd-blue-50) var(--tw-gradient-from-position)!important}
+#page-home .to-indigo-700,#page-home .to-blue-700{--tw-gradient-to:var(--rd-blue-900) var(--tw-gradient-to-position)!important}
+#page-home .via-indigo-600,#page-home .via-sky-500{--tw-gradient-via:var(--rd-blue-600) var(--tw-gradient-via-position)!important}
+#page-home > section.relative.overflow-hidden.bg-white.border-y h1{font-family:'Noto Serif Bengali','Noto Sans Bengali',serif!important;font-size:clamp(2.35rem,5.4vw,5.15rem)!important;letter-spacing:-.045em!important;line-height:1.18!important}
+#page-home > section.relative.overflow-hidden.bg-white.border-y h1>span{background-size:240% 100%!important;animation:homeTitleColourFlow 5.5s ease-in-out infinite!important;filter:drop-shadow(0 10px 18px rgba(36,121,223,.14))}
+#page-home > section.relative.overflow-hidden.bg-white.border-y p{font-family:'Noto Sans Bengali','Plus Jakarta Sans',sans-serif!important}
+#page-home > section.relative.overflow-hidden.bg-white.border-y .reveal{opacity:0;animation:homeHeroRevealStrong .95s cubic-bezier(.22,1,.36,1) both!important}
+#page-home > section.relative.overflow-hidden.bg-white.border-y .reveal-delay-1{animation-delay:.18s!important}
+#page-home > section.relative.overflow-hidden.bg-white.border-y .reveal-delay-2{animation-delay:.38s!important}
+#page-home > section.relative.overflow-hidden.bg-white.border-y .reveal-delay-3{animation-delay:.58s!important}
+#page-home > section.relative.overflow-hidden.bg-white.border-y .reveal-delay-3 button{animation:homeButtonArrive .7s cubic-bezier(.22,1,.36,1) both;animation-delay:.78s}
+#page-home > section:nth-of-type(3) > .absolute{animation:homeAmbientDrift 12s ease-in-out infinite alternate;transform-origin:center}
+#page-home > section:nth-of-type(3) .reveal{animation:homeHeroReveal .8s cubic-bezier(.22,1,.36,1) both}
+#page-home > section:nth-of-type(3) .reveal-delay-1{animation-delay:.12s}
+#page-home > section:nth-of-type(3) .reveal-delay-2{animation-delay:.24s}
+#page-home > section:nth-of-type(3) .reveal-delay-3{animation-delay:.36s}
+#page-home > section:nth-of-type(3) .reveal:first-child{box-shadow:0 0 0 1px rgba(36,121,223,.08),0 8px 24px -18px rgba(23,105,209,.45)}
+#page-home > section:nth-of-type(3) .reveal:first-child:after{background:linear-gradient(90deg,transparent,rgba(62,145,237,.55),transparent);content:"";height:1px;left:12%;position:absolute;right:12%;top:100%;transform:scaleX(0);transform-origin:center;animation:homeBadgeLine .9s ease .55s forwards}
+#page-home > section:nth-of-type(3) .reveal-delay-3 button{transition:transform .25s cubic-bezier(.22,1,.36,1),box-shadow .25s ease,background-color .25s ease}
+#page-home > section:nth-of-type(3) .reveal-delay-3 button:hover{box-shadow:0 16px 28px -18px rgba(7,31,73,.7);transform:translateY(-4px)}
+@keyframes homeHeroReveal{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes homeHeroRevealStrong{from{opacity:0;transform:translateY(30px) scale(.98);filter:blur(4px)}to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+@keyframes homeTitleColourFlow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes homeButtonArrive{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes homeAmbientDrift{from{opacity:.72;transform:scale(1) translate3d(-1%,0,0)}to{opacity:1;transform:scale(1.06) translate3d(1%,2%,0)}}
+@keyframes homeBadgeLine{to{transform:scaleX(1)}}
+@media(prefers-reduced-motion:reduce){#page-home > section:nth-of-type(3) > .absolute,#page-home > section:nth-of-type(3) .reveal,#page-home > section:nth-of-type(3) .reveal-delay-3 button,#page-home > section.relative.overflow-hidden.bg-white.border-y h1>span{animation:none!important;transition:none!important;opacity:1;filter:none}#page-home > section:nth-of-type(3) .reveal:first-child:after{animation:none;transform:scaleX(1)}}
+#page-alumni #alumni-grid{perspective:1200px}
+#page-alumni .rd-dc{background:linear-gradient(180deg,#fff 0%,#fff 72%,var(--rd-blue-50) 100%)!important;border:1px solid rgba(23,105,209,.16)!important;border-radius:1rem!important;box-shadow:0 10px 28px -20px rgba(7,31,73,.52)!important;overflow:hidden;transform:translateZ(0)}
+#page-alumni .rd-dc:after{background:linear-gradient(110deg,transparent 25%,rgba(255,255,255,.42) 48%,transparent 70%);content:"";inset:0;opacity:0;pointer-events:none;position:absolute;transform:translateX(-110%);transition:opacity .3s ease,transform .65s ease}
+#page-alumni .rd-dc:hover{border-color:rgba(36,121,223,.54)!important;box-shadow:0 26px 48px -24px rgba(23,105,209,.48)!important;transform:translateY(-7px) rotateX(1deg)!important}
+#page-alumni .rd-dc:hover:after{opacity:1;transform:translateX(110%)}
+#page-alumni .rd-dc-pst{background:linear-gradient(110deg,var(--rd-blue-800),var(--rd-blue-600) 58%,var(--rd-blue-500))!important;border-bottom:2px solid var(--rd-blue-100)!important;color:#fff!important;letter-spacing:.1em!important}
+#page-alumni .rd-dc-pst .rd-dc-psti,#page-alumni .rd-dc-pst i,#page-alumni .rd-dc-pst svg{color:#fff!important}
+#page-alumni .rd-dc-plate{background:linear-gradient(110deg,var(--rd-blue-800),var(--rd-blue-600) 58%,var(--rd-blue-500))!important;border-bottom-color:var(--rd-blue-100)!important}
+#page-alumni .rd-dc-pid{color:#fff!important}
+#page-alumni .rd-dc-plate .rd-dc-pst{color:rgba(255,255,255,.92)!important}
+#page-alumni .rd-dc-face{background:var(--rd-blue-50)!important;border:2px solid rgba(36,121,223,.28)!important;border-radius:50%!important;box-shadow:0 0 0 4px rgba(220,238,255,.72),0 12px 22px -16px rgba(23,105,209,.72)!important;transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s ease!important}
+#page-alumni .rd-dc:hover .rd-dc-face{box-shadow:0 0 0 5px rgba(220,238,255,.9),0 14px 24px -12px rgba(23,105,209,.62)!important;transform:scale(1.06) rotate(-3deg)}
+#page-alumni .rd-dc-mono{background:linear-gradient(145deg,#f1f7ff,#dceeff)!important;color:var(--rd-blue-800)!important}
+#page-alumni .rd-dc-name{color:var(--rd-blue-950)!important;font-family:'Plus Jakarta Sans','Noto Sans Bengali',sans-serif!important;font-weight:800!important}
+#page-alumni .rd-dc-meta,#page-alumni .rd-dc-stat,#page-alumni .rd-dc-posty{color:var(--rd-blue-700)!important}
+#page-alumni .rd-dc-role{color:var(--rd-blue-950)!important}
+#page-alumni .rd-dc-seg{background:rgba(241,247,255,.78)!important;border-color:rgba(36,121,223,.2)!important}
+#page-alumni .rd-dc-seg>*{border-color:rgba(36,121,223,.18)!important;color:var(--rd-blue-800)!important}
+#page-alumni .rd-dc-open:hover,#page-alumni .rd-dc-gate:hover{background:var(--rd-blue-100)!important;color:var(--rd-blue-950)!important}
+#page-alumni .rd-dc-seg:before{background:var(--rd-blue-500)!important}
+#page-alumni .rd-dc-open:before{background:linear-gradient(90deg,#eaf3ff,var(--rd-blue-100))!important}
+#page-alumni .rd-dc:hover .rd-dc-open,#page-alumni .rd-dc-open:hover,#page-alumni .rd-dc-open:focus-visible{background:transparent!important;color:var(--rd-blue-800)!important}
+#page-alumni .rd-dc-open .rd-dc-arw{color:var(--rd-blue-700)!important}
+#page-alumni .rd-dc-pst{background:transparent!important}
+#page-register .rd-reg-card{border-color:rgba(23,105,209,.18)!important;box-shadow:0 24px 60px -34px rgba(7,31,73,.38)!important}
+#page-register .rd-reg-plate{background:linear-gradient(110deg,var(--rd-blue-950),var(--rd-blue-800) 58%,var(--rd-blue-700))!important;border-bottom-color:var(--rd-blue-100)!important}
+#page-register .rd-reg-plate p.rd-reg-eyebrow,#page-register .rd-reg-mobn{color:var(--rd-blue-100)!important}
+#page-register .rd-reg-step::after{background:var(--rd-blue-500)!important}
+#page-register .rd-reg-step[aria-current="step"] .rd-reg-sn,#page-register .rd-reg-step.is-done .rd-reg-sn{color:var(--rd-blue-700)!important}
+#page-register .rd-reg-step[aria-current="step"]{color:var(--rd-blue-950)!important}
+#page-register .rd-reg-rule>span{background:linear-gradient(90deg,var(--rd-blue-800),var(--rd-blue-500))!important}
+#page-register .rd-f .rd-req{color:var(--rd-blue-700)!important}
+#page-register .rd-reg-next{background:linear-gradient(110deg,var(--rd-blue-800),var(--rd-blue-600))!important;border-color:var(--rd-blue-950)!important;box-shadow:0 12px 24px -16px rgba(23,105,209,.76)!important}
+#page-register .rd-reg-next i,#page-register .rd-reg-next svg{color:#fff!important}
+#page-register .rd-reg-next:hover{background:var(--rd-blue-700)!important;filter:none!important;transform:translateY(-2px)}
+#page-register .rd-reg-reve:hover{background:var(--rd-blue-50)!important;color:var(--rd-blue-700)!important}
+#page-register .rd-reg-panel:focus-visible{outline-color:rgba(36,121,223,.58)!important}
+#page-alumni .family-intro{text-align:center}
+#page-alumni .family-intro-kicker{color:var(--rd-blue-600);font-family:'Plus Jakarta Sans',sans-serif;font-size:.65rem;font-weight:800;letter-spacing:.2em;margin:0 0 .65rem;text-transform:uppercase}
+#page-alumni .family-intro-title{color:var(--rd-blue-950);font-family:'Plus Jakarta Sans','Noto Sans Bengali',sans-serif;font-size:clamp(1.65rem,5vw,3.7rem);font-weight:800;letter-spacing:.08em;line-height:1;margin:0;text-transform:uppercase;white-space:nowrap;animation:familyTitleIn .8s cubic-bezier(.22,1,.36,1) both}
+#page-alumni .family-intro-title>span{color:var(--rd-blue-700);animation:familyBrandPulse 9s ease-in-out 1.2s infinite}
+#page-alumni .family-intro-title b{color:var(--rd-blue-950);font-weight:800;animation:familyWordPulse 9s ease-in-out 1.7s infinite}
+#page-alumni .family-intro-title{cursor:pointer;outline:none}
+#page-alumni .family-intro-title:focus-visible{outline:3px solid rgba(62,145,237,.35);outline-offset:8px;border-radius:.3rem}
+#page-alumni .family-intro-copy{color:var(--muted);font-size:clamp(.58rem,1.25vw,.92rem);letter-spacing:-.01em;line-height:1.7;margin:1rem auto 0;max-width:none;position:relative;white-space:nowrap}
+#page-alumni .family-intro-copy:after{background:linear-gradient(90deg,transparent,var(--rd-blue-500),transparent);bottom:-1.35rem;content:"";height:2px;left:20%;position:absolute;right:20%}
+@keyframes familyTitleIn{from{opacity:0;letter-spacing:.18em;transform:translateY(12px)}to{opacity:1;letter-spacing:.08em;transform:translateY(0)}}
+@keyframes familyBrandPulse{0%,100%{color:var(--rd-blue-700);text-shadow:0 0 0 rgba(62,145,237,0)}28%{color:#4338ca;text-shadow:0 8px 28px rgba(67,56,202,.2)}55%{color:var(--rd-blue-500);text-shadow:0 4px 18px rgba(62,145,237,.24)}78%{color:#0f766e;text-shadow:0 8px 28px rgba(15,118,110,.18)}}
+@keyframes familyWordPulse{0%,100%{color:var(--rd-blue-950);text-shadow:0 0 0 rgba(201,111,82,0)}28%{color:#425875;text-shadow:0 5px 20px rgba(66,88,117,.16)}55%{color:#c96f52;text-shadow:0 8px 24px rgba(201,111,82,.22)}78%{color:var(--rd-blue-800);text-shadow:0 5px 20px rgba(18,75,155,.2)}}
+@keyframes familyTitleDance{0%{transform:translateX(0) rotate(0)}18%{transform:translateX(-7px) rotate(-2deg)}36%{transform:translateX(6px) rotate(2deg)}54%{transform:translateX(-4px) rotate(-1deg)}72%{transform:translateX(3px) rotate(1deg)}100%{transform:translateX(0) rotate(0)}}
+#page-alumni .family-intro-title.family-title-dance{animation:none!important}
+#page-alumni .family-letter{display:inline-block;transform-origin:50% 90%}
+#page-alumni .family-title-dance .family-letter{animation:familyLetterDance .62s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--family-letter-index, 0) * 45ms)}
+#page-alumni .family-title-dance .family-title-word:first-child .family-letter:nth-child(1){--family-letter-index:0}
+#page-alumni .family-title-dance .family-title-word:first-child .family-letter:nth-child(2){--family-letter-index:1}
+#page-alumni .family-title-dance .family-title-word:first-child .family-letter:nth-child(3){--family-letter-index:2}
+#page-alumni .family-title-dance .family-title-word:first-child .family-letter:nth-child(4){--family-letter-index:3}
+#page-alumni .family-title-dance .family-title-word:first-child .family-letter:nth-child(5){--family-letter-index:4}
+#page-alumni .family-title-dance .family-title-word:first-child .family-letter:nth-child(6){--family-letter-index:5}
+#page-alumni .family-title-dance .family-title-word:first-child .family-letter:nth-child(7){--family-letter-index:6}
+#page-alumni .family-title-dance .family-title-word:first-child .family-letter:nth-child(8){--family-letter-index:7}
+#page-alumni .family-title-dance .family-title-word:first-child .family-letter:nth-child(9){--family-letter-index:8}
+#page-alumni .family-title-dance .family-title-word:last-child .family-letter:nth-child(1){--family-letter-index:9}
+#page-alumni .family-title-dance .family-title-word:last-child .family-letter:nth-child(2){--family-letter-index:10}
+#page-alumni .family-title-dance .family-title-word:last-child .family-letter:nth-child(3){--family-letter-index:11}
+#page-alumni .family-title-dance .family-title-word:last-child .family-letter:nth-child(4){--family-letter-index:12}
+#page-alumni .family-title-dance .family-title-word:last-child .family-letter:nth-child(5){--family-letter-index:13}
+#page-alumni .family-title-dance .family-title-word:last-child .family-letter:nth-child(6){--family-letter-index:14}
+@keyframes familyLetterDance{0%{opacity:.7;transform:translateY(0) rotate(0) scale(1)}35%{opacity:1;transform:translateY(-10px) rotate(-5deg) scale(1.08)}65%{transform:translateY(3px) rotate(3deg) scale(.98)}100%{opacity:1;transform:translateY(0) rotate(0) scale(1)}}
+#page-alumni .family-toolbar-foot,#page-alumni .family-toolbar-foot #alumni-count-text{color:#253247!important}
+#page-alumni .family-toolbar-actions{color:#253247!important}
+#page-alumni .family-view-tabs .alumni-view-tab-btn{color:#253247!important}
+#page-alumni .family-view-tabs .alumni-view-tab-btn.bg-blue-600{color:#fff!important}
+#page-alumni .family-teacher-btn{color:#253247!important}
+#page-alumni #alumni-grid>.rd-scroll-card{animation:none!important;opacity:0;transform:translateY(22px) scale(.985);transition:opacity .65s ease,transform .65s cubic-bezier(.22,1,.36,1),box-shadow .3s ease!important;transition-delay:var(--rd-scroll-delay,0ms)}
+#page-alumni #alumni-grid>.rd-scroll-card.is-visible{opacity:1;transform:translateY(0) scale(1)}
+#page-alumni #alumni-grid>.rd-scroll-card.is-visible:hover{transform:translateY(-7px) rotateX(1deg)!important}
+@media(prefers-reduced-motion:reduce){#page-alumni .family-intro-title,#page-alumni .family-intro-title>span,#page-alumni .family-intro-title b,#page-alumni .family-letter,#page-alumni .family-intro-title.family-title-dance{animation:none!important}}
+#page-alumni .family-toolbar{background:linear-gradient(145deg,#fff 0%,#f7fbff 100%);border:1px solid rgba(23,105,209,.16);border-radius:1.35rem;box-shadow:0 24px 58px -38px rgba(7,31,73,.5);overflow:hidden;padding:1.15rem;position:relative}
+#page-alumni .family-toolbar:before{background:linear-gradient(90deg,var(--rd-blue-700),var(--rd-blue-500),transparent);content:"";height:3px;left:0;position:absolute;right:18%;top:0;transform:scaleX(0);transform-origin:left;animation:familyToolbarRail .9s cubic-bezier(.22,1,.36,1) .15s forwards}
+#page-alumni .family-filter-fields{display:grid;gap:.8rem}
+#page-alumni .family-filter-fields>div:first-child{position:relative}
+#page-alumni .family-filter-fields>div:first-child:after{background:linear-gradient(90deg,transparent,rgba(62,145,237,.16),transparent);bottom:-.4rem;content:"";height:1px;left:0;position:absolute;right:0}
+#page-alumni .family-toolbar input,#page-alumni .family-toolbar select{background:#f7fbff!important;border-color:rgba(23,105,209,.16)!important;color:var(--rd-blue-950)!important;box-shadow:inset 0 1px 1px rgba(7,31,73,.03);transition:border-color .2s ease,box-shadow .2s ease,background .2s ease!important}
+#page-alumni .family-toolbar input:focus,#page-alumni .family-toolbar select:focus{background:#fff!important;border-color:var(--rd-blue-500)!important;box-shadow:0 0 0 4px rgba(62,145,237,.14)!important}
+#page-alumni #alumni-view-tabs{border-top:1px solid rgba(23,105,209,.1)!important;margin-top:1rem!important;padding-top:1rem!important}
+#page-alumni .alumni-view-tab-btn{border-color:rgba(23,105,209,.18)!important;color:var(--rd-blue-800)!important;background:#fff!important;transition:background .2s ease,color .2s ease,transform .2s ease,box-shadow .2s ease!important}
+#page-alumni .alumni-view-tab-btn:hover{background:var(--rd-blue-50)!important;border-color:var(--rd-blue-500)!important;transform:translateY(-2px)}
+#page-alumni .alumni-view-tab-btn.bg-blue-600{background:linear-gradient(110deg,var(--rd-blue-800),var(--rd-blue-600))!important;color:#fff!important;border-color:var(--rd-blue-700)!important;box-shadow:0 10px 20px -14px rgba(23,105,209,.8)}
+#page-alumni #alumni-committee-links{align-items:center;border-top:1px solid rgba(23,105,209,.1)!important;margin-top:1rem!important;padding-top:1rem!important}
+#page-alumni .family-service-row{order:2}
+#page-alumni .family-view-tabs{order:3}
+#page-alumni #alumni-btn-fac{background:var(--rd-blue-50)!important;border:1px solid rgba(23,105,209,.2)!important;color:var(--rd-blue-800)!important;transition:background .2s ease,transform .2s ease,box-shadow .2s ease!important}
+#page-alumni #alumni-btn-fac:hover{background:var(--rd-blue-100)!important;box-shadow:0 12px 22px -18px rgba(23,105,209,.7);transform:translateY(-2px)}
+#page-alumni .family-status-line{border-top:1px solid rgba(23,105,209,.1)!important;margin-top:1rem!important;padding-top:1rem!important;color:var(--rd-blue-800)!important}
+#page-alumni .family-toolbar-foot{align-items:center;border-top:1px solid rgba(23,105,209,.1);display:flex;flex-wrap:wrap;gap:.8rem 1rem;justify-content:space-between;margin-top:1rem;padding-top:1rem;color:var(--rd-blue-800);font-size:.75rem;font-weight:700}
+#page-alumni .family-toolbar-actions{align-items:center;display:flex;flex-wrap:wrap;gap:.75rem 1rem;justify-content:flex-end}
+#page-alumni .family-profile-note{align-items:center;color:var(--muted);display:inline-flex;gap:.35rem;font-size:.7rem;font-weight:600}
+#page-alumni .family-profile-note svg{color:var(--rd-blue-600)}
+#page-alumni .family-profile-link{align-items:center;background:var(--rd-blue-50);border:1px solid rgba(23,105,209,.18);border-radius:.65rem;color:var(--rd-blue-800);display:inline-flex;font-size:.72rem;font-weight:800;gap:.35rem;padding:.5rem .7rem;transition:background .2s ease,transform .2s ease,box-shadow .2s ease}
+#page-alumni .family-profile-link:hover{background:var(--rd-blue-100);box-shadow:0 10px 20px -16px rgba(23,105,209,.8);transform:translateY(-2px)}
+@keyframes familyToolbarRail{to{transform:scaleX(1)}}
+@media(max-width:640px){#page-alumni .family-toolbar{border-radius:1rem;padding:.85rem}#page-alumni .family-toolbar-foot{align-items:flex-start;display:block}#page-alumni .family-toolbar-actions{justify-content:flex-start;margin-top:.75rem}#page-alumni .family-profile-note{flex-basis:100%;line-height:1.45}}
+@media(prefers-reduced-motion:reduce){#page-alumni .family-toolbar:before{animation:none;transform:scaleX(1)}#page-alumni #alumni-grid>.rd-scroll-card{opacity:1;transform:none;transition:none!important}}
+@media(max-width:639px){
+  #page-alumni .family-intro-title{font-size:clamp(1.25rem,7.2vw,2.1rem);letter-spacing:.035em}
+  #page-alumni .family-intro-copy{font-size:clamp(.68rem,2.6vw,.82rem);letter-spacing:-.01em;line-height:1.45;max-width:20rem;white-space:normal;transform:none;width:auto;margin:1rem auto 0}
+}
+#page-alumni .rd-dc-wa:hover,#page-alumni .rd-dc-call:hover{background:#e5f1ff!important;color:var(--rd-blue-700)!important}
+#page-alumni .rd-dc:nth-child(3n+1){animation-delay:.04s}
+#page-alumni .rd-dc:nth-child(3n+2){animation-delay:.1s}
+#page-alumni .rd-dc:nth-child(3n){animation-delay:.16s}
+@media(max-width:767px){.nav-strip{display:none}.brand-tag{max-width:13rem}.rd-dc:hover,.rd-mp-card:hover{transform:none}.card-pro:hover,.rd-tile:hover{transform:translateY(-2px)}}
+@media(max-width:767px){#page-alumni .rd-dc:hover{transform:translateY(-3px)!important}#page-alumni .rd-dc:after{display:none}}
+@media(prefers-reduced-motion:reduce){.page-view.active{animation:none}.card-pro,.rd-tile,.rd-pd-card,.rd-dc,.rd-mp-card{transition:none!important}#page-alumni .rd-dc:after{display:none}#page-alumni .rd-dc:hover{transform:none!important}#page-alumni .rd-dc-face{transition:none!important}}
+
+/* About section: turn the long editorial copy into a visual story panel. */
+#about-rangdhanu{background:linear-gradient(135deg,#eaf2fb 0%,#f7fafc 52%,#e5edf6 100%)!important;border-top:1px solid rgba(30,64,175,.12);border-bottom:1px solid rgba(30,64,175,.12);overflow:hidden;position:relative}
+#about-rangdhanu:before{background:linear-gradient(180deg,#245fa3,#a74755);content:"";height:72%;left:clamp(1rem,7vw,6rem);position:absolute;top:14%;width:3px;opacity:.85}
+#about-rangdhanu:after{background:linear-gradient(135deg,rgba(36,95,163,.1),transparent 58%);content:"";height:19rem;position:absolute;right:-5rem;top:-7rem;transform:rotate(18deg);width:28rem;pointer-events:none}
+#about-rangdhanu>div{position:relative;z-index:1}
+#about-rangdhanu .lg\:col-span-7{padding-left:clamp(1rem,4vw,3.5rem)}
+#about-rangdhanu .section-kicker{color:#245fa3!important;letter-spacing:.2em}
+#about-rangdhanu h2{color:#102b52!important;font-family:'Noto Serif Bengali','Noto Sans Bengali',serif;letter-spacing:-.025em;line-height:1.2;max-width:28rem}
+#about-rangdhanu p{color:#50657d!important;line-height:2!important;max-width:47rem}
+#about-rangdhanu .rd-tile{background:rgba(255,255,255,.82)!important;border:1px solid rgba(36,95,163,.16)!important;border-radius:1.25rem!important;box-shadow:0 18px 40px -30px rgba(16,43,82,.48)!important;backdrop-filter:blur(8px)}
+#about-rangdhanu .rd-tile:hover{border-color:rgba(167,71,85,.38)!important;box-shadow:0 24px 44px -28px rgba(16,43,82,.38)!important;transform:translateY(-4px)}
+#about-rangdhanu .rd-tile>div:first-child{background:#e6effa!important;color:#245fa3!important;border:1px solid rgba(36,95,163,.14)}
+#about-rangdhanu .rd-tile:nth-child(2)>div:first-child{background:#f6e9eb!important;color:#a74755!important;border-color:rgba(167,71,85,.16)}
+#about-rangdhanu .rd-tile h3{color:#173b73!important}
+#about-rangdhanu .rd-tile p{color:#60738a!important;line-height:1.75!important}
+@media(max-width:639px){
+  #about-rangdhanu{padding-top:3.5rem!important;padding-bottom:3.5rem!important}
+  #about-rangdhanu:before{left:1rem;height:82%;top:9%}
+  #about-rangdhanu .lg\:col-span-7{padding-left:1.15rem}
+  #about-rangdhanu h2{font-size:clamp(2rem,9vw,2.7rem);max-width:19rem}
+  #about-rangdhanu p{font-size:.98rem!important;line-height:1.95!important}
+  #about-rangdhanu .rd-tile{padding:1.25rem!important}
+  footer>div:first-child{row-gap:1.5rem!important}
+  footer>div:last-child{margin-top:2rem!important;padding-top:1rem!important;gap:.75rem!important}
+}
+
+/* The faculty directory uses the same card component as the member directory. */
+#page-family-faculty .rd-dc{background:linear-gradient(180deg,#fff 0%,#fff 72%,var(--rd-blue-50) 100%)!important;border:1px solid rgba(23,105,209,.16)!important;border-radius:1rem!important;box-shadow:0 10px 28px -20px rgba(7,31,73,.52)!important;overflow:hidden;transform:translateZ(0)}
+#page-family-faculty .rd-dc:after{background:linear-gradient(110deg,transparent 25%,rgba(255,255,255,.42) 48%,transparent 70%);content:"";inset:0;opacity:0;pointer-events:none;position:absolute;transform:translateX(-110%);transition:opacity .3s ease,transform .65s ease}
+#page-family-faculty .rd-dc:hover{border-color:rgba(36,121,223,.54)!important;box-shadow:0 26px 48px -24px rgba(23,105,209,.48)!important;transform:translateY(-7px) rotateX(1deg)!important}
+#page-family-faculty .rd-dc:hover:after{opacity:1;transform:translateX(110%)}
+#page-family-faculty .rd-dc-plate{background:linear-gradient(110deg,var(--rd-blue-800),var(--rd-blue-600) 58%,var(--rd-blue-500))!important;border-bottom:2px solid var(--rd-blue-100)!important}
+#page-family-faculty .rd-dc-pid,#page-family-faculty .rd-dc-pst,#page-family-faculty .rd-dc-pst i,#page-family-faculty .rd-dc-pst svg{color:#fff!important}
+#page-family-faculty .rd-dc-pst{letter-spacing:.1em!important}
+#page-family-faculty .rd-dc-face{background:var(--rd-blue-50)!important;border:2px solid rgba(36,121,223,.28)!important;border-radius:50%!important;box-shadow:0 0 0 4px rgba(220,238,255,.72),0 12px 22px -16px rgba(23,105,209,.72)!important;transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s ease!important}
+#page-family-faculty .rd-dc:hover .rd-dc-face{box-shadow:0 0 0 5px rgba(220,238,255,.9),0 14px 24px -12px rgba(23,105,209,.62)!important;transform:scale(1.06) rotate(-3deg)}
+#page-family-faculty .rd-dc-mono{background:linear-gradient(145deg,#f1f7ff,#dceeff)!important;color:var(--rd-blue-800)!important}
+#page-family-faculty .rd-dc-name{color:var(--rd-blue-950)!important;font-family:'Plus Jakarta Sans','Noto Sans Bengali',sans-serif!important;font-weight:800!important}
+#page-family-faculty .rd-dc-role{color:var(--rd-blue-950)!important}
+#page-family-faculty .rd-dc-org,#page-family-faculty .rd-dc-posty{color:var(--rd-blue-700)!important}
+#page-family-faculty .rd-dc-post{background:var(--rd-blue-50)!important;border-color:rgba(36,121,223,.2)!important}
+#page-family-faculty .rd-dc-postv{color:var(--rd-blue-950)!important}
+#page-family-faculty .rd-dc-seg{background:rgba(241,247,255,.78)!important;border-color:rgba(36,121,223,.2)!important}
+#page-family-faculty .rd-dc-seg>*{border-color:rgba(36,121,223,.18)!important;color:var(--rd-blue-800)!important}
+#page-family-faculty .rd-dc-seg:before{background:var(--rd-blue-500)!important}
+#page-family-faculty .rd-dc-open:before{background:linear-gradient(90deg,#eaf3ff,var(--rd-blue-100))!important}
+#page-family-faculty .rd-dc:hover .rd-dc-open,#page-family-faculty .rd-dc-open:hover,#page-family-faculty .rd-dc-open:focus-visible{background:transparent!important;color:var(--rd-blue-800)!important}
+#page-family-faculty .rd-dc-open .rd-dc-arw{color:var(--rd-blue-700)!important}
+#page-family-faculty .rd-dc-call:hover{background:#e5f1ff!important;color:var(--rd-blue-700)!important}
+#page-family-faculty .rd-dc-flat{color:var(--rd-blue-800)!important}
+#page-family-faculty .faculty-kind-btn{border-color:rgba(23,105,209,.18)!important;color:var(--rd-blue-800)!important;background:#fff!important}
+#page-family-faculty .faculty-kind-btn:hover{background:var(--rd-blue-50)!important;border-color:var(--rd-blue-500)!important}
+#page-family-faculty .faculty-kind-btn.bg-indigo-600{background:linear-gradient(110deg,var(--rd-blue-800),var(--rd-blue-600))!important;color:#fff!important;border-color:var(--rd-blue-700)!important}
+@media(max-width:767px){#page-family-faculty .rd-dc:hover{transform:translateY(-3px)!important}#page-family-faculty .rd-dc:after{display:none}}
+@media(prefers-reduced-motion:reduce){#page-family-faculty .rd-dc:after{display:none}#page-family-faculty .rd-dc:hover{transform:none!important}#page-family-faculty .rd-dc-face{transition:none!important}}
+
+/* Profile surfaces use the same blue credential language as the directory card. */
+#page-profile,#page-my-profile{
+  --mp-ink:#0c2340;
+  --mp-key:#124b9b;
+  --mp-key2:#3e91ed;
+  --mp-seal:#2479df;
+  --mp-mute:#5a6f88;
+  --mp-line:#d7e4f3;
+  --mp-paper:#f8fbff;
+  --mp-brass:#fff;
+  --mp-brass2:#fff;
+  --mp-brasspale:#fff;
+  --mp-e1:0 1px 2px rgba(12,35,64,.07);
+  --mp-e2:0 10px 26px -12px rgba(23,105,209,.28),inset 0 1px 0 rgba(255,255,255,.9);
+  --mp-e3:0 22px 52px -24px rgba(12,35,64,.32),inset 0 1px 0 rgba(255,255,255,.92);
+}
+#page-profile .rd-mp,#page-my-profile .rd-mp{background:var(--mp-paper);border-color:var(--mp-line)}
+#page-profile .rd-mp-cover,#page-my-profile .rd-mp-cover{background:linear-gradient(110deg,var(--rd-blue-950),var(--rd-blue-800) 58%,var(--rd-blue-600))}
+#page-profile .rd-mp-cover-photo:after,#page-my-profile .rd-mp-cover-photo:after{background:linear-gradient(to top,rgba(7,31,73,.3),rgba(7,31,73,0))}
+#page-profile .rd-mp-posbar,#page-my-profile .rd-mp-posbar{background:linear-gradient(125deg,var(--rd-blue-950),var(--rd-blue-800) 60%,var(--rd-blue-600))}
+#page-profile .rd-mp-face>img,#page-profile .rd-mp-mono,#page-my-profile .rd-mp-face>img,#page-my-profile .rd-mp-mono{border-color:#fff;box-shadow:0 0 0 4px rgba(220,238,255,.82),var(--mp-e2)}
+#page-profile .rd-mp-mono,#page-my-profile .rd-mp-mono{background:linear-gradient(140deg,var(--rd-blue-700),var(--rd-blue-950))}
+#page-profile .rd-mp-pill-ok,#page-my-profile .rd-mp-pill-ok{background:#eaf3ff;color:var(--rd-blue-800);border-color:#b9d7f5}
+#page-profile .rd-mp-act-call,#page-my-profile .rd-mp-act-call{background:#eaf3ff;color:var(--rd-blue-800);box-shadow:var(--mp-e1);border:1px solid #c8ddf3}
+#page-profile .rd-mp-act-wa,#page-my-profile .rd-mp-act-wa{background:#e7f7ef;color:#047857;box-shadow:var(--mp-e1);border:1px solid #bfe6d3}
+#page-profile .rd-mp-act-mail,#page-my-profile .rd-mp-act-mail{background:#fdf1e3;color:#b45309;box-shadow:var(--mp-e1);border:1px solid #f3ddc2}
+#page-profile .rd-mp-act-share,#page-my-profile .rd-mp-act-share{background:#eef4ff;color:var(--rd-blue-800);box-shadow:var(--mp-e1);border:1px solid #cdddf5}
+#page-profile .rd-mp-act i,#page-my-profile .rd-mp-act i,#page-profile .rd-mp-act svg,#page-my-profile .rd-mp-act svg{color:inherit}
+#page-profile .rd-mp-act-lock,#page-my-profile .rd-mp-act-lock{background:#eaf3ff;color:var(--rd-blue-800);border-color:#c8ddf3}
+#page-profile .rd-mp-act2:hover,#page-my-profile .rd-mp-act2:hover{border-color:#8fc1ee;color:var(--rd-blue-800)}
+#page-profile .rd-mp-act2 i,#page-my-profile .rd-mp-act2 i{color:var(--rd-blue-700)}
+#page-profile .rd-mp-sec,#page-my-profile .rd-mp-sec{background:rgba(255,255,255,.92);border-color:var(--mp-line);box-shadow:var(--mp-e2)}
+#page-profile .rd-mp-sech i,#page-my-profile .rd-mp-sech i{color:var(--rd-blue-700)}
+#page-profile .rd-mp-ico,#page-my-profile .rd-mp-ico{background:#eaf3ff;color:var(--rd-blue-800);border-color:#c8ddf3}
+#page-profile .rd-mp-ico-blood,#page-my-profile .rd-mp-ico-blood{background:#eaf3ff;color:var(--rd-blue-800);border-color:#b9d7f5}
+#page-profile .rd-mp-tl:before,#page-my-profile .rd-mp-tl:before{background:linear-gradient(180deg,var(--rd-blue-600),var(--rd-blue-800))}
+#page-profile .rd-mp-tli:before,#page-my-profile .rd-mp-tli:before{border-color:var(--rd-blue-600)}
+#page-profile .rd-mp-tli.is-now:before,#page-my-profile .rd-mp-tli.is-now:before{background:var(--rd-blue-700);border-color:var(--rd-blue-700);box-shadow:0 0 0 3px rgba(36,121,223,.16)}
+#page-profile .rd-mp-gate,#page-my-profile .rd-mp-gate{background:#eaf3ff;border-color:#c8ddf3}
+#page-profile .rd-mp-gate-ico,#page-my-profile .rd-mp-gate-ico{border-color:#a9cef1;color:var(--rd-blue-800)}
+#page-profile .rd-mp-todo,#page-my-profile .rd-mp-todo{background:linear-gradient(125deg,#eaf3ff,#f7faff 55%,#eef5fc);border-color:#c8ddf3}
+#page-profile .rd-mp-bar>i,#page-my-profile .rd-mp-bar>i{background:linear-gradient(90deg,var(--rd-blue-800),var(--rd-blue-500))}
+#page-profile .rd-mp-more,#page-profile .rd-mp-paper i,#page-my-profile .rd-mp-more,#page-my-profile .rd-mp-paper i{color:var(--rd-blue-700)}
+#page-profile .subpage-back,#page-my-profile .subpage-back{display:none!important}
+#page-family-faculty .subpage-back,#page-events .subpage-back,#page-committee-new .subpage-back,#page-ec-message .subpage-back,#page-notice-file .subpage-back,#page-pdacc-updates .subpage-back,#page-member-signin .subpage-back,#page-photo .subpage-back{display:none!important}
+#page-profile .subpage-bar,#page-my-profile .subpage-bar{display:none!important}
+/* My Profile on a phone: the subpage bar is hidden, so the section's top
+   padding left a grey band between the top bar and the "Proud Member" cover.
+   Drop it so the cover sits right under the header. */
+@media (max-width:639px){#page-my-profile>section{padding-top:0!important}}
+#page-family-faculty .subpage-bar,#page-events .subpage-bar,#page-committee-new .subpage-bar,#page-ec-message .subpage-bar,#page-notice-file .subpage-bar,#page-pdacc-updates .subpage-bar,#page-member-signin .subpage-bar,#page-photo .subpage-bar{display:none!important}
+#page-profile .rd-ed-save,#page-my-profile .rd-ed-save{background:linear-gradient(110deg,var(--rd-blue-800),var(--rd-blue-600));color:#fff}
+#page-profile .rd-ed-h,#page-my-profile .rd-ed-h{color:var(--rd-blue-800)}
+#page-profile .rd-rep-add,#page-my-profile .rd-rep-add{color:var(--rd-blue-800);border-color:#b9d7f5}
+#page-profile .rd-rep-add:hover:not(:disabled),#page-my-profile .rd-rep-add:hover:not(:disabled){background:#eaf3ff;border-color:var(--rd-blue-600)}
+#page-profile .rd-rep-i:focus,#page-profile .rd-rep-s:focus,#page-my-profile .rd-rep-i:focus,#page-my-profile .rd-rep-s:focus{border-color:var(--rd-blue-600);box-shadow:0 0 0 3px rgba(62,145,237,.16)}
+#page-profile .rd-mpx-b[aria-current="page"],#page-my-profile .rd-mpx-b[aria-current="page"]{background:linear-gradient(110deg,var(--rd-blue-800),var(--rd-blue-600));color:#fff;border-color:var(--rd-blue-700)}
+#page-my-profile .rd-mpx{margin-top:1rem}
+#page-profile .rd-mpx-b[aria-current="page"]>i,#page-profile .rd-mpx-b[aria-current="page"]>svg,#page-my-profile .rd-mpx-b[aria-current="page"]>i,#page-my-profile .rd-mpx-b[aria-current="page"]>svg{color:#fff}
+#page-profile .rd-seg-r:checked+.rd-seg-b,#page-my-profile .rd-seg-r:checked+.rd-seg-b{border-color:var(--rd-blue-600);background:#eaf3ff;color:var(--rd-blue-800)}
+#page-profile .rd-seg-r:checked+.rd-seg-b i,#page-profile .rd-seg-r:checked+.rd-seg-b svg,#page-my-profile .rd-seg-r:checked+.rd-seg-b i,#page-my-profile .rd-seg-r:checked+.rd-seg-b svg{color:var(--rd-blue-700)}
+
+/* PDACC rail: a compact credential bar, not a row of oversized pills. */
+#pdacc-nav,#pdacc-nav-sub,#pdacc-nav-updates{align-items:stretch;border-radius:.75rem!important;border-color:rgba(36,121,223,.2)!important;background:linear-gradient(135deg,rgba(255,255,255,.98),rgba(241,247,255,.94))!important;box-shadow:0 14px 32px -26px rgba(7,31,73,.55)!important;display:flex;flex-direction:column;gap:0;overflow-x:auto;scrollbar-width:none;white-space:nowrap}
+#pdacc-nav::-webkit-scrollbar,#pdacc-nav-sub::-webkit-scrollbar,#pdacc-nav-updates::-webkit-scrollbar{display:none}
+#pdacc-nav .rd-pd-head,#pdacc-nav-sub .rd-pd-head,#pdacc-nav-updates .rd-pd-head{align-items:center;display:flex!important;min-height:3.4rem;width:100%}
+#pdacc-nav .rd-pd-brand,#pdacc-nav-sub .rd-pd-brand,#pdacc-nav-updates .rd-pd-brand{min-width:0}
+#pdacc-nav .rd-pd-tabs,#pdacc-nav-sub .rd-pd-tabs,#pdacc-nav-updates .rd-pd-tabs{border-top:1px solid rgba(36,121,223,.12);display:flex!important;flex-wrap:nowrap;gap:.55rem;margin-top:.55rem;padding-top:.65rem;width:100%}
+#pdacc-nav .rd-pd-brand strong,#pdacc-nav-sub .rd-pd-brand strong,#pdacc-nav-updates .rd-pd-brand strong{font-size:1.15rem;letter-spacing:.04em}
+#pdacc-nav .rd-pd-brand>span:last-child,#pdacc-nav-sub .rd-pd-brand>span:last-child,#pdacc-nav-updates .rd-pd-brand>span:last-child{min-width:0}
+#pdacc-nav .rd-pd-brand>span:last-child>span,#pdacc-nav-sub .rd-pd-brand>span:last-child>span,#pdacc-nav-updates .rd-pd-brand>span:last-child>span{font-size:.7rem;letter-spacing:.02em;white-space:nowrap}
+#pdacc-nav .rd-pd-crest,#pdacc-nav-sub .rd-pd-crest,#pdacc-nav-updates .rd-pd-crest{border-radius:.55rem;border-color:rgba(36,121,223,.22);box-shadow:0 4px 12px -8px rgba(23,105,209,.55)}
+#pdacc-nav .rd-pd-navbtn,#pdacc-nav-sub .rd-pd-navbtn,#pdacc-nav-updates .rd-pd-navbtn{border-radius:.5rem;border-color:rgba(36,121,223,.2);background:#fff;color:var(--rd-blue-800);box-shadow:0 2px 5px -4px rgba(7,31,73,.35)}
+#pdacc-nav .rd-pd-navbtn:hover,#pdacc-nav-sub .rd-pd-navbtn:hover,#pdacc-nav-updates .rd-pd-navbtn:hover{border-color:var(--rd-blue-500);background:var(--rd-blue-50);color:var(--rd-blue-800);transform:translateY(-1px)}
+#pdacc-nav .rd-pd-navbtn.is-key,#pdacc-nav-sub .rd-pd-navbtn.is-key,#pdacc-nav-updates .rd-pd-navbtn.is-key{border-color:#9bc8f2;background:#eaf3ff;color:var(--rd-blue-800);box-shadow:0 5px 14px -10px rgba(23,105,209,.65)}
+#pdacc-nav .rd-pd-navbtn.is-key:hover,#pdacc-nav-sub .rd-pd-navbtn.is-key:hover,#pdacc-nav-updates .rd-pd-navbtn.is-key:hover{border-color:var(--rd-blue-500);background:#dceeff;color:var(--rd-blue-950)}
+#pdacc-nav .rd-pd-navbtn:focus-visible,#pdacc-nav-sub .rd-pd-navbtn:focus-visible,#pdacc-nav-updates .rd-pd-navbtn:focus-visible{outline:2px solid var(--rd-blue-500);outline-offset:2px}
+@media(max-width:430px){#pdacc-nav,#pdacc-nav-sub,#pdacc-nav-updates{gap:0}#pdacc-nav .rd-pd-navbtn,#pdacc-nav-sub .rd-pd-navbtn,#pdacc-nav-updates .rd-pd-navbtn{padding:.5rem .6rem}#pdacc-nav .rd-pd-brand strong,#pdacc-nav-sub .rd-pd-brand strong,#pdacc-nav-updates .rd-pd-brand strong{font-size:1.05rem}#pdacc-nav .rd-pd-brand>span:last-child>span,#pdacc-nav-sub .rd-pd-brand>span:last-child>span,#pdacc-nav-updates .rd-pd-brand>span:last-child>span{font-size:.62rem}}
+
+/* Responsive shell: full navigation on desktop, compact controls on phones. */
+@media (min-width:1024px){
+  .glass-nav #mobile-member-btn,.glass-nav #mobile-menu-btn{display:none!important}
+  .glass-nav .nav-strip{display:block!important}
+  .glass-nav .nav-strip>div{min-height:3rem;gap:.2rem}
+  .glass-nav .nav-strip .premium-nav-item{padding:.55rem .62rem;font-size:.75rem}
+  .glass-nav .nav-strip #nav-member-btn{margin-left:auto!important}
+  .glass-nav .nav-strip .nav-cta{margin-left:.45rem!important;padding:.6rem .85rem}
+}
+@media (min-width:1280px){
+  .glass-nav .nav-strip>div{gap:.35rem}
+  .glass-nav .nav-strip .premium-nav-item{padding:.6rem .8rem;font-size:.8rem}
+  .glass-nav .nav-strip .nav-cta{padding:.65rem 1rem}
+}
+@media (max-width:1023px){
+  .glass-nav .nav-strip{display:none!important}
+  .glass-nav .nav-strip #nav-member-btn{margin-left:0}
+  .glass-nav .max-w-7xl{min-width:0}
+  .glass-nav .brand-tag{max-width:min(58vw,18rem);overflow:hidden;text-overflow:ellipsis;white-space:normal;line-height:1.2}
+}
+@media (max-width:639px){
+  .glass-nav .max-w-7xl{height:4.5rem}
+  .glass-nav>.relative:first-child>.max-w-7xl>.brand-lockup{flex:1 1 auto;min-width:0}
+  .glass-nav>.relative:first-child>.max-w-7xl>.brand-lockup .brand-word{flex:1 1 auto;min-width:0}
+  .glass-nav .brand-logo{width:2.65rem;height:2.65rem}
+  .glass-nav .brand-name{font-size:1rem}
+  .glass-nav .brand-tag{font-size:.52rem;max-width:10rem}
+  .glass-nav #mobile-member-btn,.glass-nav #mobile-menu-btn{padding:.65rem}
+}
+@media (max-width:359px){
+  .glass-nav .brand-name{font-size:.82rem;letter-spacing:.07em}
+  .glass-nav .brand-tag{display:block;max-width:9rem;overflow:visible;text-overflow:clip;white-space:normal;font-size:.48rem;line-height:1.25}
+}
+
+/* Desktop brand lockup stays left above the navigation strip. */
+@media (min-width:1024px){
+  .glass-nav>.relative:first-child>.max-w-7xl{justify-content:flex-start;min-height:5.5rem}
+  .glass-nav>.relative:first-child>.max-w-7xl>.group{margin-left:0;order:0}
+  .glass-nav>.relative:first-child>.max-w-7xl>.group .brand-logo{width:3.55rem;height:3.55rem}
+  .glass-nav>.relative:first-child>.max-w-7xl>.group .brand-name{font-size:1.35rem;letter-spacing:.045em}
+  .glass-nav>.relative:first-child>.max-w-7xl>.group .brand-tag{font-size:.62rem;letter-spacing:.04em}
+}
+@media (max-width:1023px){
+  .glass-nav>.relative:first-child>.max-w-7xl{justify-content:space-between}
+  .glass-nav>.relative:first-child>.max-w-7xl>.group{margin-left:0;order:0}
+}
+
+/* Mobile menu: keep it in the layout so both opening and closing can animate. */
+@media (max-width:1023px){
+  .glass-nav #mobile-menu.hidden{display:none!important}
+  .glass-nav #mobile-menu{display:block!important;max-height:0;opacity:0;overflow:hidden;pointer-events:none;transform:translateY(-.75rem);visibility:hidden;padding-top:0;padding-bottom:0;transition:max-height .38s cubic-bezier(.22,1,.36,1),opacity .22s ease,transform .38s cubic-bezier(.22,1,.36,1),padding .38s cubic-bezier(.22,1,.36,1),visibility 0s linear .38s}
+  .glass-nav #mobile-menu:not(.hidden){max-height:calc(100dvh - 4.5rem);opacity:1;overflow-y:auto;pointer-events:auto;transform:translateY(0);visibility:visible;padding-top:.75rem;padding-bottom:1rem;transition:max-height .42s cubic-bezier(.22,1,.36,1),opacity .24s ease,transform .42s cubic-bezier(.22,1,.36,1),padding .42s cubic-bezier(.22,1,.36,1),visibility 0s linear 0s}
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PREMIUM REDESIGN v2 — Navbar · Hero · Home
+   2026-09-18. Scoped to avoid breaking other pages.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Design tokens ───────────────────────────────────────────── */
+:root {
+  --pr-navy:      #050e1f;
+  --pr-ink:       #0d1a30;
+  --pr-blue:      #2563eb;
+  --pr-indigo:    #4f46e5;
+  --pr-violet:    #7c3aed;
+  --pr-grad:      linear-gradient(135deg,#2563eb 0%,#4f46e5 52%,#7c3aed 100%);
+  --pr-grad-h:    linear-gradient(135deg,#1d4ed8 0%,#4338ca 52%,#6d28d9 100%);
+  --pr-ease:      cubic-bezier(.22,1,.36,1);
+  --pr-dur:       .30s;
+}
+
+/* ── 2. Navbar: glass depth upgrade ────────────────────────────── */
+.glass-nav {
+  background: rgba(255,255,255,.88) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  border-bottom: 1px solid rgba(37,99,235,.10) !important;
+  box-shadow: 0 1px 0 rgba(255,255,255,.9) inset,
+              0 18px 44px -28px rgba(5,14,31,.20) !important;
+  transition: background .3s ease, box-shadow .3s ease !important;
+}
+.glass-nav.rd-nav-scrolled {
+  background: rgba(255,255,255,.97) !important;
+  box-shadow: 0 1px 0 rgba(255,255,255,.9) inset,
+              0 22px 52px -24px rgba(5,14,31,.26) !important;
+}
+.nav-strip {
+  background: transparent !important;
+  border-top: 1px solid rgba(37,99,235,.07) !important;
+}
+
+/* ── 3. Nav items: pill active state ───────────────────────────── */
+.premium-nav-item {
+  font-family: 'Plus Jakarta Sans',sans-serif !important;
+  font-weight: 600 !important;
+  color: #4b5563 !important;
+  border-radius: .55rem !important;
+  transition: color var(--pr-dur) var(--pr-ease),
+              background var(--pr-dur) var(--pr-ease) !important;
+}
+.premium-nav-item::after { display: none !important; }
+.premium-nav-item:hover {
+  color: var(--pr-blue) !important;
+  background: rgba(37,99,235,.07) !important;
+  transform: none !important;
+}
+.premium-nav-item.active,
+.premium-nav-item.is-active {
+  color: var(--pr-blue) !important;
+  background: rgba(37,99,235,.10) !important;
+  box-shadow: 0 0 0 1px rgba(37,99,235,.18) inset !important;
+}
+
+/* ── 4. CTA button: gradient + shimmer ─────────────────────────── */
+.nav-cta, #nav-membership-cta, #mobile-membership-cta {
+  background: var(--pr-grad) !important;
+  color: #fff !important;
+  font-family: 'Plus Jakarta Sans',sans-serif !important;
+  font-weight: 700 !important;
+  border: none !important;
+  border-radius: .65rem !important;
+  box-shadow: 0 8px 24px -10px rgba(79,70,229,.55),
+              0 2px 4px rgba(79,70,229,.18) !important;
+  position: relative !important;
+  overflow: hidden !important;
+  transition: box-shadow .28s ease, transform .22s var(--pr-ease) !important;
+}
+.nav-cta::before, #nav-membership-cta::before, #mobile-membership-cta::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(105deg,transparent 30%,rgba(255,255,255,.22) 50%,transparent 68%);
+  transform: translateX(-120%);
+  animation: navCtaShimmer 3.5s var(--pr-ease) infinite;
+}
+@keyframes navCtaShimmer {
+  0%,55%   { transform: translateX(-120%); }
+  80%,100% { transform: translateX(140%);  }
+}
+.nav-cta:hover, #nav-membership-cta:hover, #mobile-membership-cta:hover {
+  background: var(--pr-grad-h) !important;
+  box-shadow: 0 14px 32px -10px rgba(79,70,229,.65),
+              0 4px 8px rgba(79,70,229,.22) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* ── 5. More dropdown ───────────────────────────────────────────── */
+.rd-more-wrap { position: relative; }
+.rd-more-btn {
+  display: inline-flex; align-items: center; gap: .35rem;
+  font-family: 'Plus Jakarta Sans',sans-serif;
+  font-weight: 600; font-size: .8rem; color: #4b5563;
+  border-radius: .55rem; padding: .5rem .75rem;
+  background: transparent; border: none; cursor: pointer;
+  transition: color .22s ease, background .22s ease;
+}
+.rd-more-btn:hover { color: var(--pr-blue); background: rgba(37,99,235,.07); transform: none !important; box-shadow: none !important; }
+.rd-more-btn i, .rd-more-btn svg { width: .85rem; height: .85rem; transition: transform .22s var(--pr-ease); }
+.rd-more-btn.open i, .rd-more-btn.open svg { transform: rotate(180deg); }
+.rd-more-panel {
+  position: absolute; top: calc(100% + .45rem); left: 50%;
+  background: #fff;
+  border: 1px solid rgba(37,99,235,.12);
+  border-radius: .9rem;
+  box-shadow: 0 20px 48px -16px rgba(5,14,31,.22), 0 4px 8px rgba(5,14,31,.06);
+  padding: .35rem; min-width: 11.5rem;
+  opacity: 0; pointer-events: none;
+  transform: translateX(-50%) translateY(-6px) scale(.97);
+  transition: opacity .2s ease, transform .22s var(--pr-ease);
+  z-index: 100;
+}
+.rd-more-panel.open {
+  opacity: 1; pointer-events: auto;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+.rd-more-panel button {
+  display: flex; align-items: center; gap: .5rem;
+  width: 100%; padding: .55rem .8rem; border-radius: .55rem;
+  border: none; background: transparent;
+  font-family: 'Plus Jakarta Sans',sans-serif;
+  font-size: .78rem; font-weight: 600; color: #374151;
+  cursor: pointer;
+  transition: background .16s ease, color .16s ease;
+}
+.rd-more-panel button:hover {
+  background: rgba(37,99,235,.07); color: var(--pr-blue);
+  transform: none !important; box-shadow: none !important;
+}
+
+/* ── 6. Brand: tighter, more confident ─────────────────────────── */
+.brand-name {
+  font-family: 'Plus Jakarta Sans',sans-serif !important;
+  font-weight: 800 !important;
+  letter-spacing: .05em !important;
+}
+.brand-tag {
+  font-family: 'Plus Jakarta Sans',sans-serif !important;
+  font-weight: 500 !important;
+  letter-spacing: .03em !important;
+  color: #64748b !important;
+}
+
+/* ── Hero slideshow wrapper removed here, relocated to bottom of file */
+/* cinematic overlay */
+.rd-hero-veil {
+  background: linear-gradient(
+    to bottom,
+    rgba(5,14,31,.62) 0%,
+    rgba(5,14,31,.08) 42%,
+    rgba(5,14,31,.04) 56%,
+    rgba(5,14,31,.70) 100%
+  ) !important;
+}
+/* hero headline */
+#rd-hero-copy h2 {
+  font-family: 'Plus Jakarta Sans',sans-serif !important;
+  font-size: clamp(1.8rem,5.2vw,4.4rem) !important;
+  font-weight: 900 !important;
+  letter-spacing: -.03em !important;
+  line-height: 1.05 !important;
+  text-shadow: 0 4px 32px rgba(5,14,31,.7) !important;
+}
+/* slideshow arrows: hidden until hover */
+#page-home section:first-of-type button[aria-label="Previous slide"],
+#page-home section:first-of-type button[aria-label="Next slide"] {
+  opacity: 0 !important;
+  transition: opacity .22s ease !important;
+}
+#page-home section:first-of-type div[class*="rounded-[28px]"]:hover button[aria-label="Previous slide"],
+#page-home section:first-of-type div[class*="rounded-[28px]"]:hover button[aria-label="Next slide"] {
+  opacity: 1 !important;
+}
+
+/* ── 9 (fixed). Bengali hero section ───────────────────────────── */
+.rd-home-hero {
+  background: linear-gradient(135deg,#0d1a30 0%,#111827 55%,#0d1a30 100%) !important;
+  border-color: rgba(99,102,241,.15) !important;
+}
+.rd-home-hero-glow {
+  background: radial-gradient(ellipse 80% 100% at 50% -10%,
+    rgba(79,70,229,.32), rgba(37,99,235,.12) 40%, transparent 70%) !important;
+}
+.rd-hero-kicker {
+  background: rgba(79,70,229,.18) !important;
+  border: 1px solid rgba(99,102,241,.28) !important;
+  color: rgba(199,210,254,.88) !important;
+  font-family: 'Plus Jakarta Sans',sans-serif !important;
+  font-weight: 700 !important;
+  font-size: .7rem !important;
+  letter-spacing: .06em !important;
+  backdrop-filter: blur(8px) !important;
+}
+.rd-home-hero-title {
+  font-family: 'Noto Serif Bengali','Noto Sans Bengali',serif !important;
+  font-weight: 800 !important;
+  letter-spacing: -.02em !important;
+  color: #fff !important;
+}
+.rd-home-hero-title > span {
+  background: linear-gradient(135deg,#a5b4fc 0%,#c4b5fd 50%,#93c5fd 100%) !important;
+  background-size: 200% 100% !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  animation: heroGradShift 5s ease-in-out infinite !important;
+}
+@keyframes heroGradShift {
+  0%,100% { background-position: 0%   50%; }
+  50%     { background-position: 100% 50%; }
+}
+.rd-home-hero-copy {
+  color: rgba(226,232,240,.72) !important;
+  font-family: 'Noto Sans Bengali',sans-serif !important;
+  line-height: 2 !important;
+}
+
+/* ── 13 (fixed). CTA section gradient ──────────────────────────── */
+#page-home section.bg-white.border-t [class*="rounded-3xl"]:first-child {
+  background: linear-gradient(135deg,#1e1b4b 0%,#312e81 45%,#1d4ed8 100%) !important;
+  box-shadow: 0 0 0 1px rgba(99,102,241,.3),
+              0 32px 80px -32px rgba(79,70,229,.65) !important;
+}
+
+#rd-stats-bar {
+  background: linear-gradient(135deg,#0d1a30 0%,#111827 100%);
+  position: relative; overflow: hidden;
+}
+#rd-stats-bar::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 70% 120% at 50% -30%,
+    rgba(79,70,229,.28),transparent 70%);
+  pointer-events: none;
+}
+.rd-stat-card {
+  text-align: center;
+  padding: 1.75rem 1rem;
+  position: relative;
+}
+.rd-stat-card + .rd-stat-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 20%; bottom: 20%;
+  width: 1px;
+  background: linear-gradient(180deg,transparent,rgba(255,255,255,.12),transparent);
+}
+.rd-stat-num {
+  display: block;
+  font-family: 'Plus Jakarta Sans',sans-serif;
+  font-size: clamp(2rem,4.5vw,3.25rem);
+  font-weight: 900; letter-spacing: -.04em; line-height: 1;
+  background: linear-gradient(135deg,#fff 0%,rgba(199,210,254,.88) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.rd-stat-suffix {
+  font-size: .65em; font-weight: 700;
+  vertical-align: super; opacity: .8;
+}
+.rd-stat-label {
+  display: block; margin-top: .45rem;
+  font-family: 'Plus Jakarta Sans',sans-serif;
+  font-size: clamp(.62rem,.88vw,.76rem);
+  font-weight: 600;
+  color: rgba(199,210,254,.6);
+  letter-spacing: .09em; text-transform: uppercase;
+}
+
+
+.rd-hero-primary {
+  background: var(--pr-grad) !important;
+  color: #fff !important;
+  font-family: 'Plus Jakarta Sans',sans-serif !important;
+  font-weight: 700 !important;
+  border-radius: .75rem !important;
+  border: none !important;
+  box-shadow: 0 10px 28px -8px rgba(79,70,229,.55) !important;
+  position: relative; overflow: hidden;
+  transition: box-shadow .25s ease, transform .22s var(--pr-ease) !important;
+}
+.rd-hero-primary::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(105deg,transparent 30%,rgba(255,255,255,.18) 50%,transparent 68%);
+  transform: translateX(-120%);
+  animation: heroCtaShimmer 4s var(--pr-ease) infinite;
+}
+@keyframes heroCtaShimmer {
+  0%,60%   { transform: translateX(-120%); }
+  85%,100% { transform: translateX(140%);  }
+}
+.rd-hero-primary:hover {
+  box-shadow: 0 16px 36px -8px rgba(79,70,229,.65) !important;
+  transform: translateY(-3px) !important;
+}
+.rd-hero-secondary {
+  background: rgba(255,255,255,.08) !important;
+  border: 1px solid rgba(255,255,255,.18) !important;
+  color: rgba(255,255,255,.88) !important;
+  font-family: 'Plus Jakarta Sans',sans-serif !important;
+  font-weight: 600 !important;
+  border-radius: .75rem !important;
+  backdrop-filter: blur(8px) !important;
+  transition: background .22s ease, border-color .22s ease,
+              transform .22s var(--pr-ease) !important;
+}
+.rd-hero-secondary:hover {
+  background: rgba(255,255,255,.14) !important;
+  border-color: rgba(255,255,255,.3) !important;
+  transform: translateY(-3px) !important;
+}
+
+/* ── 10. Section kicker pill ────────────────────────────────────── */
+.section-kicker {
+  display: inline-flex !important; align-items: center !important;
+  gap: .4rem !important;
+  font-family: 'Plus Jakarta Sans',sans-serif !important;
+  font-size: .62rem !important; font-weight: 800 !important;
+  letter-spacing: .18em !important; text-transform: uppercase !important;
+  padding: .28rem .82rem !important; border-radius: 9999px !important;
+  background: rgba(37,99,235,.07) !important;
+  border: 1px solid rgba(37,99,235,.14) !important;
+  color: var(--pr-blue) !important;
+}
+
+/* ── 11. About section heading ──────────────────────────────────── */
+#about-rangdhanu h2 {
+  font-family: 'Plus Jakarta Sans',sans-serif !important;
+  font-weight: 900 !important;
+  letter-spacing: -.03em !important;
+  color: var(--pr-navy) !important;
+}
+
+/* ── 12. Activity cards: glass glow hover ───────────────────────── */
+#page-home .card-pro {
+  background: rgba(255,255,255,.96) !important;
+  border: 1px solid rgba(37,99,235,.09) !important;
+  border-radius: 1.25rem !important;
+  backdrop-filter: blur(6px) !important;
+}
+#page-home .card-pro::before { display: none !important; }
+#page-home .card-pro:hover {
+  border-color: rgba(79,70,229,.24) !important;
+  box-shadow: 0 2px 4px rgba(5,14,31,.05),
+              0 28px 56px -22px rgba(79,70,229,.32) !important;
+  transform: translateY(-6px) !important;
+}
+#page-home .card-pro:hover > div:first-child {
+  transform: translateY(-2px) scale(1.1) !important;
+  box-shadow: 0 10px 22px -10px rgba(79,70,229,.45) !important;
+}
+
+/* ── 13. CTA closing section: deep gradient ─────────────────────── */
+#page-home section.bg-white.border-t .rounded-3xl,
+#page-home section.py-16.md\\:py-20.bg-white .rounded-3xl {
+  background: linear-gradient(135deg,#1e1b4b 0%,#312e81 45%,#1d4ed8 100%) !important;
+  box-shadow: 0 0 0 1px rgba(99,102,241,.3),
+              0 32px 80px -32px rgba(79,70,229,.65) !important;
+  border-radius: 1.75rem !important;
+  position: relative; overflow: hidden;
+}
+#page-home section.bg-white.border-t .rounded-3xl h2,
+#page-home section.py-16.md\\:py-20.bg-white .rounded-3xl h2 {
+  font-family: 'Plus Jakarta Sans',sans-serif !important;
+  font-weight: 900 !important; letter-spacing: -.03em !important;
+}
+
+/* ── 14. Mobile nav: premium ────────────────────────────────────── */
+#mobile-menu {
+  background: rgba(255,255,255,.98) !important;
+  backdrop-filter: blur(20px) !important;
+  border-top: 1px solid rgba(37,99,235,.07) !important;
+}
+.mobile-nav-item {
+  font-family: 'Plus Jakarta Sans',sans-serif !important;
+  font-size: .88rem !important;
+  font-weight: 600 !important;
+  color: #374151 !important;
+  border-bottom: 1px solid rgba(37,99,235,.06) !important;
+}
+.mobile-nav-item:hover, .mobile-nav-item.active {
+  color: var(--pr-blue) !important;
+  background: rgba(37,99,235,.05) !important;
+}
+
+/* ── 15. Scrollbar: indigo on hover ─────────────────────────────── */
+::-webkit-scrollbar-thumb:hover { background: var(--pr-indigo) !important; }
+
+/* ── 16. Reduce-motion safety ──────────────────────────────────── */
+@media (prefers-reduced-motion:reduce) {
+  .nav-cta::before, #nav-membership-cta::before,
+  #mobile-membership-cta::before,
+  .rd-hero-primary::after { animation: none !important; }
+  #page-home > section:first-of-type button[aria-label^="Previous"],
+  #page-home > section:first-of-type button[aria-label^="Next"] {
+    opacity: 1 !important;
+  }
+}
+
+/* ── 17. Premium Bengali Fonts ──────────────────────────────────── */
+/* Image 2: hero slideshow caption — "রংধনু পরিবার" big headline */
+.rd-cap-title {
+  font-family: 'Noto Serif Bengali','Noto Sans Bengali',serif !important;
+  font-weight: 900 !important;
+  letter-spacing: -.01em !important;
+  text-shadow: 0 2px 16px rgba(0,0,0,.5) !important;
+}
+/* Image 3: About + home section headings */
+#about-rangdhanu h2,
+#page-home h2 {
+  font-family: 'Noto Serif Bengali','Noto Sans Bengali',serif !important;
+  font-weight: 800 !important;
+  letter-spacing: -.02em !important;
+}
+#page-home p {
+  font-family: 'Noto Sans Bengali',sans-serif !important;
+  line-height: 1.95 !important;
+}
+
+/* Hero slideshow wrapper */
+#page-home section:first-of-type > div[class*="relative"] {
+  border-radius: 2rem !important;
+}
+@media (min-width: 768px) {
+  #page-home section:first-of-type > div[class*="relative"] {
+    min-height: 460px !important;
+    max-height: 460px !important;
+    height: 460px !important;
+    aspect-ratio: unset !important;
+  }
+}
+
+/* cinematic overlay */
+.rd-home-hero-copy h2 {
+  color: #fff !important;
+  font-size: clamp(1.8rem,5.2vw,4.4rem) !important;
+  font-weight: 900 !important;
+  letter-spacing: -.03em !important;
+  line-height: 1.05 !important;
+  text-shadow: 0 4px 32px rgba(5,14,31,.7) !important;
+}
+/* slideshow arrows: hidden until hover */
+#page-home section:first-of-type > div[class*="relative"] .flex.absolute.bottom-4 {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+#page-home section:first-of-type > div[class*="relative"]:hover .flex.absolute.bottom-4 {
+  opacity: 1;
+}
+.rd-home-hero-copy {
+  color: rgba(226,232,240,.72) !important;
+  font-family: 'Noto Sans Bengali',sans-serif !important;
+  line-height: 2 !important;
+}
+
+#page-reunion h2, #page-reunion h3,
+#page-events h2 {
+  font-family: 'Noto Serif Bengali','Noto Sans Bengali',serif !important;
+  font-weight: 800 !important;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   18. FLIP CARDS — Activities section
+   ══════════════════════════════════════════════════════════════ */
+.rd-flip-card {
+  perspective: 1000px;
+  aspect-ratio: 1 / 1;
+  max-width: 280px;
+  margin: 0 auto;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+}
+.rd-flip-wide {
+  height: 140px;
+}
+.rd-flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform .55s cubic-bezier(.22,1,.36,1);
+  border-radius: 20px;
+}
+/* JS-toggled class flip ONLY - no hover flip as requested */
+.rd-flip-card.rd-flipped .rd-flip-inner {
+  transform: rotateY(180deg);
+}
+/* ── Front & back shared ── */
+.rd-flip-front, .rd-flip-back {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  text-align: center;
+}
+/* ── Back (white description card) ── */
+.rd-flip-back {
+  background: #ffffff;
+  border: 1px solid rgba(203,213,225,.6);
+  box-shadow: 0 8px 32px -8px rgba(15,23,42,.10);
+  transform: rotateY(180deg);
+}
+.rd-flip-desc {
+  font-family: 'Noto Sans Bengali', 'Plus Jakarta Sans', sans-serif;
+  font-size: .86rem;
+  line-height: 1.85;
+  color: #475569;
+  margin: 0;
+}
+/* ── Front icon wrapper ── */
+.rd-flip-icon {
+  width: 56px; height: 56px;
+  border-radius: 16px;
+  background: rgba(255,255,255,.18);
+  border: 1px solid rgba(255,255,255,.30);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  flex-shrink: 0;
+  color: #fff;
+}
+.rd-flip-title {
+  font-family: 'Noto Serif Bengali', 'Plus Jakarta Sans', serif;
+  font-size: .95rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.4;
+  margin: 0;
+}
+/* ── Premium glossy gradients ── */
+.rd-flip-front {
+  position: relative;
+  overflow: hidden;
+}
+.rd-flip-front::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at top right, rgba(255,255,255,0.25) 0%, transparent 60%);
+  pointer-events: none;
+  border-radius: 20px;
+}
+.rd-flip-blue {
+  background: linear-gradient(135deg, #38bdf8 0%, #3b82f6 100%);
+  box-shadow: 0 10px 30px -10px rgba(59,130,246, 0.4);
+}
+.rd-flip-emerald {
+  background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+  box-shadow: 0 10px 30px -10px rgba(16,185,129, 0.4);
+}
+.rd-flip-amber {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  box-shadow: 0 10px 30px -10px rgba(245,158,11, 0.4);
+}
+.rd-flip-rose {
+  background: linear-gradient(135deg, #fb7185 0%, #e11d48 100%);
+  box-shadow: 0 10px 30px -10px rgba(225,29,72, 0.4);
+}
+.rd-flip-indigo {
+  background: linear-gradient(135deg, #c084fc 0%, #8b5cf6 100%);
+  box-shadow: 0 10px 30px -10px rgba(139,92,246, 0.4);
+}
+
+/* ── Reduce motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .rd-flip-inner { transition: none !important; }
+}
+
+/* ===== Directory sub-nav: let custom.css .rd-dir-* win over the older
+   #page-alumni .alumni-view-tab-btn !important rules above. The ALL/Alumni/
+   Running buttons keep .alumni-view-tab-btn (JS toggles .is-active on it), so
+   they inherit those !important rules unless we re-assert here. ===== */
+#page-alumni .rd-dir-tab{background:transparent!important;border-color:transparent!important;color:#475569!important;box-shadow:none!important}
+#page-alumni .rd-dir-tab:hover{background:rgba(255,255,255,.75)!important;color:#0369a1!important;border-color:transparent!important;transform:none}
+#page-alumni .rd-dir-tab.is-active{background:linear-gradient(180deg,#0ea5e9,#0284c7)!important;color:#fff!important;border-color:#0284c7!important;box-shadow:0 8px 18px -8px rgba(2,132,199,.7),inset 0 1px 0 rgba(255,255,255,.35)!important}
+#page-alumni .rd-dir-tab-link{background:rgba(255,255,255,.6)!important;color:#0369a1!important;border-color:transparent!important}
+#page-alumni .rd-dir-tab-link:hover{background:#fff!important;color:#0369a1!important;transform:none}
+
+/* ===== Directory hero: soft vertical pinstripe pattern (sky palette) ===== */
+#page-alumni .rd-dir-hero-bg{
+  background:linear-gradient(180deg,#eef4fa 0%,#f6fafd 40%,#ffffff 100%) !important;
+}
+#page-alumni .family-intro{
+  position:relative;
+  max-width:64rem !important;
+  padding:40px 34px 36px;
+  border:1px solid rgba(14,165,233,.16);
+  border-radius:28px;
+  box-shadow:0 26px 60px -40px rgba(7,31,73,.4);
+  overflow:hidden;
+  background:
+    radial-gradient(58% 78% at 12% -6%, rgba(14,165,233,.13), transparent 60%),
+    radial-gradient(54% 74% at 90% 4%, rgba(56,189,248,.13), transparent 62%),
+    linear-gradient(180deg,#fbfdff 0%,#ffffff 65%) !important;
+}
+
+/* ===== Search + filters fused into one bar (search grows, 3 selects inline) ===== */
+#page-alumni .family-filter-fields{display:flex!important;flex-wrap:wrap;gap:.6rem;align-items:stretch}
+#page-alumni .family-filter-fields>div:first-child:after{display:none!important}
+#page-alumni .rd-dir-search{position:relative;flex:1 1 260px;min-width:200px}
+#page-alumni .rd-dir-search input{width:100%}
+#page-alumni .rd-dir-fsel{flex:1 1 130px;min-width:120px}
+@media(min-width:768px){#page-alumni .rd-dir-fsel{flex:0 1 auto;max-width:190px}}
+
+/* ============================================================
+   Home "রংধনুর উদ্যোগ" (Our Initiatives) — premium redesign
+   Test-neutral: styling only, in redesign-overrides.css.
+   ============================================================ */
+#home-initiatives{background:linear-gradient(180deg,#f7f9ff,#ffffff 42%)!important;position:relative}
+#home-initiatives .section-kicker{color:#4338ca!important;letter-spacing:.2em!important}
+#home-initiatives > div > div:first-child h2{
+  background:linear-gradient(92deg,#0f2b5c,#4f46e5 52%,#0284c7)!important;
+  -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+/* card shell */
+#home-initiatives .grid>button{
+  position:relative;overflow:hidden;border-radius:28px!important;
+  background:linear-gradient(158deg,rgba(255,255,255,.94),rgba(248,250,255,.72))!important;
+  border:1px solid rgba(79,70,229,.14)!important;
+  box-shadow:0 24px 60px -34px rgba(30,27,75,.5)!important;
+  transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .5s,border-color .5s!important}
+#home-initiatives .grid>button:before{content:"";position:absolute;top:-42%;right:-30%;
+  width:62%;height:82%;border-radius:50%;pointer-events:none;opacity:.7;
+  background:radial-gradient(circle,rgba(99,102,241,.24),transparent 70%);
+  transition:opacity .5s,transform .6s}
+#home-initiatives .grid>button:last-child:before{background:radial-gradient(circle,rgba(14,165,233,.24),transparent 70%)}
+#home-initiatives .grid>button:hover{transform:translateY(-6px)!important;
+  border-color:rgba(79,70,229,.42)!important;box-shadow:0 36px 82px -30px rgba(30,27,75,.55)!important}
+#home-initiatives .grid>button:last-child:hover{border-color:rgba(14,165,233,.45)!important}
+#home-initiatives .grid>button:hover:before{opacity:1;transform:scale(1.18)}
+/* icon medallion */
+#home-initiatives .grid>button .w-12.h-12{width:3.6rem!important;height:3.6rem!important;
+  border-radius:18px!important;background:linear-gradient(145deg,#6366f1,#4338ca)!important;
+  box-shadow:0 14px 30px -12px rgba(67,56,202,.7)!important;
+  transition:transform .5s cubic-bezier(.22,1,.36,1)!important}
+#home-initiatives .grid>button:last-child .w-12.h-12{background:linear-gradient(145deg,#38bdf8,#0369a1)!important;
+  box-shadow:0 14px 30px -12px rgba(3,105,161,.7)!important}
+#home-initiatives .grid>button:hover .w-12.h-12{transform:rotate(-6deg) scale(1.07)}
+/* top-right arrow chip */
+#home-initiatives .grid>button > div:first-child > i{color:#6366f1!important}
+#home-initiatives .grid>button:last-child > div:first-child > i{color:#0ea5e9!important}
+/* heading gradient */
+#home-initiatives .grid>button h3{font-weight:800!important;letter-spacing:-.02em!important;
+  background:linear-gradient(92deg,#1e1b4b,#4f46e5)!important;
+  -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+#home-initiatives .grid>button:last-child h3{background:linear-gradient(92deg,#0c2b4a,#0284c7)!important;
+  -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+/* CTA pill */
+#home-initiatives .grid>button .inline-flex{margin-top:1.6rem!important;padding:.62rem 1.2rem!important;
+  border-radius:999px!important;background:linear-gradient(92deg,#4f46e5,#6366f1)!important;color:#fff!important;
+  box-shadow:0 12px 26px -12px rgba(67,56,202,.7)!important;
+  transition:gap .3s,transform .3s,box-shadow .3s!important}
+#home-initiatives .grid>button:last-child .inline-flex{background:linear-gradient(92deg,#0369a1,#0ea5e9)!important;
+  box-shadow:0 12px 26px -12px rgba(3,105,161,.7)!important}
+#home-initiatives .grid>button:hover .inline-flex{gap:.72rem!important;transform:translateY(-1px)}
+@media(prefers-reduced-motion:reduce){
+  #home-initiatives .grid>button,#home-initiatives .grid>button *{transition:none!important}
+  #home-initiatives .grid>button:hover{transform:none!important}
+  #home-initiatives .grid>button:hover .w-12.h-12{transform:none!important}
+}
+/* description: kill the asymmetric left-bar, unify both cards, integrate into card */
+#home-initiatives .grid>button{padding:2.1rem 2.1rem 2.15rem!important}
+#home-initiatives .grid>button h3{margin-top:1.5rem!important;padding-bottom:1rem!important;
+  border-bottom:1px solid rgba(79,70,229,.16)!important}
+#home-initiatives .grid>button:last-child h3{border-bottom-color:rgba(14,165,233,.18)!important}
+#home-initiatives .grid>button p{
+  border-left:0!important;padding-left:0!important;margin-top:1.1rem!important;
+  color:#475569!important;font-size:15px!important;line-height:1.92!important}
+/* header: keep the mobile stacked layout on desktop too — description below the title */
+#home-initiatives > div > div:first-child{
+  flex-direction:column!important;align-items:flex-start!important}
+#home-initiatives > div > div:first-child > p{margin-top:.35rem!important}
+
+/* ── Home "আমাদের ভিশন" (Our Vision) card — recolor + size-to-content + bigger text ── */
+#home-vision{align-self:flex-start!important;
+  background:linear-gradient(150deg,#1e50a8,#2f6fd6 48%,#4fb0e6 100%)!important;
+  border:1px solid rgba(191,235,255,.32)!important;
+  box-shadow:0 30px 72px -34px rgba(23,58,128,.6)!important}
+#home-vision .section-kicker{color:#bae6fd!important;letter-spacing:.2em!important}
+#home-vision h3{font-size:clamp(1.7rem,3.2vw,2.4rem)!important}
+#home-vision p{font-size:clamp(1.02rem,1.35vw,1.18rem)!important;line-height:2.05!important;
+  color:#e6f1fd!important;margin-top:1.4rem!important}
+#home-vision:before{content:"\201C";position:absolute;top:.1rem;right:1.7rem;
+  font-family:Georgia,serif;font-size:7rem;line-height:1;color:rgba(186,230,253,.15);pointer-events:none}
+#home-vision p:after{content:"— রংধনু পরিবার";display:block;margin-top:1.4rem;
+  font-weight:700;color:#bae6fd;font-size:.95rem;letter-spacing:.02em}
+
+/* ── Home "রংধনু কী, কাদের নিয়ে" (About) — premium main card ── */
+#about-rangdhanu{background:linear-gradient(180deg,#eef4ff,#f8fafc 46%)!important}
+.rd-about-card{position:relative;overflow:hidden;border-radius:30px!important;
+  background:linear-gradient(158deg,#ffffff,#f3f8ff)!important;
+  border:1px solid rgba(37,99,235,.15)!important;
+  box-shadow:0 36px 84px -40px rgba(23,58,128,.42)!important;
+  padding:2.4rem 2.2rem 2.5rem!important}
+@media(min-width:640px){.rd-about-card{padding:3rem 3rem 3.2rem!important}}
+.rd-about-card:before{content:"";position:absolute;top:-32%;right:-12%;width:48%;height:72%;
+  background:radial-gradient(circle,rgba(59,130,246,.16),transparent 70%);pointer-events:none}
+.rd-about-card:after{content:"";position:absolute;left:0;top:0;width:100%;height:5px;
+  background:linear-gradient(90deg,#1e50a8,#2f6fd6,#4fb0e6)}
+.rd-about-title{background:linear-gradient(92deg,#0f2b5c,#2563eb 58%,#0284c7)!important;
+  -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+.rd-about-lead{font-size:1.12rem!important;color:#334155!important;font-weight:500!important}
+.rd-about-card p{color:#475569!important}
+/* right highlight tiles — cohere with the card */
+#about-rangdhanu .rd-tile{border-radius:22px!important;border:1px solid rgba(37,99,235,.12)!important;
+  background:linear-gradient(158deg,#ffffff,#f4f9ff)!important;
+  box-shadow:0 22px 54px -36px rgba(23,58,128,.42)!important;
+  transition:transform .4s cubic-bezier(.22,1,.36,1),box-shadow .4s!important}
+#about-rangdhanu .rd-tile:hover{transform:translateY(-4px)!important;
+  box-shadow:0 30px 66px -34px rgba(23,58,128,.46)!important}
+/* desktop: main card full-width on top, the two highlight tiles moved below, side-by-side full width */
+@media(min-width:1024px){
+  #about-rangdhanu > div > .grid{grid-template-columns:1fr!important}
+  #about-rangdhanu > div > .grid > div:last-child{
+    grid-template-columns:repeat(2,1fr)!important;margin-top:.5rem}
+}
+/* tighten About: smaller font + spacing for a calmer, smoother read */
+#about-rangdhanu{padding-top:3rem!important;padding-bottom:3rem!important}
+#about-rangdhanu > div > .grid{gap:1.6rem!important}
+.rd-about-card{padding:1.9rem 1.9rem 2rem!important}
+@media(min-width:640px){.rd-about-card{padding:2.4rem 2.5rem 2.6rem!important}}
+.rd-about-title{font-size:clamp(1.6rem,3.2vw,2.4rem)!important;margin-top:.6rem!important;line-height:1.2!important}
+.rd-about-lead{font-size:1rem!important;margin-top:1.05rem!important}
+.rd-about-card p{font-size:.96rem!important;line-height:1.78!important;margin-top:.8rem!important;max-width:none!important}
+#about-rangdhanu .rd-tile{padding:1.35rem!important}
+#about-rangdhanu .rd-tile h3{font-size:1.02rem!important}
+#about-rangdhanu .rd-tile p{font-size:.86rem!important;line-height:1.6!important}
+
+/* ── Home Bengali hero ("যেথায় থাকুক…") — light mint/teal redesign (reference palette) ── */
+.rd-home-hero{
+  background:linear-gradient(165deg,#e6fbf3 0%,#eefdfa 42%,#ffffff 100%)!important;
+  border-top:1px solid rgba(13,148,136,.14)!important;
+  border-bottom:1px solid rgba(13,148,136,.10)!important;
+}
+.rd-home-hero > .max-w-7xl{padding-top:3rem!important;padding-bottom:3.2rem!important}
+@media(min-width:768px){
+  .rd-home-hero > .max-w-7xl{padding-top:4rem!important;padding-bottom:4.2rem!important}
+}
+.rd-home-hero-glow{
+  background:
+    radial-gradient(ellipse 70% 92% at 50% -14%, rgba(20,184,166,.22), rgba(45,212,191,.08) 42%, transparent 72%),
+    radial-gradient(circle at 88% 6%, rgba(56,189,248,.12), transparent 44%),
+    radial-gradient(circle at 8% 96%, rgba(13,148,136,.10), transparent 40%)!important;
+}
+.rd-hero-kicker{
+  background:rgba(20,184,166,.12)!important;
+  border:1px solid rgba(13,148,136,.28)!important;
+  color:#0f766e!important;
+  backdrop-filter:blur(8px)!important;
+  box-shadow:0 8px 20px -12px rgba(13,148,136,.55)!important;
+}
+.rd-home-hero-title{color:#0f2b2b!important}
+.rd-home-hero-title > span{
+  background:linear-gradient(120deg,#0d9488 0%,#14b8a6 46%,#2dd4bf 100%)!important;
+  background-size:200% 100%!important;
+  -webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important;
+}
+.rd-home-hero-copy{color:#4a6168!important}
+
+/* ── Home CTA card ("রংধনুর সঙ্গে যুক্ত থাকুন") — teal palette to match the hero ── */
+#page-home section.bg-white.border-t [class*="rounded-3xl"]:first-child{
+  background:linear-gradient(135deg,#0b3b39 0%,#0f766e 46%,#14b8a6 100%)!important;
+  box-shadow:0 0 0 1px rgba(20,184,166,.30),0 32px 80px -32px rgba(13,148,136,.6)!important;
+}
+#page-home section.bg-white.border-t [class*="rounded-3xl"]:first-child .section-kicker{color:#99f6e4!important}
+#page-home section.bg-white.border-t [class*="rounded-3xl"]:first-child p{color:#d0fbf1!important}
+#page-home section.bg-white.border-t [class*="rounded-3xl"]:first-child button:first-child{color:#0f766e!important}
+
+/* ── Home social connect cards (#home-connect-fb) — teal premium pair (FB + LinkedIn) ── */
+#home-connect-fb > .max-w-5xl{max-width:56rem!important}
+#home-connect-fb{padding-bottom:6rem!important}
+@media(min-width:768px){#home-connect-fb{padding-bottom:8rem!important}}
+.rd-social-grid{display:grid;grid-template-columns:1fr;gap:1.25rem}
+@media(min-width:640px){.rd-social-grid{grid-template-columns:1fr 1fr;gap:1.5rem}}
+.rd-social-card{
+  display:flex;flex-direction:column;align-items:flex-start;text-decoration:none;
+  position:relative;overflow:hidden;border-radius:24px;padding:1.9rem 1.9rem 1.7rem;
+  background:linear-gradient(150deg,#ffffff,#effcf8);
+  border:1px solid rgba(13,148,136,.16);
+  box-shadow:0 26px 60px -40px rgba(13,148,136,.5);
+  transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .5s;
+}
+.rd-social-card:before{content:"";position:absolute;top:-38%;right:-10%;width:46%;height:78%;
+  background:radial-gradient(circle,rgba(20,184,166,.14),transparent 70%);pointer-events:none}
+.rd-social-card:hover{transform:translateY(-5px);box-shadow:0 36px 74px -38px rgba(13,148,136,.6)}
+.rd-social-icon{flex:none;width:56px;height:56px;border-radius:17px;display:grid;place-items:center;
+  color:#fff;box-shadow:0 14px 28px -12px rgba(15,23,42,.4);z-index:1}
+.rd-social-fb .rd-social-icon{background:linear-gradient(135deg,#1877f2,#0b5fcc)}
+.rd-social-li .rd-social-icon{background:linear-gradient(135deg,#0a66c2,#004182)}
+.rd-social-kicker{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:.66rem;
+  letter-spacing:.14em;color:#0f766e;margin-top:1.1rem;z-index:1}
+.rd-social-title{font-family:'Noto Sans Bengali',sans-serif;font-weight:800;font-size:1.2rem;
+  line-height:1.35;margin-top:.35rem;color:#0f2b2b;z-index:1}
+.rd-social-desc{font-family:'Noto Sans Bengali',sans-serif;margin-top:.5rem;font-size:.9rem;
+  line-height:1.6;color:#4a6168;z-index:1}
+.rd-social-cta{display:inline-flex;align-items:center;gap:.35rem;margin-top:1.15rem;
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:.84rem;
+  padding:.6rem 1.1rem;border-radius:999px;white-space:nowrap;color:#fff;
+  background:linear-gradient(135deg,#0d9488,#14b8a6);transition:filter .3s;z-index:1}
+.rd-social-card:hover .rd-social-cta{filter:brightness(1.08)}
+@media(prefers-reduced-motion:reduce){
+  .rd-social-card,.rd-social-cta{transition:none!important}
+  .rd-social-card:hover{transform:none!important}
+}
+
+/* ===== Home mobile compact pass (<=640px) ===============================
+   Density + type scale so no single card fills the phone screen; text-heavy
+   cards stay single-column but shorter, with the next one peeking below.
+   All test-neutral (redesign-overrides.css is invisible to rd_source.js). === */
+@media (max-width:640px){
+  /* -- section vertical rhythm -- */
+  #about-rangdhanu,
+  #page-home #activities,
+  #page-home #home-initiatives,
+  #page-home section:has(#home-vision),
+  #page-home section:has(> .max-w-5xl > .rounded-3xl){
+    padding-top:2.4rem!important;padding-bottom:2.4rem!important}
+  #home-connect-fb{padding-bottom:2.6rem!important}
+
+  /* -- shared heading / kicker scale -- */
+  #page-home h2{font-size:1.5rem!important;line-height:1.3!important}
+  #page-home .section-kicker{font-size:.62rem!important}
+
+  /* -- Bengali hero -- */
+  .rd-home-hero > .max-w-7xl{padding-top:2.2rem!important;padding-bottom:2.4rem!important}
+  .rd-home-hero-title{font-size:1.55rem!important;line-height:1.35!important;margin-top:1rem!important}
+  .rd-home-hero-copy{font-size:.92rem!important;line-height:1.7!important;margin-top:1rem!important}
+  /* CONTINUE_HOME_MOBILE */
+
+  /* -- About -- */
+  .rd-about-card{padding:1.4rem 1.35rem 1.5rem!important}
+  .rd-about-title{font-size:1.5rem!important;margin-top:.5rem!important}
+  .rd-about-lead{font-size:.92rem!important;line-height:1.72!important;margin-top:.8rem!important}
+  .rd-about-card p{font-size:.9rem!important;line-height:1.72!important;margin-top:.7rem!important}
+  #about-rangdhanu > div > .grid{gap:1rem!important}
+  #about-rangdhanu .rd-tile{padding:1.15rem!important}
+  #about-rangdhanu .rd-tile h3{font-size:.98rem!important}
+  #about-rangdhanu .rd-tile p{font-size:.83rem!important;line-height:1.55!important;margin-top:.35rem!important}
+
+  /* -- Vision / Mission -- */
+  #page-home section:has(#home-vision) .grid{gap:1rem!important}
+  #home-vision,#page-home section:has(#home-vision) article{padding:1.5rem 1.4rem!important}
+  #page-home section:has(#home-vision) h3{font-size:1.25rem!important;margin-top:.5rem!important}
+  #page-home section:has(#home-vision) p,
+  #page-home section:has(#home-vision) li span{font-size:.9rem!important;line-height:1.7!important}
+  #home-vision p{margin-top:.9rem!important}
+  #page-home section:has(#home-vision) ul{margin-top:1rem!important}
+  #page-home section:has(#home-vision) ul > li{margin-top:.55rem!important}
+
+  /* -- Activities -- */
+  #activities > div > .max-w-2xl{margin-bottom:1.6rem!important}
+  #activities .grid{gap:1rem!important}
+  #activities .grid > div{padding:1.4rem!important;border-radius:1.25rem!important}
+  #activities .grid > div > div:first-child{width:3rem!important;height:3rem!important;margin-bottom:1rem!important}
+  #activities .grid h3{font-size:1.08rem!important;margin-bottom:.5rem!important}
+  #activities .grid p{font-size:.88rem!important;line-height:1.6!important}
+
+  /* -- Initiatives -- */
+  #home-initiatives > div > .flex{margin-bottom:1.5rem!important;gap:.6rem!important}
+  #home-initiatives .grid{gap:1rem!important}
+  #home-initiatives .grid > button{padding:1.4rem!important}
+  #home-initiatives .grid h3{font-size:1.18rem!important;margin-top:1rem!important}
+  #home-initiatives .grid p{font-size:.9rem!important;line-height:1.7!important;margin-top:.7rem!important}
+  #home-initiatives .grid > button > div .w-12{width:2.7rem!important;height:2.7rem!important}
+
+  /* -- Closing CTA -- */
+  #page-home section:has(> .max-w-5xl > .rounded-3xl) .rounded-3xl{padding:1.7rem 1.35rem!important}
+  #page-home section:has(> .max-w-5xl > .rounded-3xl) h2{font-size:1.4rem!important}
+  #page-home section:has(> .max-w-5xl > .rounded-3xl) p{font-size:.9rem!important;line-height:1.7!important;margin-top:.8rem!important}
+
+  /* -- Social pair -- */
+  .rd-social-card{padding:1.4rem 1.35rem 1.3rem!important;border-radius:20px!important}
+  .rd-social-title{font-size:1.1rem!important}
+  .rd-social-desc{font-size:.86rem!important}
+  .rd-social-icon{width:50px!important;height:50px!important}
+}
+
+/* ==== Mobile compact pass — all content pages EXCEPT Home (done) & PDACC ==== */
+@media (max-width:640px){
+
+  /* section vertical padding — biggest whitespace win */
+  #page-reunion, #page-reunion > section,
+  #page-committee, #page-noticeboard, #page-cgpa, #page-alumni,
+  #page-events, #page-register, #page-admin, #page-notice,
+  #page-committee-new > section, #page-ec-message > section,
+  #page-notice-file > section, #page-family-faculty > section,
+  #page-event-new > section, #page-event-detail > section,
+  #page-admin-module > section, #page-my-info > section,
+  #page-profile > section, #page-member-signin > section,
+  #page-my-profile > section, #page-admin-event-new > section,
+  #page-photo > section{
+    padding-top:2.3rem!important;padding-bottom:2.3rem!important}
+
+  /* headings */
+  #page-reunion h2, #page-committee h2, #page-noticeboard h2, #page-cgpa h2,
+  #page-alumni h2, #page-events h2, #page-committee-new h2, #page-family-faculty h2,
+  #page-event-new h2, #page-admin-event-new h2,
+  .rd-committee-title, .family-intro-title, .rd-reg-ttl{
+    font-size:1.45rem!important;line-height:1.3!important}
+  #page-notice-file h2, #page-admin h2, #page-notice h2,
+  #page-my-info h2, #page-member-signin h2{font-size:1.3rem!important;line-height:1.3!important}
+  #page-events h3{font-size:1.2rem!important}
+
+  /* centered header block bottom margin */
+  #page-committee .mb-10, #page-noticeboard .mb-9, #page-cgpa .mb-10,
+  #page-alumni .mb-10, #page-events .mb-12, #page-family-faculty .mb-9,
+  #page-reunion .mb-12{margin-bottom:1.5rem!important}
+  /* grid gaps */
+  #page-committee .gap-6, #page-alumni .gap-6, #page-family-faculty .gap-6,
+  #page-events .gap-6, #page-cgpa .gap-6, #page-reunion .gap-6{gap:1rem!important}
+
+  /* big form / content cards */
+  #page-committee-new .rounded-\[28px\], #page-event-new .rounded-\[28px\],
+  #page-admin-event-new .rounded-\[28px\], #page-notice-file .rounded-\[28px\],
+  #page-notice .rounded-\[28px\], #page-my-info .rounded-\[28px\]{
+    padding:1.4rem!important;border-radius:20px!important}
+
+  /* body copy a touch smaller */
+  #page-reunion p, #page-committee p, #page-noticeboard p, #page-cgpa p,
+  #page-alumni p, #page-events p, #page-family-faculty p{
+    font-size:.9rem!important;line-height:1.65!important}
+
+  /* Reunion video cards */
+  #page-reunion .rounded-3xl{margin-bottom:1.25rem!important}
+  #page-reunion [class*="sm:p-8"]{padding:1.3rem!important}
+
+  /* Bloodbank custom hero */
+  #page-bloodbank .py-14{padding-top:2.4rem!important;padding-bottom:2.4rem!important}
+  #page-bloodbank h1{font-size:1.55rem!important;line-height:1.25!important}
+  #page-bloodbank .py-7{padding-top:1.4rem!important;padding-bottom:1.4rem!important}
+  #page-bloodbank .py-8{padding-top:1.8rem!important;padding-bottom:1.8rem!important}
+  #page-bloodbank .gap-4{gap:.8rem!important}
+
+  /* Polls custom hero */
+  .rd-poll-hero-inner{padding-top:2.6rem!important;padding-bottom:2.6rem!important}
+  .rd-poll-hero-title{font-size:1.6rem!important;line-height:1.25!important}
+  .rd-poll-hero-sub{font-size:.9rem!important}
+  .rd-poll-stage{padding-top:1.6rem!important;padding-bottom:1.6rem!important}
+
+  /* Register wizard */
+  .rd-reg-card{padding:1.35rem!important}
+  .rd-reg-sub{font-size:.88rem!important}
+}
+
+/* ==== PDACC mobile compact pass (<=640px) ==============================
+   Mirrors the Home/site compact pass above, which deliberately left PDACC to
+   this session. redesign-overrides.css is invisible to rd_source.js, so this
+   is harness-neutral. Goal: no single card fills the phone, smaller type, the
+   next card peeks below — the four PDACC pages (Home / Notice / committee /
+   Admission Guide) all in one block. ==== */
+@media (max-width:640px){
+  /* section vertical rhythm — the biggest whitespace win */
+  #page-prokoushali > section, #page-pdacc-updates > section,
+  #page-pdacc-committee > section, #page-pdacc-admission > section{
+    padding-top:2.1rem!important;padding-bottom:2.1rem!important}
+  .rd-pd-portal{gap:14px!important}
+
+  /* leader hero (all four pages) */
+  .rd-pd-lhero{padding:18px 18px 20px!important;border-radius:20px!important}
+  .rd-pd-lhero h1,.rd-pd-lhero h2{font-size:1.4rem!important;line-height:1.3!important}
+  .rd-pd-lhero p{font-size:.86rem!important;line-height:1.65!important}
+  .rd-pd-lhero-badge{font-size:.6rem!important;padding:5px 10px!important}
+
+  /* About block */
+  #pdacc-about{margin-bottom:1.8rem!important}
+  #pdacc-about h2{font-size:1.4rem!important;line-height:1.3!important;margin-top:.9rem!important}
+  #pdacc-about > p:last-child{font-size:.9rem!important;line-height:1.7!important;margin-top:1rem!important}
+
+  /* Guide CTA card */
+  #page-prokoushali .rd-pd-guide{padding:1rem 1.1rem!important;gap:.8rem!important}
+  .rd-pd-guide strong{font-size:1rem!important}
+  .rd-pd-guide em{font-size:.82rem!important;line-height:1.55!important}
+
+  /* Records / stats cards */
+  #pdacc-records{gap:1rem!important;margin-top:2rem!important}
+  .rd-pd-card{padding:1.3rem 1.2rem!important;border-radius:16px!important}
+  .rd-pd-h{font-size:1.18rem!important}
+  .rd-pd-sub{font-size:.85rem!important;line-height:1.6!important}
+  .rd-pd-grid3{gap:.8rem!important}
+  .rd-pd-batch{padding:1.1rem!important;border-radius:14px!important}
+  .rd-pd-batch h4{font-size:.96rem!important}
+  .rd-pd-batch p{font-size:.84rem!important;line-height:1.65!important}
+  #pdacc-leadership{margin-top:2rem!important}
+
+  /* Facebook card */
+  .rd-pd-fbcard{padding:1.5rem 1.3rem!important;border-radius:18px!important}
+  .rd-pd-fbcard-h{font-size:1.2rem!important}
+  .rd-pd-fbcard-p{font-size:.86rem!important;line-height:1.6!important;margin-bottom:1rem!important}
+  .rd-pd-fbcard-ico{width:52px!important;height:52px!important;margin-bottom:10px!important}
+
+  /* Admission Guide internals — cards, headings, seats, sim */
+  .rd-ad-card{padding:1.3rem 1.15rem!important;border-radius:16px!important}
+  .rd-ad-h{font-size:1.18rem!important}
+  .rd-ad-lead{font-size:.86rem!important;line-height:1.6!important}
+  .rd-ad-pane-h b{font-size:.95rem!important}
+  .rd-ad-seat{padding:12px!important;border-radius:12px!important}
+  .rd-ad-total{padding:1.1rem!important}
+  .rd-ad-sim{padding:1.1rem!important}
+  .rd-ad-sim-big b{font-size:2rem!important}
+
+  /* Executive committee cards */
+  .rd-pd-ec-card{padding:1.2rem!important;border-radius:16px!important}
+
+  /* Director's Message card */
+  .rd-pd-dir{padding:1.15rem!important;border-radius:18px!important}
+  .rd-pd-dir-head{gap:12px!important}
+  #pdacc-director-card .rd-pd-dir-ava{width:60px!important;height:60px!important}
+  .rd-pd-dir-name,#pdacc-director-card .rd-pd-dir-name{font-size:1.08rem!important}
+  .rd-pd-dir-meta{font-size:.74rem!important}
+  .rd-pd-dir-msg{margin-top:1rem!important;padding:1rem 1.1rem!important}
+  .rd-pd-dir-text,#pdacc-director-card .rd-pd-dir-text{font-size:.85rem!important;line-height:1.7!important}
+  .rd-pd-dir-foot{margin-top:1rem!important;gap:8px!important}
+}
+
+/* ============================================================
+   PDACC · chance record combination (donut + colored cards).
+   Built by renderPdaccChance() into #pd-chance-rows from the feed.
+   Test-neutral: lives here, invisible to rd_source.js.
+   ============================================================ */
+#pd-chance-dept .rd-combo{display:flex;align-items:center;gap:26px;flex-wrap:wrap}
+#pd-chance-dept .rd-donut{position:relative;width:190px;height:190px;flex:0 0 auto}
+#pd-chance-dept .rd-donut svg{width:100%;height:100%;transform:rotate(-90deg);overflow:visible}
+#pd-chance-dept .rd-donut-seg{transition:stroke-dasharray .7s cubic-bezier(.4,0,.2,1),opacity .25s,stroke-width .2s;opacity:1}
+#pd-chance-dept .rd-donut-seg.dim{opacity:.28}
+#pd-chance-dept .rd-donut-seg.hot{stroke-width:30}
+#pd-chance-dept .rd-donut-core{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+#pd-chance-dept .rd-donut-core .n{font-size:2.5rem;font-weight:800;line-height:1;color:#0f172a}
+#pd-chance-dept .rd-donut-core .l{font-size:.72rem;font-weight:600;color:#64748b;margin-top:4px;letter-spacing:.04em}
+#pd-chance-dept .rd-combo-head{flex:1 1 240px;min-width:0}
+#pd-chance-dept .rd-combo-kicker{display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#0d9488;background:#ccfbf1;border-radius:999px;padding:5px 12px;margin-bottom:10px}
+#pd-chance-dept .rd-combo-title{font-size:1.5rem;font-weight:800;line-height:1.25;color:#0f172a;margin:0 0 8px}
+#pd-chance-dept .rd-combo-cards{margin-top:22px;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+#pd-chance-dept .rd-cc{position:relative;display:flex;align-items:center;gap:10px;text-align:left;padding:14px 16px;border:1px solid #e2e8f0;border-radius:16px;background:#fff;cursor:default;overflow:hidden;font:inherit;transition:transform .2s,box-shadow .2s,border-color .2s}
+#pd-chance-dept .rd-cc::before{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--w,0%);max-width:100%;background:color-mix(in srgb,var(--c) 12%,transparent);transition:width .7s cubic-bezier(.4,0,.2,1)}
+#pd-chance-dept .rd-cc>*{position:relative}
+#pd-chance-dept .rd-cc-dot{width:12px;height:12px;border-radius:50%;background:var(--c);flex:0 0 auto;box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 18%,transparent)}
+#pd-chance-dept .rd-cc-n{display:flex;flex-direction:column;line-height:1.2;font-size:.95rem;font-weight:700;color:#0f172a}
+#pd-chance-dept .rd-cc-n small{font-size:.66rem;font-weight:500;color:#94a3b8;margin-top:2px}
+#pd-chance-dept .rd-cc-v{margin-left:auto;font-size:1.35rem;font-weight:800;color:var(--c)}
+#pd-chance-dept .rd-cc.hot,#pd-chance-dept .rd-cc:hover{transform:translateY(-3px);box-shadow:0 10px 26px -12px color-mix(in srgb,var(--c) 55%,transparent);border-color:color-mix(in srgb,var(--c) 45%,transparent)}
+@media (max-width:640px){
+  #pd-chance-dept .rd-combo{flex-wrap:nowrap;align-items:center;gap:14px}
+  #pd-chance-dept .rd-donut{width:118px;height:118px}
+  #pd-chance-dept .rd-donut-core .n{font-size:1.7rem}
+  #pd-chance-dept .rd-donut-core .l{font-size:.6rem;margin-top:2px}
+  #pd-chance-dept .rd-combo-head{flex:1 1 auto}
+  #pd-chance-dept .rd-combo-kicker{font-size:.56rem;padding:4px 9px;margin-bottom:7px}
+  #pd-chance-dept .rd-combo-title{font-size:1.16rem;margin:0 0 6px}
+  #pd-chance-dept .rd-combo-cards{grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+  #pd-chance-dept .rd-cc{padding:11px 12px;gap:8px}
+  #pd-chance-dept .rd-cc-v{font-size:1.15rem}
+}
+@media (prefers-reduced-motion:reduce){
+  #pd-chance-dept .rd-donut-seg,#pd-chance-dept .rd-cc,#pd-chance-dept .rd-cc::before{transition:none}
+}
+
+/* ============================================================
+   Mobile bottom tab-bar (xl:hidden). New #rd-mnav element; the
+   existing #mobile-menu dropdown is repositioned into a bottom
+   sheet and the old header hamburger + member buttons are hidden
+   on small screens. All test-neutral (this file is not scanned).
+   ============================================================ */
+#rd-mnav{display:none}
+@media (max-width:1279px){
+  #rd-mnav{
+    position:fixed;left:0;right:0;bottom:0;z-index:55;
+    display:grid;grid-template-columns:repeat(5,1fr);align-items:end;
+    padding:5px 6px calc(6px + env(safe-area-inset-bottom,0px));
+    background:rgba(255,255,255,.97);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
+    border-top:1px solid #e2e8f0;box-shadow:0 -16px 34px -26px rgba(15,23,42,.4);
+  }
+  /* Old header entry points give way to the bottom bar on mobile. */
+  #mobile-member-btn,#mobile-menu-btn{display:none !important}
+  /* Reposition the reused dropdown as an opaque bottom sheet (no dim/blur). */
+  #mobile-menu{
+    position:fixed !important;top:auto !important;bottom:calc(58px + env(safe-area-inset-bottom,0px)) !important;
+    left:0 !important;right:0 !important;width:100% !important;
+    border-radius:22px 22px 0 0 !important;border-top:1px solid #e2e8f0 !important;
+    box-shadow:0 -30px 60px -30px rgba(15,23,42,.45) !important;
+    max-height:70vh !important;overflow-y:auto !important;overscroll-behavior:contain !important;
+    z-index:60 !important;
+  }
+  /* Open state: a 3-column icon grid (mockup style). */
+  #mobile-menu:not(.hidden){
+    display:grid !important;grid-template-columns:repeat(3,1fr);gap:9px;align-content:start;
+    padding:8px 14px calc(16px + env(safe-area-inset-bottom,0px)) !important;
+  }
+  /* Grip handle at the top, spanning the full width. */
+  #mobile-menu:not(.hidden)::before{
+    content:"";grid-column:1 / -1;width:42px;height:5px;border-radius:99px;
+    background:#cbd5e1;margin:2px auto 4px;
+  }
+  /* The 9 page shortcuts become icon tiles. */
+  #mobile-menu > .mobile-nav-item[data-page]{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+    padding:15px 6px !important;border:1px solid #e8eef6 !important;border-radius:14px !important;
+    background:#f8fafc !important;color:#334155 !important;font-size:12px !important;font-weight:700 !important;
+    text-align:center;line-height:1.15;transition:transform .16s ease,border-color .18s ease,background .18s ease;
+  }
+  #mobile-menu > .mobile-nav-item[data-page] i{width:22px;height:22px;color:#0284c7}
+  #mobile-menu > .mobile-nav-item[data-page] span{display:block}
+  #mobile-menu > .mobile-nav-item[data-page]:active{transform:scale(.96)}
+  #mobile-menu > .mobile-nav-item[data-page].active,
+  #mobile-menu > .mobile-nav-item[data-page]:hover{
+    border-color:#7dd3fc !important;background:#eff6ff !important;color:#0369a1 !important;
+  }
+  #mobile-menu > .mobile-nav-item[data-page].active i{color:#0369a1}
+  /* My Profile and Log out join the icon grid as tiles, like the shortcuts
+     above. The member wrapper is display:contents so its button is a direct
+     grid cell; the two get the same tile look by id. */
+  #mobile-menu > #mobile-member-menu{display:contents}
+  #mobile-menu #mobile-member-item,
+  #mobile-menu > #rd-more-logout-mobile{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+    width:auto !important;padding:15px 6px !important;border:1px solid #e8eef6 !important;
+    border-radius:14px !important;background:#f8fafc !important;color:#334155 !important;
+    font-size:12px !important;font-weight:700 !important;text-align:center;line-height:1.15;
+    transition:transform .16s ease,border-color .18s ease,background .18s ease;
+  }
+  #mobile-menu #mobile-member-item i,#mobile-menu #mobile-member-item svg,
+  #mobile-menu > #rd-more-logout-mobile i,#mobile-menu > #rd-more-logout-mobile svg{width:22px;height:22px;color:#0284c7}
+  #mobile-menu #mobile-member-item:active,
+  #mobile-menu > #rd-more-logout-mobile:active{transform:scale(.96)}
+  #mobile-menu #mobile-member-item:hover,
+  #mobile-menu > #rd-more-logout-mobile:hover{
+    border-color:#7dd3fc !important;background:#eff6ff !important;color:#0369a1 !important;
+  }
+  /* Admin dashboard and the CTA stay full-width rows. */
+  #mobile-menu > #mobile-admin-menu,
+  #mobile-menu > #mobile-membership-cta{grid-column:1 / -1}
+  #mobile-menu > #mobile-membership-cta{margin-top:2px !important}
+  /* Clearance so the fixed bar never covers page content. */
+  body{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px)) !important}
+  /* The top branding header slides away on scroll-down (JS toggles the class);
+     the bottom bar now carries navigation, so the header is free to hide. */
+  header.glass-nav{transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease !important}
+  header.glass-nav.rd-nav-hidden{transform:translateY(-100%) !important;box-shadow:none !important}
+}
+.rd-mtab{
+  appearance:none;-webkit-appearance:none;border:0;background:transparent;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 2px 2px;
+  color:#64748b;font-size:10px;font-weight:700;transition:color .2s,transform .2s;
+}
+.rd-mtab i{width:20px;height:20px}
+.rd-mtab.active,.rd-mtab.active i{color:#0284c7}
+.rd-mtab:active{transform:translateY(1px)}
+.rd-mtab-cta{position:relative}
+/* Center CTA: a floating circular bubble with a crisp white ring and blue glow. */
+.rd-mnav-bubble{
+  width:46px;height:46px;margin-top:-24px;border-radius:50%;display:grid;place-items:center;color:#fff;
+  background:linear-gradient(145deg,#38bdf8 0%,#0284c7 55%,#075985 100%);
+  box-shadow:0 10px 22px -8px rgba(2,132,199,.85),0 0 0 4px #fff,0 0 0 5px rgba(2,132,199,.18);
+  transition:transform .2s ease,box-shadow .2s ease;
+}
+.rd-mtab-cta:active .rd-mnav-bubble{transform:scale(.94)}
+.rd-mnav-bubble i{width:23px;height:23px}
+#rd-mnav-cta-label{margin-top:4px;color:#0284c7;font-weight:800}
+
+/* ============================================================
+   Member Sign In redesign (Email + Member ID -> code, Google below).
+   Test-neutral: lives here, invisible to rd_source.js.
+   ============================================================ */
+#page-member-signin .rd-si-card{text-align:center}
+#page-member-signin .rd-si-or{display:flex;align-items:center;gap:12px;color:#94a3b8;font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+#page-member-signin .rd-si-or::before,#page-member-signin .rd-si-or::after{content:"";flex:1;height:1px;background:#e2e8f0}
+#page-member-signin .rd-si-sent{background:#eff6ff;border:1px solid #dbeafe;border-radius:12px;padding:11px 14px;font-size:.82rem;font-weight:600;color:#1e40af}
+#page-member-signin input.rd-si-code{letter-spacing:.4em;font-size:1.05rem}
+#page-member-signin #member-gsi-btn{min-height:44px}
+
+/* ============================================================
+   PDACC-only mobile top tab-bar (#rd-pd-topnav) + top-anchored
+   "More" grid sheet (#rd-pd-topsheet). Shown by JS via
+   body.rd-on-pdacc. Desktop (>=1280px) keeps the .rd-pd-side
+   sidebar, so both are display:none there. Test-neutral: this
+   file is never scanned by rd_source.js. Teal to match .rd-pd-teal.
+   ============================================================ */
+#rd-pd-topnav,#rd-pd-topsheet{display:none}
+@media (max-width:1279px){
+  /* The old tap-to-open accordion is replaced by this always-visible bar. */
+  .rd-pd-mswitch{display:none !important}
+
+  body.rd-on-pdacc #rd-pd-topnav{
+    display:grid;grid-template-columns:repeat(5,1fr);align-items:center;gap:2px;
+    position:fixed;top:0;left:0;right:0;z-index:58;
+    padding:calc(6px + env(safe-area-inset-top,0px)) 8px 6px;
+    background:rgba(255,255,255,.97);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
+    border-bottom:1px solid #cfeae4;box-shadow:0 14px 30px -22px rgba(13,148,136,.5);
+  }
+  .rd-pdt-tab{
+    appearance:none;-webkit-appearance:none;border:0;background:transparent;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 1px;
+    color:#64748b;font-size:9.5px;font-weight:700;line-height:1;letter-spacing:-.01em;
+    border-radius:10px;transition:color .2s,background .2s,transform .15s;white-space:nowrap;
+  }
+  .rd-pdt-tab i{width:19px;height:19px}
+  .rd-pdt-tab:active{transform:translateY(1px)}
+  .rd-pdt-tab.active,.rd-pdt-tab.active i{color:#0d9488}
+  .rd-pdt-tab.active{background:#f0fdfa}
+  /* "More" grid sheet drops down from directly under the top bar. */
+  body.rd-on-pdacc #rd-pd-topsheet{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:9px;align-content:start;
+    position:fixed;left:0;right:0;z-index:57;
+    top:calc(52px + env(safe-area-inset-top,0px));
+    padding:14px 14px 16px;
+    background:rgba(255,255,255,.99);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
+    border-bottom:1px solid #cfeae4;border-radius:0 0 22px 22px;
+    box-shadow:0 30px 60px -30px rgba(13,148,136,.5);
+    max-height:70vh;overflow-y:auto;overscroll-behavior:contain;
+    transform-origin:top center;animation:rdPdSheetIn .28s cubic-bezier(.22,1,.36,1) both;
+  }
+  body.rd-on-pdacc #rd-pd-topsheet.hidden{display:none}
+  .rd-pdmore-item{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+    padding:15px 6px;border:1px solid #cff0e9;border-radius:14px;text-decoration:none;
+    background:#f6fefb;color:#334155;font-size:12px;font-weight:700;
+    text-align:center;line-height:1.15;transition:transform .16s,border-color .18s,background .18s;
+  }
+  .rd-pdmore-item i{width:22px;height:22px;color:#0d9488}
+  .rd-pdmore-item[hidden]{display:none !important}
+  .rd-pdmore-item:active{transform:scale(.96)}
+  .rd-pdmore-item:hover{border-color:#5eead4;background:#ecfdf5;color:#0f766e}
+  .rd-pdmore-soon{opacity:.85}
+  .rd-pdmore-soon b{display:block;font-size:9px;font-weight:800;color:#0d9488;text-transform:uppercase;letter-spacing:.08em;margin-top:2px}
+
+  /* On the PDACC page the branding header is fully replaced by the top bar. */
+  body.rd-on-pdacc header.glass-nav{display:none !important}
+  /* Push page content clear of the fixed PDACC top bar. */
+  body.rd-on-pdacc{padding-top:calc(52px + env(safe-area-inset-top,0px)) !important}
+  /* Bottom bar auto-hide (JS toggles the class on scroll on the PDACC page). */
+  #rd-mnav{transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease}
+  #rd-mnav.rd-nav-hidden{transform:translateY(100%) !important;box-shadow:none !important}
+}
+@keyframes rdPdSheetIn{from{opacity:0;transform:translateY(-10px) scaleY(.96)}to{opacity:1;transform:translateY(0) scaleY(1)}}
+
+/* ============================================================
+   Site-wide scroll-reveal (2026 redesign) — cards + section
+   headings fade + rise as they enter the viewport. Same visual
+   language as the alumni/poll card reveals. Mobile + PC alike
+   (no breakpoint). JS tags .rd-reveal / .rd-reveal-head and adds
+   .is-visible via IntersectionObserver; the html.rd-reveal-on gate
+   (set by rdRevealInit) keeps everything visible when JS is off.
+   See rdRevealScan in script.js.
+   ============================================================ */
+html.rd-reveal-on .rd-reveal,
+html.rd-reveal-on .rd-reveal-head{
+  opacity:0;
+  transition:opacity .6s ease,transform .6s cubic-bezier(.22,1,.36,1);
+  transition-delay:var(--rd-reveal-delay,0ms);
+  will-change:opacity,transform;
+}
+html.rd-reveal-on .rd-reveal{transform:translateY(22px)}
+html.rd-reveal-on .rd-reveal-head{transform:translateY(14px)}
+html.rd-reveal-on .rd-reveal.is-visible,
+html.rd-reveal-on .rd-reveal-head.is-visible{opacity:1;transform:none}
+
+@media (prefers-reduced-motion:reduce){
+  html.rd-reveal-on .rd-reveal,
+  html.rd-reveal-on .rd-reveal-head{
+    opacity:1 !important;transform:none !important;transition:none !important;
+  }
+}
+
+/* ============================================================
+   "What We Do" (#activities) cards — smarter 2026 redesign.
+   Test-invisible (redesign-overrides.css). Cards also carry
+   .rd-reveal (tagged by rdRevealTag) so they fade + rise in.
+   id-specificity here beats .rd-reveal.is-visible{transform:none},
+   so the hover lift survives the reveal.
+   ============================================================ */
+#activities .grid > div{
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(15,23,42,.06);
+  border-radius:1.75rem;
+  background:
+    radial-gradient(130% 130% at 100% 0%, rgba(37,99,235,.06), transparent 45%),
+    linear-gradient(180deg,#ffffff,#fbfdff);
+  box-shadow:0 1px 2px rgba(15,23,42,.04), 0 14px 34px -20px rgba(15,23,42,.28);
+  transition:transform .5s cubic-bezier(.22,1,.36,1), box-shadow .45s ease,
+             border-color .45s ease, opacity .5s ease;
+}
+/* animated tri-colour accent that sweeps in from the left on hover */
+#activities .grid > div::before{
+  content:"";position:absolute;left:0;top:0;height:3px;width:100%;
+  background:linear-gradient(90deg,#2563eb,#22c55e,#f59e0b,#e11d48);
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .55s cubic-bezier(.22,1,.36,1);
+}
+#activities .grid > div:hover{
+  border-color:rgba(37,99,235,.22);
+  box-shadow:0 1px 2px rgba(15,23,42,.05), 0 30px 55px -26px rgba(37,99,235,.42);
+}
+#activities .grid > div:hover::before{transform:scaleX(1)}
+#activities .grid > div.is-visible:hover{transform:translateY(-7px)}
+
+/* icon badge: soft ring, colour-tinted depth + a glass sheen */
+#activities .grid > div > div:first-of-type{
+  position:relative;
+  border-radius:1.15rem;
+  box-shadow:inset 0 0 0 1px rgba(15,23,42,.05), 0 12px 24px -12px rgba(15,23,42,.4);
+}
+#activities .grid > div > div:first-of-type::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(140deg, rgba(255,255,255,.6), transparent 62%);
+}
+
+/* title picks up the brand blue on hover */
+#activities .grid > div h3{transition:color .35s ease}
+#activities .grid > div:hover h3{color:#1d4ed8}
+
+@media (prefers-reduced-motion:reduce){
+  #activities .grid > div,
+  #activities .grid > div::before,
+  #activities .grid > div h3{transition:none !important}
+  #activities .grid > div.is-visible:hover{transform:none !important}
+}
+
