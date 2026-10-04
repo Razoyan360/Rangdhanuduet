@@ -1485,7 +1485,36 @@
       showLightboxItem(index);
     }
     
-    function openCustomLightbox(src, caption) {
+    function openLightboxFromSlide(el) {
+        const container = el.closest('.swiper-wrapper');
+        if (!container) return;
+        
+        // Swiper loop creates duplicates, we only want the original slides
+        const slides = [...container.querySelectorAll('.swiper-slide')];
+        let items = [];
+        let uniqueSrcs = new Set();
+        
+        for (let slide of slides) {
+            // Skip duplicates to avoid double counting
+            if (slide.classList.contains('swiper-slide-duplicate')) continue;
+            
+            const img = slide.querySelector('img');
+            if (img && !uniqueSrcs.has(img.src)) {
+                uniqueSrcs.add(img.src);
+                const capDiv = slide.querySelector('div.absolute');
+                const slideCaption = capDiv ? capDiv.innerText : '';
+                items.push({ src: img.src, caption: slideCaption });
+            }
+        }
+        
+        lightboxItems = items;
+        const clickedImg = el.querySelector('img');
+        const src = clickedImg ? clickedImg.src : '';
+        const idx = lightboxItems.findIndex(x => x.src === src);
+        showLightboxItem(idx === -1 ? 0 : idx);
+      }
+      
+      function openCustomLightbox(src, caption) {
         const swiperSlides = [...document.querySelectorAll('.swiper-slide[onclick^="openCustomLightbox("]')];
         let items = [];
         for (let slide of swiperSlides) {
@@ -8265,7 +8294,7 @@
       if (staticGal.length > 0) {
           staticGalleryHtml = '<div class="swiper-wrapper">' + staticGal.map(x => {
               const src = normalizeAlumniImage(x.image || '');
-              return src ? `<div class="swiper-slide w-72 sm:w-96 h-96 sm:h-[450px] rounded-2xl overflow-hidden cursor-pointer shadow-xl relative group" onclick="openCustomLightbox('${escapeHtml(src)}', '${escapeHtml(x.caption || title)}')"><img src="${escapeHtml(src)}" class="w-full h-full object-cover"><div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/90 via-black/40 to-transparent text-white text-xs sm:text-sm font-medium line-clamp-2 whitespace-normal leading-tight opacity-100 transition-opacity">${escapeHtml(x.caption || title)}</div></div>` : '';
+              return src ? `<div class="swiper-slide w-72 sm:w-96 h-96 sm:h-[450px] rounded-2xl overflow-hidden cursor-pointer shadow-xl relative group" onclick="openLightboxFromSlide(this)"><img src="${escapeHtml(src)}" class="w-full h-full object-cover"><div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/90 via-black/40 to-transparent text-white text-xs sm:text-sm font-medium line-clamp-2 whitespace-normal leading-tight opacity-100 transition-opacity">${escapeHtml(x.caption || title)}</div></div>` : '';
           }).join('') + '</div><div class="swiper-pagination mt-4 relative"></div>';
       }
 
@@ -8341,10 +8370,10 @@
               if (galHtml) {
                   const combined = staticGal.map(x => {
                       const src = normalizeAlumniImage(x.image || '');
-                      return src ? `<div class="swiper-slide w-72 sm:w-96 h-96 sm:h-[450px] rounded-2xl overflow-hidden cursor-pointer shadow-xl relative group" onclick="openCustomLightbox('${escapeHtml(src)}', '${escapeHtml(x.caption || title)}')"><img src="${escapeHtml(src)}" class="w-full h-full object-cover"><div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/90 via-black/40 to-transparent text-white text-xs sm:text-sm font-medium line-clamp-2 whitespace-normal leading-tight opacity-100 transition-opacity">${escapeHtml(x.caption || title)}</div></div>` : '';
+                      return src ? `<div class="swiper-slide w-72 sm:w-96 h-96 sm:h-[450px] rounded-2xl overflow-hidden cursor-pointer shadow-xl relative group" onclick="openLightboxFromSlide(this)"><img src="${escapeHtml(src)}" class="w-full h-full object-cover"><div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/90 via-black/40 to-transparent text-white text-xs sm:text-sm font-medium line-clamp-2 whitespace-normal leading-tight opacity-100 transition-opacity">${escapeHtml(x.caption || title)}</div></div>` : '';
                   }).join('') + items.map(x => {
                       const src = normalizeAlumniImage(x.image || '');
-                      return src ? `<div class="swiper-slide w-72 sm:w-96 h-96 sm:h-[450px] rounded-2xl overflow-hidden cursor-pointer shadow-xl relative group" onclick="openCustomLightbox('${escapeHtml(src)}', '${escapeHtml(x.caption || title)}')"><img src="${escapeHtml(src)}" class="w-full h-full object-cover"><div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/90 via-black/40 to-transparent text-white text-xs sm:text-sm font-medium line-clamp-2 whitespace-normal leading-tight opacity-100 transition-opacity">${escapeHtml(x.caption || title)}</div></div>` : '';
+                      return src ? `<div class="swiper-slide w-72 sm:w-96 h-96 sm:h-[450px] rounded-2xl overflow-hidden cursor-pointer shadow-xl relative group" onclick="openLightboxFromSlide(this)"><img src="${escapeHtml(src)}" class="w-full h-full object-cover"><div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/90 via-black/40 to-transparent text-white text-xs sm:text-sm font-medium line-clamp-2 whitespace-normal leading-tight opacity-100 transition-opacity">${escapeHtml(x.caption || title)}</div></div>` : '';
                   }).join('');
                   
                   const wrapper = '<div class="swiper-wrapper">' + combined + '</div><div class="swiper-pagination mt-4 relative"></div>';
