@@ -8294,7 +8294,7 @@
                   const combined = staticGal.map(x => {
                       const src = normalizeAlumniImage(x.image || '');
                       return src ? `<div class="swiper-slide w-64 h-80 rounded-2xl overflow-hidden cursor-pointer shadow-xl relative" onclick="openCustomLightbox('${escapeHtml(src)}', '${escapeHtml(x.caption || title)}')"><img src="${escapeHtml(src)}" class="w-full h-full object-cover"><div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/80 to-transparent text-white text-sm font-bold truncate">${escapeHtml(x.caption || title)}</div></div>` : '';
-                  }).join('') + (d.data || []).map(x => {
+                  }).join('') + items.map(x => {
                       const src = normalizeAlumniImage(x.image || '');
                       return src ? `<div class="swiper-slide w-64 h-80 rounded-2xl overflow-hidden cursor-pointer shadow-xl relative" onclick="openCustomLightbox('${escapeHtml(src)}', '${escapeHtml(x.caption || title)}')"><img src="${escapeHtml(src)}" class="w-full h-full object-cover"><div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/80 to-transparent text-white text-sm font-bold truncate">${escapeHtml(x.caption || title)}</div></div>` : '';
                   }).join('');
@@ -8320,7 +8320,7 @@
                           slidesPerView: 'auto',
                           coverflowEffect: { rotate: 30, stretch: 0, depth: 200, modifier: 1, slideShadows: true },
                           pagination: { el: '.event-gallery-swiper .swiper-pagination', clickable: true },
-                          loop: (staticGal.length + (d.data ? d.data.length : 0)) > 3
+                          loop: (staticGal.length + items.length) > 3
                       });
                   }, 100);
               }
