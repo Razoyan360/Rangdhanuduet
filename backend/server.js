@@ -993,6 +993,57 @@ app.post('/api', async (req, res) => {
             await db.execute({ sql: "UPDATE events SET status = 'REJECTED', admin_note = ? WHERE event_id = ?", args: [payload.adminNote || '', payload.eventId] });
             return res.json({ success: true, message: 'Event rejected.' });
         }
+        
+        if (action === 'adminupdateevent') {
+            const d = payload.data || {};
+            if (!d.eventId) return res.json({ success: false, message: 'Event ID required' });
+            
+            const updates = [];
+            const args = [];
+            
+            const mapField = (dbField, jsonField) => {
+                if (d[jsonField] !== undefined) {
+                    updates.push(`${dbField} = ?`);
+                    args.push(d[jsonField]);
+                }
+            };
+            
+            mapField('event_name', 'name');
+            mapField('category', 'category');
+            mapField('short_description', 'shortDesc');
+            mapField('full_description', 'fullDesc');
+            mapField('event_date', 'eventDate');
+            mapField('start_time', 'startTime');
+            mapField('end_time', 'endTime');
+            mapField('venue', 'venue');
+            mapField('google_maps_link', 'mapsLink');
+            mapField('organized_by', 'organizedBy');
+            mapField('contact_person', 'contactName');
+            mapField('contact_number', 'contactNo');
+            mapField('registration_link', 'regLink');
+            mapField('facebook_link', 'fbLink');
+
+            if (d.mainImage && d.mainImage.data) {
+                updates.push('main_image = ?');
+                args.push(d.mainImage.data);
+            }
+            if (d.sponsors !== undefined) {
+                updates.push('sponsors = ?');
+                args.push(JSON.stringify(d.sponsors));
+            }
+            
+            if (updates.length > 0) {
+                args.push(d.eventId);
+                await db.execute({
+                    sql: `UPDATE events SET ${updates.join(', ')} WHERE event_id = ?`,
+                    args: args
+                });
+                await logAdminActivity(db, adminEmail, 'UPDATE_EVENT', d.eventId, 'Updated event details');
+            }
+            
+            return res.json({ success: true, message: 'Event updated.' });
+        }
+
         if (action === 'adminseteventvisible') {
             await db.execute({ sql: "UPDATE events SET status = ? WHERE event_id = ?", args: [payload.show === 'YES' ? 'APPROVED' : 'PENDING', payload.eventId] });
             return res.json({ success: true, message: 'Event visibility updated.' });
@@ -1168,20 +1219,26 @@ app.post('/api', async (req, res) => {
             return res.json({ success: true, message: 'Registration submitted successfully!' });
         }
 
-        if (action === 'submitEvent') {
+        if (action === 'submitEvent' || action === 'submitevent') {
             const ev = payload.event || {};
             const eventId = 'EVT-' + Date.now();
             
+            const spStr = ev.sponsors ? JSON.stringify(ev.sponsors) : null;
+            const mainImg = ev.mainImage && ev.mainImage.data ? ev.mainImage.data : '';
+
             await db.execute({
                 sql: `INSERT INTO events (
-                    event_id, event_name, category, date, venue, 
-                    short_description, full_description, organized_by, 
-                    submitted_by, submitter_email, status
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'PENDING')`,
+                    event_id, event_name, category, short_description, full_description,
+                    event_date, start_time, end_time, venue, google_maps_link,
+                    organized_by, contact_person, contact_number, main_image, 
+                    registration_link, facebook_link, submitted_by, submitter_email,
+                    status, sponsors
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'PENDING', ?)`,
                 args: [
-                    eventId, ev.eventName, ev.category, ev.eventDate, ev.venue,
-                    ev.shortDescription, ev.fullDescription, ev.organizedBy,
-                    ev.submittedBy, ev.submitterEmail
+                    eventId, ev.eventName, ev.category, ev.shortDescription, ev.fullDescription,
+                    ev.eventDate, ev.startTime, ev.endTime, ev.venue, ev.mapsLink,
+                    ev.organizedBy, ev.contactName, ev.contactNo, mainImg,
+                    ev.regLink, ev.fbLink, ev.submittedBy, ev.submitterEmail, spStr
                 ]
             });
             return res.json({ success: true, message: 'Event submitted successfully!' });
@@ -1190,22 +1247,25 @@ app.post('/api', async (req, res) => {
         if (action === 'admincreateupcomingevent') {
             const ev = payload || {};
             const eventId = 'EVT-' + Date.now();
-            
-            // For mainImage, it comes as base64 in ev.mainImage
+            const spStr = ev.sponsors ? JSON.stringify(ev.sponsors) : null;
             const mainImg = ev.mainImage && ev.mainImage.data ? ev.mainImage.data : '';
 
             await db.execute({
                 sql: `INSERT INTO events (
-                    event_id, event_name, category, date, venue, 
-                    short_description, full_description, organized_by, 
-                    submitted_by, submitter_email, main_image, status, is_upcoming
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'APPROVED', 1)`,
+                    event_id, event_name, category, short_description, full_description,
+                    event_date, start_time, end_time, venue, google_maps_link,
+                    organized_by, contact_person, contact_number, main_image, 
+                    registration_link, facebook_link, submitted_by, submitter_email,
+                    status, sponsors
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'APPROVED', ?)`,
                 args: [
-                    eventId, ev.eventName, ev.category, ev.eventDate, ev.venue,
-                    ev.shortDescription, ev.fullDescription, ev.organizedBy,
-                    ev.submittedBy, ev.submitterEmail, mainImg
+                    eventId, ev.eventName, ev.category, ev.shortDescription, ev.fullDescription,
+                    ev.eventDate, ev.startTime, ev.endTime, ev.venue, ev.mapsLink,
+                    ev.organizedBy, ev.contactName, ev.contactNo, mainImg,
+                    ev.regLink, ev.fbLink, ev.submittedBy, ev.submitterEmail, spStr
                 ]
             });
+            await logAdminActivity(db, adminEmail, 'CREATE_EVENT', eventId, 'Created upcoming event: ' + ev.eventName);
             return res.json({ success: true, message: 'Upcoming Event created successfully!' });
         }
 
