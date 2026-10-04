@@ -1,0 +1,19 @@
+# Everything here is meant to be found. Nothing on this site is behind a
+# crawler wall, and no crawler is singled out for a different answer than
+# another one gets: one Allow line, for everybody.
+User-agent: *
+Allow: /
+
+# The Association's own reference document about itself, kept out of the site
+# menus but fully public and indexable. /llms.txt is the same information as a
+# plain text summary for automated readers. Neither is cloaked and neither is
+# served differently to a crawler than to a person.
+# Organization profile: https://rangdhanuduet.live/organization.html
+# PDACC page:           https://rangdhanuduet.live/pdacc.html
+# LLM summary:          https://rangdhanuduet.live/llms.txt
+#
+# The PDACC page is the same idea for the coaching centre: on the main site
+# PDACC is only the #prokoushali section of a single-page app, which no crawler
+# can index as a page, so it now has a real address of its own.
+
+Sitemap: https://rangdhanuduet.live/sitemap.xml

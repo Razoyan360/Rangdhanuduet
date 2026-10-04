@@ -1,0 +1,1 @@
+const fs = require('fs'); let c = fs.readFileSync('backend/server.js', 'utf8'); c = c.replace(/import cron from 'node-cron';/g, ''); c = 'import cron from \'node-cron\';\n' + c; fs.writeFileSync('backend/server.js', c);

@@ -1,0 +1,10 @@
+# The repo is a mix: index.html is LF, script.js and custom.css are CRLF. That
+# mix is exactly what silently broke fifteen harness checks -- the assertions
+# embed \n in their regexes, so a CRLF file never matches. rd_source.js folds
+# CRLF away when it reads, but keeping one line ending everywhere is the real
+# fix, so text files are LF in the repo AND in the working copy on every
+# machine. logo.png / the two jpgs are detected as binary and left alone.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary

@@ -1,0 +1,47 @@
+# This repo is public -- rangdhanuduet.live is served straight out of it, and a
+# custom domain on GitHub Pages means it cannot be private. So the rule here is
+# the other way round from a normal project: nothing is tracked unless it is a
+# file the live site actually serves.
+#
+# That keeps out, by default and forever:
+#   backend/*.gs, backend/CODE-REVIEW-FIXES.md  -- carry the Google Sheet and
+#       Drive folder IDs (13 of them). Not secrets on their own, but no reason
+#       to hand them out.
+#   DEPLOY-NOTES.md, CLAUDE.md, NEXT-BATCH-TAILWIND.md, REUNION-ALBUM-ORDER.md,
+#       SHIFT-TO-CODE.md, RUN-THIS.txt  -- internal notes
+#   test_*.js, verify.js, check*.js, rd_source.js, apply_*.py, split.js, src.css,
+#       tailwind.config.js, package*.json, node_modules/  -- the toolchain
+#   index.html.before-split, ORIGINAL-compare.html, outputs/, work/  -- archives
+#
+# A new scratch file therefore can never leak by accident: it is ignored until
+# someone adds it to the allow-list below on purpose.
+
+# 1. ignore everything, at every depth
+/*
+
+# 2. then allow back exactly what ships
+!.gitignore
+!.gitattributes
+!CNAME
+!index.html
+!organization.html
+!pdacc.html
+!llms.txt
+!style.css
+!custom.css
+!script.js
+!logo.png
+!pdacc-logo.png
+# The DUET crest beside the brand mark in the header (brand-duet-crest in
+# index.html names it), so it has to ship.
+!duet-logo.png
+!slide-home.jpg
+!slide-pdacc.jpg
+# The Association's own cover, behind every member who has not uploaded one.
+# RD_MP_COVER_DEFAULT in script.js names it, so it has to ship.
+!cover-default.jpg
+!robots.txt
+!sitemap.xml
+!PROJECT_STATUS.md
+!PROJECT_HANDOVER_PROMPT.md
+!CODEBASE_INDEX.md

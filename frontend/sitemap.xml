@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The site itself is one document with hash routes (#alumni, #prokoushali and
+     so on). A hash fragment is not a separate page to a crawler, so listing
+     them here would be noise. Three honest entries: the site, and the two real
+     second addresses on it. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://rangdhanuduet.live/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <!-- The Association's reference document about itself. Deliberately absent
+       from the site menus, deliberately present here: it is meant to be found
+       by anyone looking for what Rangdhanu DUET actually is. -->
+  <url>
+    <loc>https://rangdhanuduet.live/organization.html</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <!-- PDACC's own page. On the main site PDACC is only the #prokoushali
+       section, which no crawler can treat as a page of its own, so anyone
+       searching for a DUET admission coaching centre had nothing to find. -->
+  <url>
+    <loc>https://rangdhanuduet.live/pdacc.html</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+</urlset>
