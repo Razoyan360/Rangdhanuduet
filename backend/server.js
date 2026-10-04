@@ -807,7 +807,6 @@ if (action === 'get_env') return res.json({url: process.env.TURSO_DATABASE_URL, 
                 posts: 0,
                 polls: 0
             });
-        });
         }
 
         // === ADMIN UNCLAIMED PROFILES ===
@@ -841,6 +840,161 @@ if (action === 'get_env') return res.json({url: process.env.TURSO_DATABASE_URL, 
         if (action === 'adminunclaimedaudits') {
             const data = await db.execute("SELECT * FROM unclaimed_merge_audit ORDER BY date_time DESC");
             return res.json({ success: true, rows: data.rows });
+        }
+
+        // === UNCLAIMED MERGE OPERATIONS ===
+        
+        if (action === 'mergeunclaimed') {
+            const matchId = payload.matchId || (payload.data && payload.data.matchId);
+            if (!matchId) return res.json({ success: false, message: 'Match ID required' });
+            
+            const matchHit = await db.execute({ sql: "SELECT * FROM unclaimed_matches WHERE match_id = ?", args: [matchId] });
+            if (matchHit.rows.length === 0) return res.json({ success: false, message: 'Match not found.' });
+            const match = matchHit.rows[0];
+            
+            const profHit = await db.execute({ sql: "SELECT * FROM unclaimed_profiles WHERE unclaimed_id = ?", args: [match.unclaimed_id] });
+            if (profHit.rows.length === 0) return res.json({ success: false, message: 'Unclaimed profile not found.' });
+            const profile = profHit.rows[0];
+            
+            const alHit = await db.execute({ sql: "SELECT * FROM alumni WHERE member_id = ?", args: [match.member_id] });
+            if (alHit.rows.length === 0) return res.json({ success: false, message: 'Alumni record not found.' });
+            const alumni = alHit.rows[0];
+            
+            let positions = [];
+            try { if (alumni.positions) positions = JSON.parse(alumni.positions); } catch(e){}
+            if (!Array.isArray(positions)) positions = [];
+            
+            const isDup = positions.some(p => p.committee === profile.committee && p.session === profile.session && p.position === profile.position);
+            if (!isDup) {
+                positions.push({
+                    committee: profile.committee,
+                    session: profile.session,
+                    position: profile.position
+                });
+            }
+            
+            await db.execute({ sql: "UPDATE alumni SET positions = ? WHERE member_id = ?", args: [JSON.stringify(positions), match.member_id] });
+            await db.execute({ sql: "UPDATE unclaimed_profiles SET status = 'MERGED' WHERE unclaimed_id = ?", args: [profile.unclaimed_id] });
+            await db.execute({ sql: "UPDATE unclaimed_matches SET status = 'MERGED' WHERE match_id = ?", args: [matchId] });
+            
+            const auditId = 'AUD-' + Date.now();
+            await db.execute({ 
+                sql: "INSERT INTO unclaimed_merge_audit (audit_id, unclaimed_id, member_id, action, admin_email, detail) VALUES (?, ?, ?, 'MERGE', ?, 'Manually merged via dashboard')",
+                args: [auditId, profile.unclaimed_id, match.member_id, adminEmail]
+            });
+            await logAdminActivity(db, adminEmail, 'UNCLAIMED_MERGE', matchId, 'Merged unclaimed profile: ' + profile.unclaimed_id + ' to ' + match.member_id);
+            
+            return res.json({ success: true, message: 'Records merged and committee history retained.' });
+        }
+
+        if (action === 'keepunclaimedseparate') {
+            const matchId = payload.matchId || (payload.data && payload.data.matchId);
+            if (!matchId) return res.json({ success: false, message: 'Match ID required' });
+            
+            const matchHit = await db.execute({ sql: "SELECT * FROM unclaimed_matches WHERE match_id = ?", args: [matchId] });
+            if (matchHit.rows.length === 0) return res.json({ success: false, message: 'Match not found.' });
+            const match = matchHit.rows[0];
+            
+            await db.execute({ sql: "UPDATE unclaimed_matches SET status = 'KEPT_SEPARATE' WHERE match_id = ?", args: [matchId] });
+            await db.execute({ sql: "UPDATE unclaimed_profiles SET status = 'KEPT_SEPARATE' WHERE unclaimed_id = ?", args: [match.unclaimed_id] });
+            
+            const auditId = 'AUD-' + Date.now();
+            await db.execute({ 
+                sql: "INSERT INTO unclaimed_merge_audit (audit_id, unclaimed_id, member_id, action, admin_email, detail) VALUES (?, ?, ?, 'KEPT_SEPARATE', ?, 'Marked to keep separate')",
+                args: [auditId, match.unclaimed_id, match.member_id, adminEmail]
+            });
+            await logAdminActivity(db, adminEmail, 'UNCLAIMED_SEPARATE', matchId, 'Kept unclaimed profile separate: ' + match.unclaimed_id);
+            
+            return res.json({ success: true, message: 'Records kept separate.' });
+        }
+
+        if (action === 'undounclaimedmerge') {
+            const auditId = payload.auditId || (payload.data && payload.data.auditId);
+            if (!auditId) return res.json({ success: false, message: 'Audit ID required' });
+            
+            const auditHit = await db.execute({ sql: "SELECT * FROM unclaimed_merge_audit WHERE audit_id = ?", args: [auditId] });
+            if (auditHit.rows.length === 0) return res.json({ success: false, message: 'Audit log not found.' });
+            const audit = auditHit.rows[0];
+            
+            await db.execute({ sql: "UPDATE unclaimed_profiles SET status = 'OPEN' WHERE unclaimed_id = ?", args: [audit.unclaimed_id] });
+            await db.execute({ sql: "UPDATE unclaimed_matches SET status = 'OPEN' WHERE unclaimed_id = ? AND member_id = ?", args: [audit.unclaimed_id, audit.member_id] });
+            
+            if (audit.action === 'MERGE') {
+                const profHit = await db.execute({ sql: "SELECT * FROM unclaimed_profiles WHERE unclaimed_id = ?", args: [audit.unclaimed_id] });
+                const alHit = await db.execute({ sql: "SELECT * FROM alumni WHERE member_id = ?", args: [audit.member_id] });
+                if (profHit.rows.length > 0 && alHit.rows.length > 0) {
+                    const profile = profHit.rows[0];
+                    const alumni = alHit.rows[0];
+                    let positions = [];
+                    try { if (alumni.positions) positions = JSON.parse(alumni.positions); } catch(e){}
+                    if (Array.isArray(positions)) {
+                        positions = positions.filter(p => !(p.committee === profile.committee && p.session === profile.session && p.position === profile.position));
+                        await db.execute({ sql: "UPDATE alumni SET positions = ? WHERE member_id = ?", args: [JSON.stringify(positions), audit.member_id] });
+                    }
+                }
+            }
+            
+            await db.execute({ sql: "DELETE FROM unclaimed_merge_audit WHERE audit_id = ?", args: [auditId] });
+            await logAdminActivity(db, adminEmail, 'UNCLAIMED_UNDO', auditId, 'Undid merge for unclaimed profile: ' + audit.unclaimed_id);
+            
+            return res.json({ success: true, message: 'Merge undone safely.' });
+        }
+
+        if (action === 'backfillunclaimedprofiles') {
+            const apply = String(payload.apply || '').toLowerCase() === 'true';
+            const decisions = payload.decisions || {};
+            
+            const profHit = await db.execute("SELECT * FROM unclaimed_profiles WHERE status = 'OPEN'");
+            const alHit = await db.execute("SELECT * FROM alumni");
+            
+            const matchesFound = [];
+            for (const profile of profHit.rows) {
+                for (const alumni of alHit.rows) {
+                    let score = 0;
+                    let matchFields = [];
+                    if (profile.mobile_number && alumni.mobile_number && profile.mobile_number === alumni.mobile_number) { score += 50; matchFields.push('mobile'); }
+                    if (profile.email && alumni.email && profile.email.toLowerCase() === alumni.email.toLowerCase()) { score += 40; matchFields.push('email'); }
+                    if (profile.full_name && alumni.full_name_english && profile.full_name.toLowerCase() === alumni.full_name_english.toLowerCase()) { score += 20; matchFields.push('name'); }
+                    
+                    if (score > 0) {
+                        matchesFound.push({
+                            unclaimedId: profile.unclaimed_id,
+                            memberId: alumni.member_id,
+                            score,
+                            matchFields: matchFields.join(', '),
+                            profileName: profile.full_name,
+                            alumniName: alumni.full_name_english,
+                            status: 'New Match'
+                        });
+                    }
+                }
+            }
+            
+            if (apply) {
+                let appliedCount = 0;
+                for (const m of matchesFound) {
+                    const dec = decisions[m.unclaimedId + '-' + m.memberId];
+                    if (dec === 'ignore') continue;
+                    
+                    if (m.score >= 40 || dec === 'create') {
+                        const mId = 'MATCH-' + Date.now() + '-' + Math.floor(Math.random()*1000);
+                        try {
+                            const existHit = await db.execute({sql: "SELECT 1 FROM unclaimed_matches WHERE unclaimed_id = ? AND member_id = ?", args:[m.unclaimedId, m.memberId]});
+                            if (existHit.rows.length === 0) {
+                                await db.execute({
+                                    sql: "INSERT INTO unclaimed_matches (match_id, unclaimed_id, member_id, match_score, match_fields, status) VALUES (?, ?, ?, ?, ?, 'OPEN')",
+                                    args: [mId, m.unclaimedId, m.memberId, m.score, m.matchFields]
+                                });
+                                appliedCount++;
+                            }
+                        } catch (e) {}
+                    }
+                }
+                await logAdminActivity(db, adminEmail, 'BACKFILL_UNCLAIMED', 'BATCH', 'Backfilled ' + appliedCount + ' match records');
+                return res.json({ success: true, message: `Matched and created ${appliedCount} match records.` });
+            }
+            
+            return res.json({ success: true, previewCount: matchesFound.length, matches: matchesFound });
         }
 
         // === ADMIN REUNION ===
