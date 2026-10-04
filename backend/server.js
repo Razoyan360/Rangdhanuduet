@@ -1639,7 +1639,11 @@ app.post('/api', async (req, res) => {
             const eventId = 'EVT-' + Date.now();
             
             const spStr = ev.sponsors ? JSON.stringify(ev.sponsors) : null;
-            const mainImg = ev.mainImage && ev.mainImage.data ? ev.mainImage.data : '';
+            let mainImg = ev.mainImage && ev.mainImage.data ? ev.mainImage.data : '';
+            if (mainImg && !mainImg.startsWith('http')) {
+                const res = await uploadBase64ToCloudinary(mainImg, 'Events');
+                if (res.success) mainImg = res.url;
+            }
 
             await db.execute({
                 sql: `INSERT INTO events (
