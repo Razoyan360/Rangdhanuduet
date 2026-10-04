@@ -532,7 +532,6 @@
         <span class="nav-glare" id="nav-glare" aria-hidden="true"></span>
         <button class="nav-btn premium-nav-item active" data-page="home" onclick="switchPage('home')"><span>Home</span></button>
         <button class="nav-btn premium-nav-item" data-page="alumni" onclick="switchPage('alumni')"><span>Directory</span></button>
-        <button class="nav-btn premium-nav-item" data-page="family-faculty" onclick="switchPage('family-faculty')"><span>Faculty</span></button>
         <button class="nav-btn premium-nav-item" data-page="prokoushali" onclick="switchPage('prokoushali')"><span>PDACC</span></button>
         <button class="nav-btn premium-nav-item" data-page="events" onclick="switchPage('events')"><span>Events</span></button>
         <button class="nav-btn premium-nav-item" data-page="committee" onclick="switchPage('committee')"><span>Committee</span></button>
@@ -573,7 +572,6 @@
   <div class="hidden xl:hidden absolute left-0 right-0 top-full w-full bg-white border-t border-slate-200 px-4 sm:px-6 lg:px-8 pt-3 pb-4 space-y-1 font-semibold text-base shadow-2xl" id="mobile-menu">
     <button class="mobile-nav-item" data-page="home" onclick="switchPage('home')"><i data-lucide="home"></i><span>Home</span></button>
     <button class="mobile-nav-item" data-page="alumni" onclick="switchPage('alumni')"><i data-lucide="users"></i><span>Directory</span></button>
-    <button class="mobile-nav-item" data-page="family-faculty" onclick="switchPage('family-faculty')"><i data-lucide="graduation-cap"></i><span>Faculty</span></button>
     <button class="mobile-nav-item" data-page="prokoushali" onclick="switchPage('prokoushali')"><i data-lucide="graduation-cap"></i><span>PDACC</span></button>
     <button class="mobile-nav-item" data-page="events" onclick="switchPage('events')"><i data-lucide="calendar-days"></i><span>Events</span></button>
     <button class="mobile-nav-item" data-page="committee" onclick="switchPage('committee')"><i data-lucide="landmark"></i><span>Committee</span></button>
@@ -2433,7 +2431,8 @@
             <div class="rd-dir-seg" id="alumni-view-tabs" role="group" aria-label="Directory filter">
               <button type="button" class="rd-dir-tab alumni-view-tab-btn is-active" data-view="Alumni" aria-pressed="true" onclick="setAlumniViewFilter('Alumni')"><i data-lucide="graduation-cap" class="w-4 h-4"></i><span>Alumni</span></button>
               <button type="button" class="rd-dir-tab alumni-view-tab-btn" data-view="Running Member" aria-pressed="false" onclick="setAlumniViewFilter('Running Member')"><i data-lucide="backpack" class="w-4 h-4"></i><span>Running Member</span></button>
-            </div>
+            <button type="button" class="rd-dir-tab" onclick="switchPage('family-faculty')"><i data-lucide="building-2" class="w-4 h-4"></i><span>Faculty</span></button>
+              </div>
 
           </div>
           <div class="family-toolbar-foot">
@@ -2477,6 +2476,15 @@
         </div>
 
         <div class="bg-white p-5 sm:p-6 rounded-3xl max-w-5xl mx-auto mb-10 border border-slate-200 shadow-sm">
+          <!-- Directory Tabs injected to match Alumni view -->
+          <div class="rd-dir-subnav mb-4" role="navigation">
+            <div class="rd-dir-seg" role="group">
+              <button type="button" class="rd-dir-tab" onclick="switchPage('alumni')"><i data-lucide="graduation-cap" class="w-4 h-4"></i><span>Alumni</span></button>
+              <button type="button" class="rd-dir-tab" onclick="setAlumniViewFilter('Running Member'); switchPage('alumni');"><i data-lucide="backpack" class="w-4 h-4"></i><span>Running Member</span></button>
+              <button type="button" class="rd-dir-tab is-active" aria-pressed="true"><i data-lucide="building-2" class="w-4 h-4"></i><span>Faculty</span></button>
+            </div>
+          </div>
+
           <div class="space-y-4">
             <div class="relative">
               <i class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" data-lucide="search"></i>
