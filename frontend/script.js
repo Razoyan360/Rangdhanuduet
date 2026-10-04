@@ -1398,18 +1398,27 @@
           parts.forEach(part => {
               const shots = photos.filter(p => p.part === part.n);
               if (!shots.length) return;
+              let swiperSlides = shots.map((p, shotIdx) => {
+                  return `<div class="swiper-slide w-64 h-80 rounded-2xl overflow-hidden cursor-pointer shadow-xl relative" onclick="openLightbox(${photos.indexOf(p)})"><img src="${p.src}" class="w-full h-full object-cover"><div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/80 to-transparent text-white text-sm font-bold truncate">${escapeHtml(p.caption || p.bn || '')}</div></div>`;
+              }).join('');
+
               html += `
-              <section class="mb-12 last:mb-0">
-                <div class="flex items-center gap-3.5 mb-5">
+              <section class="mb-12 last:mb-0 overflow-hidden rounded-3xl bg-slate-900 p-8 pt-10 pb-12 shadow-2xl relative">
+                <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+                <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+                
+                <div class="flex items-center gap-3.5 mb-8 relative z-10">
                   <span class="shrink-0 w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-sky-500 text-white flex items-center justify-center shadow-md"><i data-lucide="${part.icon}" class="w-5 h-5"></i></span>
                   <div class="min-w-0">
-                    <h3 class="text-base sm:text-lg font-extrabold text-slate-900 leading-snug">${escapeHtml(part.bn)}</h3>
-                    <p class="text-[11px] sm:text-xs text-slate-500 font-semibold">${escapeHtml(part.en)} &bull; ${bnNum(shots.length)} টি ছবি</p>
+                    <h3 class="text-base sm:text-lg font-extrabold text-white leading-snug">${escapeHtml(part.bn)}</h3>
+                    <p class="text-[11px] sm:text-xs text-slate-300 font-semibold">${escapeHtml(part.en)} &bull; ${bnNum(shots.length)} টি ছবি</p>
                   </div>
-                  <span class="ml-auto shrink-0 px-3 py-1 rounded-full bg-white border border-slate-200 text-[10px] sm:text-[11px] font-bold text-slate-500 tracking-wide">পর্ব ${bnNum(part.n)}</span>
+                  <span class="ml-auto shrink-0 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-[10px] sm:text-[11px] font-bold text-slate-200 tracking-wide">পর্ব ${bnNum(part.n)}</span>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                  ${shots.map(p => reunionCardHtml(p, photos.indexOf(p))).join('')}
+                
+                <div class="swiper reunion-swiper-${part.n} relative z-10">
+                    <div class="swiper-wrapper">${swiperSlides}</div>
+                    <div class="swiper-pagination mt-4 relative"></div>
                 </div>
               </section>`;
           });
@@ -8208,10 +8217,10 @@
       
       let staticGalleryHtml = '';
       if (staticGal.length > 0) {
-          staticGalleryHtml = staticGal.map(x => {
+          staticGalleryHtml = '<div class="swiper-wrapper">' + staticGal.map(x => {
               const src = normalizeAlumniImage(x.image || '');
-              return src ? `<div onclick="openCustomLightbox('${escapeHtml(src)}', '${escapeHtml(x.caption || title)}')" class="aspect-square rounded-xl overflow-hidden border border-slate-200 cursor-pointer relative group/img"><img src="${escapeHtml(src)}" alt="${escapeHtml(x.caption || title)}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover/img:scale-110 transition"><div class="absolute inset-0 bg-black/30 opacity-0 group-hover/img:opacity-100 transition flex items-center justify-center"><i data-lucide="maximize-2" class="w-5 h-5 text-white"></i></div></div>` : '';
-          }).join('');
+              return src ? `<div class="swiper-slide w-64 h-80 rounded-2xl overflow-hidden cursor-pointer shadow-xl relative" onclick="openCustomLightbox('${escapeHtml(src)}', '${escapeHtml(x.caption || title)}')"><img src="${escapeHtml(src)}" class="w-full h-full object-cover"><div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/80 to-transparent text-white text-sm font-bold truncate">${escapeHtml(x.caption || title)}</div></div>` : '';
+          }).join('') + '</div><div class="swiper-pagination mt-4 relative"></div>';
       }
 
       c.innerHTML = `
@@ -8244,6 +8253,25 @@
       `;
       openSubPage('event-detail', 'events');
       lucide.createIcons();
+      if(staticGal.length > 0) {
+          setTimeout(() => {
+              new Swiper('.event-gallery-swiper', {
+                  effect: 'coverflow',
+                  grabCursor: true,
+                  centeredSlides: true,
+                  slidesPerView: 'auto',
+                  coverflowEffect: {
+                      rotate: 30,
+                      stretch: 0,
+                      depth: 200,
+                      modifier: 1,
+                      slideShadows: true,
+                  },
+                  pagination: { el: '.swiper-pagination', clickable: true },
+                  loop: staticGal.length > 3
+              });
+          }, 100);
+      }
 
       // Load dynamic Gallery
       if (id && !id.startsWith('STATIC-')) {
