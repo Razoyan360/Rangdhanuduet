@@ -3293,14 +3293,14 @@
   </div>
 
   <!-- ================= SUB-PAGE: PHOTO VIEWER ================= -->
-  <div class="page-view" id="page-photo">
-    <div class="subpage-bar on-dark">
+  <div id="lightbox-overlay" class="fixed inset-0 z-[9999] bg-slate-950/95 backdrop-blur-sm flex-col hidden opacity-0 transition-opacity duration-300 overflow-y-auto">
+    <div class="sticky top-0 z-10 bg-slate-950/80 backdrop-blur-md border-b border-white/10">
       <div class="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
-        <button type="button" onclick="goBackFromSubPage('photo')" class="subpage-back on-dark"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back</button>
-        <span class="text-sm font-bold text-slate-300 truncate min-w-0">ছবি</span>
+        <button type="button" onclick="closeLightbox()" class="text-white hover:text-blue-400 font-bold text-sm flex items-center gap-2 transition px-3 py-1.5 rounded-lg hover:bg-white/10"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back</button>
+        <span class="text-sm font-bold text-slate-300 truncate min-w-0">Image Viewer</span>
       </div>
     </div>
-    <section class="bg-slate-950 py-6 sm:py-8 min-h-[70vh]">
+    <section class="flex-1 flex flex-col justify-center py-6 sm:py-8 min-h-[70vh]">
       <div class="max-w-5xl mx-auto px-4">
         <div class="flex items-center justify-between gap-3 mb-5">
           <span id="lightbox-counter" class="text-xs font-bold text-slate-400 font-mono"></span>
@@ -3432,7 +3432,7 @@ Do not modify social links or structure without permission.
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" defer></script>
 <!-- JAVASCRIPT LOGIC -->
-<script src="script.js?v=20261005-0014" defer></script>
+<script src="script.js?v=20261005-0021" defer></script>
 
   <!-- PREMIUM GLOBAL LOADER (owner-authorised overlay; all styles in custom.css .rd-gl*) -->
   <div id="demo-loader" class="rd-gl" aria-hidden="true">

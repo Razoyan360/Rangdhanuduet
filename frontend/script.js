@@ -74,7 +74,7 @@
          from the server on the page's own request, so a reload lands here
          instead of bouncing the member out to the directory. */
       'my-profile':   { parent: 'my-profile', needsData: false },
-      'photo':        { parent: 'home',   needsData: true  },
+      
       'notice-file':  { parent: 'noticeboard', needsData: true  },
       'committee-new': { parent: 'committee', needsData: false },
       'ec-message':   { parent: 'committee', needsData: true  },
@@ -1403,17 +1403,17 @@
               }).join('');
 
               html += `
-              <section class="mb-12 last:mb-0 overflow-hidden rounded-3xl bg-slate-900 p-8 pt-10 pb-12 shadow-2xl relative">
-                <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
-                <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+              <section class="mb-12 last:mb-0 overflow-hidden rounded-3xl bg-white border border-blue-50 p-8 pt-10 pb-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative">
+                <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
+                <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-sky-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
                 
                 <div class="flex items-center gap-3.5 mb-8 relative z-10">
                   <span class="shrink-0 w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 to-sky-500 text-white flex items-center justify-center shadow-md"><i data-lucide="${part.icon}" class="w-5 h-5"></i></span>
                   <div class="min-w-0">
-                    <h3 class="text-base sm:text-lg font-extrabold text-white leading-snug">${escapeHtml(part.bn)}</h3>
-                    <p class="text-[11px] sm:text-xs text-slate-300 font-semibold">${escapeHtml(part.en)} &bull; ${bnNum(shots.length)} টি ছবি</p>
+                    <h3 class="text-base sm:text-lg font-extrabold text-slate-900 leading-snug">${escapeHtml(part.bn)}</h3>
+                    <p class="text-[11px] sm:text-xs text-slate-500 font-semibold">${escapeHtml(part.en)} &bull; ${bnNum(shots.length)} টি ছবি</p>
                   </div>
-                  <span class="ml-auto shrink-0 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-[10px] sm:text-[11px] font-bold text-slate-200 tracking-wide">পর্ব ${bnNum(part.n)}</span>
+                  <span class="ml-auto shrink-0 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-[10px] sm:text-[11px] font-bold text-blue-600 tracking-wide">পর্ব ${bnNum(part.n)}</span>
                 </div>
                 
                 <div class="swiper reunion-swiper-${part.n} relative z-10">
@@ -1446,8 +1446,19 @@
       img.src = lightboxItems[currentLightboxIdx].src;
       cap.innerText = lightboxItems[currentLightboxIdx].caption || "";
       if (ctr) ctr.textContent = (currentLightboxIdx + 1) + ' / ' + lightboxItems.length;
-      // Already on the viewer while paging through photos? Don't stack history entries.
-      if (rdCurrentPageId !== 'photo') openSubPage('photo');
+      const overlay = document.getElementById("lightbox-overlay");
+      if (overlay) {
+          overlay.classList.remove("hidden");
+          setTimeout(() => overlay.classList.remove("opacity-0"), 10);
+          document.body.style.overflow = "hidden";
+      }
+      img.style.transform = "scale(0.9)";
+      img.style.opacity = "0";
+      setTimeout(() => {
+          img.style.transition = "all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)";
+          img.style.transform = "scale(1)";
+          img.style.opacity = "1";
+      }, 50);
       lucide.createIcons();
     }
     
@@ -8245,10 +8256,10 @@
            ${sponsorSectionHtml(sponsors)}
            
            ${staticGalleryHtml ? `
-           <div class="mt-8 overflow-hidden rounded-3xl bg-slate-900 p-8 pt-10 pb-12 shadow-2xl relative">
-               <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
-               <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
-               <div class="text-center mb-8 relative z-10"><h4 class="text-2xl font-black text-white tracking-wide uppercase">Gallery</h4><p class="text-slate-400 text-sm mt-1">Explore moments from this event</p></div>
+           <div class="mt-8 overflow-hidden rounded-3xl bg-white p-8 pt-10 pb-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-blue-50 relative">
+               <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
+               <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-sky-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
+               <div class="text-center mb-8 relative z-10"><h4 class="text-2xl font-black text-slate-900 tracking-wide uppercase">Gallery</h4><p class="text-slate-500 text-sm mt-1">Explore moments from this event</p></div>
                <div id="dynamic-event-gallery" class="swiper event-gallery-swiper relative z-10">${staticGalleryHtml}</div>
            </div>` : `<div id="dynamic-event-gallery"></div>`}
         </div>
@@ -8303,10 +8314,10 @@
                   
                   if(!staticGalleryHtml) {
                       galContainer.outerHTML = `
-                         <div class="mt-8 overflow-hidden rounded-3xl bg-slate-900 p-8 pt-10 pb-12 shadow-2xl relative">
-                             <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
-                             <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
-                             <div class="text-center mb-8 relative z-10"><h4 class="text-2xl font-black text-white tracking-wide uppercase">Gallery</h4><p class="text-slate-400 text-sm mt-1">Explore moments from this event</p></div>
+                         <div class="mt-8 overflow-hidden rounded-3xl bg-white p-8 pt-10 pb-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-blue-50 relative">
+                             <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
+                             <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-sky-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
+                             <div class="text-center mb-8 relative z-10"><h4 class="text-2xl font-black text-slate-900 tracking-wide uppercase">Gallery</h4><p class="text-slate-500 text-sm mt-1">Explore moments from this event</p></div>
                              <div id="dynamic-event-gallery" class="swiper event-gallery-swiper relative z-10">${wrapper}</div>
                          </div>`;
                   } else {
