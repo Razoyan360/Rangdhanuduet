@@ -85,7 +85,7 @@ async function getSetting(key, defaultValue) {
 app.get('/api', async (req, res) => {
     const payload = req.query || {};
     try {
-                        const action = req.query.action;
+                        const action = (req.query.action || '').toLowerCase();
 
                 
         if (action === 'getconfig') {
