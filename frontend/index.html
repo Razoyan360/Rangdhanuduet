@@ -676,7 +676,8 @@
          approved committee session. One message at a time -- the deck turns
          itself over every 4 s (RD_LEADER_MS) and can be dragged sideways. -->
     <section class="hidden pt-10 pb-12 md:pt-12 md:pb-16 bg-white" id="home-leadership">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="hero-overlay pointer-events-none"></div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div class="max-w-2xl mx-auto text-center mb-8">
           <span class="text-blue-700 text-xs font-extrabold section-kicker uppercase">Leadership</span>
           <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-950 mt-3">Message from the President</h2>
@@ -2397,51 +2398,123 @@
 
   <!-- ================= PAGE 3: ALUMNI DIRECTORY ================= -->
   <div class="page-view" id="page-alumni">
-    <section class="py-14 rd-dir-hero-bg border-t border-slate-200 relative z-10 min-h-[70vh]">
+    <section class="py-14 hero-bg border-t border-slate-200 relative z-10 min-h-[70vh]">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="family-intro max-w-3xl mx-auto mb-10">
-          <p class="family-intro-kicker">COMMUNITY DIRECTORY</p>
-          <h2 class="family-intro-title" role="button" tabindex="0" onclick="familyTitleDance(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();familyTitleDance(this)}"><span class="family-title-word">RANGDHANU</span> <b class="family-title-word">FAMILY</b></h2>
-          <p class="family-intro-copy">Current students and alumni of the Association, and the teachers and officers of greater Rangpur at DUET.</p>
-        </div>
-        <div id="alumni-member-bar" class="flex items-center justify-center flex-wrap gap-2 text-sm -mt-4 mb-10"></div>
+        
+    <div class="text-center z-10 mb-12 max-w-4xl mx-auto w-full pt-16">
+      <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif-elegant tracking-tight text-slate-900 leading-[1.1]">
+        Find the right <span class="inline-flex items-center justify-center align-middle bg-white/60 backdrop-blur shadow-sm rounded-xl p-1.5 w-12 h-12 sm:w-14 sm:h-14"><img src="logo.png" onerror="this.src='https://cdn.lucide.dev/icons/users.svg'" class="w-full h-full object-contain opacity-90"></span> members <br>
+        <span class="italic text-slate-600 font-light">Connect smarter</span>
+      </h1>
+      <p class="mt-5 text-slate-600 text-sm sm:text-base md:text-lg font-medium max-w-2xl mx-auto px-4">
+        Current students and alumni of the Association, and the teachers and officers of greater Rangpur at DUET.
+      </p>
+    </div>
 
-        <div class="family-toolbar max-w-6xl mx-auto mb-10">
-          <div class="family-filter-fields">
-            <div class="rd-dir-search">
-              <i class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" data-lucide="search"></i>
-              <input class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-11 pr-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none" id="alumni-search-input" onkeyup="filterAlumni()" placeholder="Search by name, company, designation, district or series..." type="text"/>
-            </div>
-            <select class="rd-dir-fsel bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition" id="alumni-filter-dept" onchange="filterAlumni()">
+    
+    <div class="z-10 w-full max-w-6xl mx-auto flex flex-col gap-2 mb-10">
+
+    <div class="z-10 w-full max-w-5xl mx-auto flex flex-col gap-2">
+      
+      <!-- Top Filters / Tabs -->
+      <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 px-4 sm:px-2">
+        <div class="bg-white/60 backdrop-blur-md p-1 rounded-full flex items-center border border-white/50 shadow-sm rd-dir-seg" id="alumni-view-tabs" role="group" aria-label="Directory filter">
+          <button type="button" class="alumni-view-tab-btn px-4 py-1.5 rounded-full text-xs font-bold is-active" data-view="ALL" onclick="setAlumniViewFilter('ALL')">Everyone</button>
+          <button type="button" class="alumni-view-tab-btn px-4 py-1.5 rounded-full text-xs font-bold transition" data-view="Alumni" onclick="setAlumniViewFilter('Alumni')">Alumni</button>
+          <button type="button" class="alumni-view-tab-btn px-4 py-1.5 rounded-full text-xs font-bold transition" data-view="Running Member" onclick="setAlumniViewFilter('Running Member')">Running Member</button>
+        </div>
+        
+        <button type="button" onclick="switchPage('family-faculty')" class="flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-slate-900 transition bg-white/60 border border-white/50 shadow-sm backdrop-blur px-4 py-2 rounded-full ml-auto">
+          <span>Teachers & Officers</span>
+          <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+
+      <!-- Main Search Pill -->
+      <div class="bg-white/80 backdrop-blur-xl p-2 rounded-[2rem] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] border border-white flex flex-col md:flex-row items-center gap-2 relative transition-all mx-2 sm:mx-0">
+        
+        <!-- Query Input -->
+        <div class="relative flex-1 w-full h-16 bg-white/90 rounded-full flex items-center px-6 shadow-sm border border-slate-100 hover:border-slate-300 focus-within:border-slate-400 focus-within:ring-4 focus-within:ring-slate-100 transition-all group">
+          <div class="flex flex-col justify-center w-full">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 group-focus-within:text-slate-600 transition-colors">Search</span>
+            <input type="text" id="alumni-search-input" onkeyup="filterAlumni()" placeholder="Search by name, company, designation, district or series..." class="w-full bg-transparent border-none p-0 focus:ring-0 text-slate-800 font-semibold placeholder-slate-300 text-sm sm:text-base h-6 outline-none">
+          </div>
+          <i data-lucide="search" class="w-5 h-5 text-slate-300 group-focus-within:text-indigo-500 transition-colors absolute right-5"></i>
+        </div>
+
+        <!-- Exchange Icon (Decorative, like the flight search) -->
+        <div class="hidden md:flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 border border-white shadow-sm -mx-4 z-10 text-slate-400 shrink-0">
+          <i data-lucide="arrow-left-right" class="w-3.5 h-3.5"></i>
+        </div>
+
+        <!-- Dept Dropdown -->
+        <div class="relative w-full md:w-48 h-16 bg-white/90 rounded-full flex items-center px-6 shadow-sm border border-slate-100 hover:border-slate-300 focus-within:border-slate-400 focus-within:ring-4 focus-within:ring-slate-100 transition-all cursor-pointer group">
+          <div class="flex flex-col justify-center w-full">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 group-focus-within:text-slate-600 transition-colors">Department</span>
+            <select class="w-full bg-transparent border-none p-0 focus:ring-0 text-slate-800 font-semibold text-sm sm:text-base h-6 outline-none cursor-pointer" id="alumni-filter-dept" onchange="filterAlumni()">
               <option value="ALL">All Departments</option>
               <option value="CE">CE</option><option value="EEE">EEE</option><option value="ME">ME</option><option value="CSE">CSE</option>
               <option value="TE">TE</option><option value="Arch">Arch</option><option value="IPE">IPE</option><option value="MME">MME</option>
               <option value="ChE">ChE</option><option value="FE">FE</option>
             </select>
-            <select class="rd-dir-fsel bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition" id="alumni-filter-series" onchange="filterAlumni()">
-              <option value="ALL">All Series</option>
-            </select>
-            <select class="rd-dir-fsel bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition" id="alumni-filter-blood" onchange="filterAlumni()">
+          </div>
+          <i data-lucide="chevron-down" class="w-4 h-4 text-slate-300 absolute right-5 pointer-events-none group-focus-within:text-slate-600 transition-colors"></i>
+        </div>
+
+        <!-- Blood Group Dropdown -->
+        <div class="relative w-full md:w-36 h-16 bg-white/90 rounded-full flex items-center px-6 shadow-sm border border-slate-100 hover:border-slate-300 focus-within:border-slate-400 focus-within:ring-4 focus-within:ring-slate-100 transition-all cursor-pointer group">
+          <div class="flex flex-col justify-center w-full">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 group-focus-within:text-slate-600 transition-colors">Blood</span>
+            <select class="w-full bg-transparent border-none p-0 focus:ring-0 text-slate-800 font-semibold text-sm sm:text-base h-6 outline-none cursor-pointer" id="alumni-filter-blood" onchange="filterAlumni()">
               <option value="ALL">All Blood Groups</option>
               <option value="A+">A+</option><option value="A-">A-</option><option value="B+">B+</option><option value="B-">B-</option>
               <option value="O+">O+</option><option value="O-">O-</option><option value="AB+">AB+</option><option value="AB-">AB-</option>
             </select>
           </div>
-          <div class="rd-dir-subnav" role="navigation" aria-label="Directory sections">
-            <div class="rd-dir-seg" id="alumni-view-tabs" role="group" aria-label="Directory filter">
-              <button type="button" class="rd-dir-tab alumni-view-tab-btn is-active" data-view="Alumni" aria-pressed="true" onclick="setAlumniViewFilter('Alumni')"><i data-lucide="graduation-cap" class="w-4 h-4"></i><span>Alumni</span></button>
-              <button type="button" class="rd-dir-tab alumni-view-tab-btn" data-view="Running Member" aria-pressed="false" onclick="setAlumniViewFilter('Running Member')"><i data-lucide="backpack" class="w-4 h-4"></i><span>Running Member</span></button>
-            <button type="button" class="rd-dir-tab" onclick="switchPage('family-faculty')"><i data-lucide="building-2" class="w-4 h-4"></i><span>Faculty</span></button>
-              </div>
-
-          </div>
-          <div class="family-toolbar-foot">
-            <span id="alumni-count-text"></span>
-            <div class="family-toolbar-actions">
-              <button class="text-blue-600 font-bold hover:underline flex items-center gap-1 cursor-pointer" onclick="resetAlumniFilters()"><i class="w-3.5 h-3.5" data-lucide="rotate-ccw"></i> Reset filters</button>
-            </div>
-          </div>
+          <i data-lucide="chevron-down" class="w-4 h-4 text-slate-300 absolute right-5 pointer-events-none group-focus-within:text-slate-600 transition-colors"></i>
         </div>
+
+
+        <!-- Series Dropdown -->
+        <div class="relative w-full md:w-36 h-16 bg-white/90 rounded-full flex items-center px-6 shadow-sm border border-slate-100 hover:border-slate-300 focus-within:border-slate-400 focus-within:ring-4 focus-within:ring-slate-100 transition-all cursor-pointer group">
+          <div class="flex flex-col justify-center w-full">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 group-focus-within:text-slate-600 transition-colors">Series</span>
+            <select class="w-full bg-transparent border-none p-0 focus:ring-0 text-slate-800 font-semibold text-sm sm:text-base h-6 outline-none cursor-pointer" id="alumni-filter-series" onchange="filterAlumni()">
+              <option value="ALL">All Series</option>
+            </select>
+          </div>
+          <i data-lucide="chevron-down" class="w-4 h-4 text-slate-300 absolute right-5 pointer-events-none group-focus-within:text-slate-600 transition-colors"></i>
+        </div>
+
+        <!-- Search Button -->
+        <button class="w-full md:w-auto h-16 px-10 bg-gradient-to-b from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 text-white rounded-full font-bold text-base shadow-[0_4px_14px_rgba(0,0,0,0.25)] transition-all active:scale-95 flex items-center justify-center gap-2 shrink-0">
+          <span>Search</span>
+        </button>
+
+      </div>
+      
+      <!-- Bottom Tools -->
+      <div class="mt-6 flex flex-col sm:flex-row items-center justify-between px-6 text-sm text-slate-600 font-medium gap-4">
+        <div class="flex items-center gap-2 bg-white/40 backdrop-blur px-3 py-1.5 rounded-full border border-white/50">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span id="alumni-count-text"></span>
+        </div>
+        
+        <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+          <button type="button" onclick="resetAlumniFilters()" class="flex items-center gap-1.5 hover:text-slate-900 transition font-semibold">
+            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+            Reset filters
+          </button>
+          
+          <button id="alumni-signin-prompt" onclick="switchPage('member-signin')" class="flex items-center gap-1.5 text-indigo-700 hover:text-indigo-800 transition font-bold bg-white/60 backdrop-blur px-4 py-2 rounded-full shadow-sm border border-indigo-100/50">
+            <i data-lucide="lock" class="w-4 h-4"></i>
+            Sign in to see contacts
+          </button>
+        </div>
+      </div>
+      
+    
+<div id="alumni-member-bar" class="flex items-center justify-center flex-wrap gap-2 text-sm mt-4 mb-4"></div>
         
         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto" id="alumni-grid"><div class="col-span-full">
   <div class="rd-premium-spinner">
