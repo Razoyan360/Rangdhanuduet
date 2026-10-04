@@ -8245,10 +8245,12 @@
            ${sponsorSectionHtml(sponsors)}
            
            ${staticGalleryHtml ? `
-           <div>
-               <h4 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2"><i data-lucide="image" class="w-5 h-5 text-blue-600"></i> ইভেন্ট গ্যালারি</h4>
-               <div id="dynamic-event-gallery" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">${staticGalleryHtml}</div>
-           </div>` : `<div id="dynamic-event-gallery" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"></div>`}
+           <div class="mt-8 overflow-hidden rounded-3xl bg-slate-900 p-8 pt-10 pb-12 shadow-2xl relative">
+               <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+               <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+               <div class="text-center mb-8 relative z-10"><h4 class="text-2xl font-black text-white tracking-wide uppercase">Gallery</h4><p class="text-slate-400 text-sm mt-1">Explore moments from this event</p></div>
+               <div id="dynamic-event-gallery" class="swiper event-gallery-swiper relative z-10">${staticGalleryHtml}</div>
+           </div>` : `<div id="dynamic-event-gallery"></div>`}
         </div>
       `;
       openSubPage('event-detail', 'events');
@@ -8287,11 +8289,41 @@
             }).join('');
             
             const galContainer = document.getElementById('dynamic-event-gallery');
-            if(!staticGalleryHtml) {
-               galContainer.parentElement.insertAdjacentHTML('afterbegin', `<h4 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2"><i data-lucide="image" class="w-5 h-5 text-blue-600"></i> ইভেন্ট গ্যালারি</h4>`);
-               lucide.createIcons();
-            }
-            galContainer.innerHTML = staticGalleryHtml + galHtml;
+              // If we have new images from API, re-render swiper entirely
+              if (galHtml) {
+                  const combined = staticGal.map(x => {
+                      const src = normalizeAlumniImage(x.image || '');
+                      return src ? `<div class="swiper-slide w-64 h-80 rounded-2xl overflow-hidden cursor-pointer shadow-xl relative" onclick="openCustomLightbox('${escapeHtml(src)}', '${escapeHtml(x.caption || title)}')"><img src="${escapeHtml(src)}" class="w-full h-full object-cover"><div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/80 to-transparent text-white text-sm font-bold truncate">${escapeHtml(x.caption || title)}</div></div>` : '';
+                  }).join('') + (d.data || []).map(x => {
+                      const src = normalizeAlumniImage(x.image || '');
+                      return src ? `<div class="swiper-slide w-64 h-80 rounded-2xl overflow-hidden cursor-pointer shadow-xl relative" onclick="openCustomLightbox('${escapeHtml(src)}', '${escapeHtml(x.caption || title)}')"><img src="${escapeHtml(src)}" class="w-full h-full object-cover"><div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/80 to-transparent text-white text-sm font-bold truncate">${escapeHtml(x.caption || title)}</div></div>` : '';
+                  }).join('');
+                  
+                  const wrapper = '<div class="swiper-wrapper">' + combined + '</div><div class="swiper-pagination mt-4 relative"></div>';
+                  
+                  if(!staticGalleryHtml) {
+                      galContainer.outerHTML = `
+                         <div class="mt-8 overflow-hidden rounded-3xl bg-slate-900 p-8 pt-10 pb-12 shadow-2xl relative">
+                             <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+                             <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
+                             <div class="text-center mb-8 relative z-10"><h4 class="text-2xl font-black text-white tracking-wide uppercase">Gallery</h4><p class="text-slate-400 text-sm mt-1">Explore moments from this event</p></div>
+                             <div id="dynamic-event-gallery" class="swiper event-gallery-swiper relative z-10">${wrapper}</div>
+                         </div>`;
+                  } else {
+                      galContainer.innerHTML = wrapper;
+                  }
+                  setTimeout(() => {
+                      new Swiper('.event-gallery-swiper', {
+                          effect: 'coverflow',
+                          grabCursor: true,
+                          centeredSlides: true,
+                          slidesPerView: 'auto',
+                          coverflowEffect: { rotate: 30, stretch: 0, depth: 200, modifier: 1, slideShadows: true },
+                          pagination: { el: '.event-gallery-swiper .swiper-pagination', clickable: true },
+                          loop: (staticGal.length + (d.data ? d.data.length : 0)) > 3
+                      });
+                  }, 100);
+              }
           }
         } catch(e) {}
       }
