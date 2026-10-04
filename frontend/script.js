@@ -11,48 +11,7 @@
     const RD_ADMIN_PROFILE_KEY = 'rd_admin_profile';
     const ALUMNI_API_URL = API_BASE_URL + '?action=alumni';
 
-    const staticEvents = [
-      {
-        eventId: 'STATIC-1', eventName: 'ক্যাম্পাসে বৃক্ষরোপণ কর্মসূচি ২০২৬', category: 'পরিবেশ ও সমাজকল্যাণ',
-        eventDate: '2026-08-05', venue: 'ডুয়েট ক্যাম্পাস প্রাঙ্গণ, গাজীপুর',
-        shortDescription: 'নতুন চান্স পাওয়া শিক্ষার্থীদের সঙ্গে ক্যাম্পাসে তিনটি গাছ লাগানো হয়।',
-        fullDescription: 'জুলাই গণ-অভ্যুত্থান দিবস আর ডুয়েটের ২০২৫–২৬ শিক্ষাবর্ষের ভর্তি পরীক্ষার ফলাফল প্রকাশ উপলক্ষে নতুন চান্স পাওয়া শিক্ষার্থীদের সঙ্গে ক্যাম্পাসে বৃক্ষরোপণ করা হয়।\n\nযে তিনটি চারা লাগানো হয়েছে:\n১. নিম\n২. কদবেল\n৩. জাম্বুরা',
-        driveFolder: 'Tree Plantation 2026',
-        mainImage: 'Images/Tree Plantation/Tree Plantation 1.jpg',
-        gallery: [
-          {image: 'Images/Tree Plantation/Tree Plantation 1.jpg', caption: 'বৃক্ষরোপণ কর্মসূচি ২০২৬ — ১'},
-          {image: 'Images/Tree Plantation/Tree Plantation 2.jpg', caption: 'বৃক্ষরোপণ কর্মসূচি ২০২৬ — ২'},
-          {image: 'Images/Tree Plantation/Tree Plantation 3.jpg', caption: 'বৃক্ষরোপণ কর্মসূচি ২০২৬ — ৩'}
-        ]
-      },
-      {
-        eventId: 'STATIC-2', eventName: 'RANGDHANU Tour & Freshers\' Reception 2024', category: 'Tour',
-        eventDate: '2024-12-15', venue: 'কুয়াকাটা সমুদ্র সৈকত, পটুয়াখালী',
-        shortDescription: 'কুয়াকাটায় দুই দিনের বার্ষিক ট্যুর, সঙ্গে নবীনদের ফ্রেশার্স রিসেপশন।',
-        fullDescription: 'রংধনু পরিবারের আয়োজনে কুয়াকাটায় বার্ষিক ট্যুর, সঙ্গে ২০২৪-এর নবীনদের ফ্রেশার্স রিসেপশন।\n\nযেখানে যেখানে যাওয়া হয়েছে:\n• Kuakata Sea Beach\n• Jhaubon\n• Shutki Palli\n• Fatrar Char\n• Gangamati Reserved Forest\n• Red Crab Island\n• Kuakata Well\n• Kuakata Buddhist Temple\n• Rakhain Community Village',
-        driveFolder: 'Kuakata Tour 2024',
-        mainImage: 'Images/Kuakata Tour/01.jpg',
-        gallery: [
-          {image: 'Images/Kuakata Tour/01.jpg'}, {image: 'Images/Kuakata Tour/IMG_8266.JPG'}, 
-          {image: 'Images/Kuakata Tour/1734363039644.JPG'}, {image: 'Images/Kuakata Tour/IMG (13).JPG'},
-          {image: 'Images/Kuakata Tour/IMG (30).JPG'}, {image: 'Images/Kuakata Tour/IMG (76).JPG'}, 
-          {image: 'Images/Kuakata Tour/IMG (79).JPG'}, {image: 'Images/Kuakata Tour/IMG (84).JPG'}, 
-          {image: 'Images/Kuakata Tour/IMG_0241.JPG'}, {image: 'Images/Kuakata Tour/IMG_8260.JPG'}
-        ]
-      },
-      {
-        eventId: 'STATIC-3', eventName: 'RANGDHANU Tour & Freshers\' Reception 2025', category: 'Tour',
-        eventDate: '2025-12-19', venue: 'কক্সবাজার সমুদ্র সৈকত, কক্সবাজার',
-        shortDescription: 'কক্সবাজারে দুই দিনের বার্ষিক ট্যুর, সঙ্গে নবীনদের ফ্রেশার্স রিসেপশন।',
-        fullDescription: 'রংধনু পরিবারের আয়োজনে ১৯ ও ২০ ডিসেম্বর ২০২৫, কক্সবাজারে বার্ষিক ট্যুর, সঙ্গে নবীনদের ফ্রেশার্স রিসেপশন।\n\nযেখানে যেখানে যাওয়া হয়েছে:\n• কক্সবাজার সি বিচ\n• সুগন্ধা বিচ\n• হিমছড়ি ওয়াটারফল ও হিল\n• মেরিন ড্রাইভ রোড\n• ইনানী বিচ\n• হিমছড়ি ভিউ পয়েন্ট\n• কলাতলী বিচ\n• ফিশ মার্কেট',
-        driveFolder: 'Cox Bazar Tour 2025',
-        mainImage: 'Images/Cox Bazar/C 1.jpg',
-        gallery: [
-          {image: 'Images/Cox Bazar/C 1.jpg'}, {image: 'Images/Cox Bazar/DSC_2950.JPG'},
-          {image: 'Images/Cox Bazar/DSC_2997.JPG'}, {image: 'Images/Cox Bazar/DSC_2756.JPG'}
-        ]
-      }
-    ];
+    const staticEvents = [];
 
     /* Reunion 2024 album — ordered by how the day actually unfolded. */
     const RD_REUNION_PARTS = [{"n": 1, "icon": "flag", "bn": "উদ্বোধন ও বর্ণিল র‍্যালি", "en": "Opening Ceremony & Grand Rally"}, {"n": 2, "icon": "users", "bn": "ক্যাম্পাস আড্ডা, স্মৃতিস্তম্ভ ও মুক্তাঙ্গন", "en": "Campus Hangout & Outdoor Group Photos"}, {"n": 3, "icon": "book-open", "bn": "প্রকৌশলী কোচিং সেন্টার পরিদর্শন", "en": "PDACC Visit & Directors' Meetup"}, {"n": 4, "icon": "award", "bn": "অডিটোরিয়াম সেশন ও সংবর্ধনা", "en": "Auditorium Session & Award Ceremony"}, {"n": 5, "icon": "sparkles", "bn": "মঞ্চের স্মৃতি ও পরিসমাপ্তি", "en": "Stage Group Photos & Closing"}];
