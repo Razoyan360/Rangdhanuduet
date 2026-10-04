@@ -306,6 +306,40 @@ if (action === 'get_env') return res.json({url: process.env.TURSO_DATABASE_URL, 
             return res.json({ success: true, count: data.length, data: data });
         }
 
+        
+        if (action === 'event') {
+            const eventId = req.query.id || req.query.eventId;
+            if (!eventId) return res.json({ success: false });
+            
+            const result = await db.execute({
+                sql: "SELECT * FROM events WHERE event_id = ? AND status = 'APPROVED'",
+                args: [eventId]
+            });
+            if (result.rows.length === 0) return res.json({ success: false, error: 'Not found' });
+            
+            const row = result.rows[0];
+            const evt = {
+                'Event ID': row.event_id,
+                'Event Name': row.event_name,
+                'Category': row.category,
+                'Short Description': row.short_description,
+                'Full Description': row.full_description,
+                'Event Date': row.event_date,
+                'Start Time': row.start_time,
+                'End Time': row.end_time,
+                'Venue': row.venue,
+                'Google Maps Link': row.google_maps_link,
+                'Main Image': row.main_image || '',
+                'Organized By': row.organized_by,
+                'Contact Person': row.contact_person,
+                'Contact Number': row.contact_number,
+                'Registration Link': row.registration_link,
+                'Facebook Event Link': row.facebook_link,
+                'Sponsors': row.sponsors ? JSON.parse(row.sponsors) : []
+            };
+            return res.json({ success: true, event: evt });
+        }
+
         if (action === 'events') {
             const result = await db.execute(`
                 SELECT * FROM events 
@@ -463,6 +497,25 @@ if (action === 'get_env') return res.json({url: process.env.TURSO_DATABASE_URL, 
             return res.json({ success: true, rows });
         }
 
+        
+        // === PUBLIC SLIDESHOW ===
+        if (action === 'slideshow') {
+            try {
+                const resData = await db.execute("SELECT * FROM slideshow WHERE is_show = 1 ORDER BY sort_order ASC");
+                const slides = resData.rows.map(r => ({
+                    id: r.file_id,
+                    url: r.file_id, // Front-end CDN handles prefixing
+                    caption: r.caption || '',
+                    badge: r.badge || '',
+                    place: r.place || ''
+                }));
+                return res.json({ success: true, slides });
+            } catch (err) {
+                console.error("Slideshow error:", err);
+                return res.json({ success: false, slides: [] });
+            }
+        }
+
         if (action === 'getadminslides') {
             const resData = await db.execute("SELECT * FROM slideshow ORDER BY sort_order ASC");
             const rows = resData.rows.map(r => ({
@@ -486,6 +539,47 @@ if (action === 'get_env') return res.json({url: process.env.TURSO_DATABASE_URL, 
                 ...notData.rows.map(r => ({ kind: 'LINE', lineId: r.line_id, text: r.notice_text, show: r.is_show ? 'YES' : 'NO' }))
             ];
             return res.json({ success: true, rows });
+        }
+
+        
+        if (action === 'sendmemberemail') {
+            const data = payload.data || {};
+            const mode = data.mode;
+            const subject = data.subject;
+            const htmlBody = data.body;
+            let count = 0;
+
+            if (!subject || !htmlBody) return res.json({ success: false, message: 'Missing subject or body.' });
+
+            if (mode === 'one') {
+                const memberId = data.memberId;
+                const hit = await db.execute({ sql: "SELECT email FROM alumni WHERE member_id = ?", args: [memberId] });
+                if (hit.rows.length > 0 && hit.rows[0].email) {
+                    await sendMail(hit.rows[0].email, subject, htmlBody);
+                    count = 1;
+                }
+            } else if (mode === 'group') {
+                let sql = "SELECT email FROM alumni WHERE status = 'APPROVED' AND email != '' AND email IS NOT NULL";
+                const params = [];
+                
+                if (data.series && data.series !== 'ALL') {
+                    sql += " AND series = ?";
+                    params.push(data.series);
+                }
+                if (data.dept && data.dept !== 'ALL') {
+                    sql += " AND department = ?";
+                    params.push(data.dept);
+                }
+                const hit = await db.execute({ sql, args: params });
+                for (const row of hit.rows) {
+                    if (row.email) {
+                        await sendMail(row.email, subject, htmlBody);
+                        count++;
+                    }
+                }
+            }
+            await logAdminActivity(db, adminEmail, 'SEND_MAIL', mode, 'Sent ' + count + ' emails.');
+            return res.json({ success: true, message: 'Sent ' + count + ' email(s).' });
         }
 
         if (action === 'getadminactivity') {
@@ -1162,6 +1256,23 @@ app.post('/api', async (req, res) => {
             return res.json({ success: true, message: 'Member rejected.' });
         }
         
+        
+        if (action === 'approveeventgallery') {
+            const galleryId = payload.data ? payload.data.galleryId : (payload.galleryId || '');
+            if (!galleryId) return res.json({ success: false, message: 'Gallery ID missing.' });
+            
+            await db.execute({ sql: "UPDATE event_gallery SET status = 'APPROVED' WHERE gallery_id = ?", args: [galleryId] });
+            return res.json({ success: true, message: 'Gallery photo approved.' });
+        }
+
+        if (action === 'rejecteventgallery') {
+            const galleryId = payload.data ? payload.data.galleryId : (payload.galleryId || '');
+            if (!galleryId) return res.json({ success: false, message: 'Gallery ID missing.' });
+            
+            await db.execute({ sql: "UPDATE event_gallery SET status = 'REJECTED' WHERE gallery_id = ?", args: [galleryId] });
+            return res.json({ success: true, message: 'Gallery photo rejected.' });
+        }
+
         if (action === 'approveevent') {
             await db.execute({ sql: "UPDATE events SET status = 'APPROVED' WHERE event_id = ?", args: [payload.eventId] });
             return res.json({ success: true, message: 'Event approved.' });
@@ -1207,6 +1318,29 @@ app.post('/api', async (req, res) => {
             if (d.sponsors !== undefined) {
                 updates.push('sponsors = ?');
                 args.push(JSON.stringify(d.sponsors));
+            }
+
+            // Handle Gallery Additions
+            if (Array.isArray(d.gallery) && d.gallery.length > 0) {
+                for (const b64 of d.gallery) {
+                    if (b64 && b64.data) {
+                        const galId = 'GAL-' + Date.now() + Math.floor(Math.random() * 1000);
+                        await db.execute({
+                            sql: "INSERT INTO event_gallery (gallery_id, event_id, file_id, uploaded_date, status, sort_order) VALUES (?, ?, ?, ?, 'APPROVED', 99)",
+                            args: [galId, d.eventId, b64.data, new Date().toISOString()]
+                        });
+                    }
+                }
+            }
+
+            // Handle Gallery Deletions
+            if (Array.isArray(d.deleteGallery) && d.deleteGallery.length > 0) {
+                for (const galId of d.deleteGallery) {
+                    await db.execute({
+                        sql: "DELETE FROM event_gallery WHERE gallery_id = ? AND event_id = ?",
+                        args: [galId, d.eventId]
+                    });
+                }
             }
             
             if (updates.length > 0) {
@@ -1374,6 +1508,25 @@ app.post('/api', async (req, res) => {
             return res.json({ success: true, message: 'PDACC update deleted.' });
         }
 
+        
+        if (action === 'polledit') {
+            const pollId = payload.data?.pollId;
+            const qText = payload.data?.questionText;
+            const type = payload.data?.type;
+            const endsAt = payload.data?.endsAt || null;
+            const allowAdd = payload.data?.allowAdd === 'YES' ? 1 : 0;
+            const opts = Array.isArray(payload.data?.options) ? JSON.stringify(payload.data.options) : '[]';
+
+            if (!pollId || !qText || !type) return res.json({ success: false, message: 'Missing poll parameters' });
+
+            await db.execute({
+                sql: "UPDATE polls SET question = ?, poll_type = ?, ends_at = ?, allow_add = ?, options = ? WHERE poll_id = ?",
+                args: [qText, type, endsAt, allowAdd, opts, pollId]
+            });
+            await logAdminActivity(db, adminEmail, 'EDIT_POLL', pollId, 'Edited poll: ' + qText);
+            return res.json({ success: true, message: 'Poll updated successfully.' });
+        }
+
         if (action === 'pollcreate') {
             // Mockup
             return res.json({ success: true, message: 'Poll created.' });
@@ -1386,7 +1539,7 @@ app.post('/api', async (req, res) => {
         }
 
         
-        if (action === 'submitRegistration') {
+        if (action === 'submitregistration' || action === 'submitRegistration') {
             const reg = payload.registration || {};
             const registrationId = 'REG-' + Date.now();
             
@@ -1504,6 +1657,38 @@ app.post('/api', async (req, res) => {
         }
 
         // === UPDATE MEMBER INFO ===
+        
+        if (action === 'verifyupdateotp') {
+            const memberId = payload.data?.memberId;
+            const otpCode = (payload.data?.otp || '').trim();
+            
+            if (!memberId || !otpCode) return res.json({ success: false, message: 'Missing data.' });
+            
+            const saved = otpStore.get(memberId);
+            if (!saved || saved.type !== 'update') {
+                return res.json({ success: false, message: 'Invalid or expired OTP.' });
+            }
+            
+            if (Date.now() > saved.expires) {
+                otpStore.delete(memberId);
+                return res.json({ success: false, message: 'OTP expired. Request a new one.' });
+            }
+            
+            if (saved.code !== otpCode) {
+                saved.tries++;
+                if (saved.tries >= 3) {
+                    otpStore.delete(memberId);
+                    return res.json({ success: false, message: 'Too many wrong attempts. Request a new one.' });
+                }
+                return res.json({ success: false, message: 'Wrong OTP.' });
+            }
+            
+            // Valid OTP
+            otpStore.delete(memberId);
+            const token = jwt.sign({ memberId, role: 'update' }, JWT_SECRET, { expiresIn: '15m' });
+            return res.json({ success: true, message: 'Verified.', updateToken: token });
+        }
+
         if (action === 'updatememberinfo') {
             const data = payload.data || {};
             if (!data.memberId) return res.json({ success: false, message: 'Member ID required.' });
@@ -1732,6 +1917,8 @@ app.post('/api', async (req, res) => {
         // === 3. REQUEST EMAIL OTP (Update Info Widget) ===
         if (action === 'requestemailotp') {
             const mobile = (payload.data?.mobile || '').trim();
+            const memberId = (payload.data?.memberId || '').trim();
+            if (!memberId) return res.json({ success: false, message: 'Missing member ID.' });
             if (!mobile) return res.json({ success: false, message: 'Mobile number is required.' });
 
             // Find member by mobile
@@ -1739,11 +1926,12 @@ app.post('/api', async (req, res) => {
             if (hit.rows.length === 0) return res.json({ success: false, message: 'No member found with this mobile number.' });
             
             const target = hit.rows[0].email;
-            const memberId = hit.rows[0].member_id;
+            const hitMemberId = hit.rows[0].member_id;
+            if (hitMemberId !== memberId) return res.json({ success: false, message: 'Member ID and mobile mismatch.' });
             if (!target || !target.includes('@')) return res.json({ success: false, message: 'No email address on record to send OTP.' });
 
             const code = Math.floor(100000 + Math.random() * 900000).toString();
-            otpStore.set(mobile, { code, memberId, expires: Date.now() + 10 * 60000, tries: 0, type: 'update' });
+            otpStore.set(memberId, { code, memberId, mobile, expires: Date.now() + 10 * 60000, tries: 0, type: 'update' });
 
             const html = `<div style="font-family: sans-serif; padding: 20px; color: #333;"><p>Assalamu alaikum,</p><p>Your verification code to update your info is: <strong>${code}</strong></p><br/><p>RANGDHANU DUET</p></div>`;
             const mailRes = await sendMail(target, 'Verification code - RANGDHANU DUET', html);
@@ -1759,7 +1947,7 @@ app.post('/api', async (req, res) => {
             
             if (!mobile || !otpCode) return res.json({ success: false, message: 'Missing data.' });
 
-            const saved = otpStore.get(mobile);
+            const saved = otpStore.get(memberId);
             if (!saved || Date.now() > saved.expires || saved.type !== 'update') {
                 otpStore.delete(mobile);
                 return res.json({ success: false, message: 'The code has expired.' });

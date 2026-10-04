@@ -21,11 +21,11 @@ You can use this file to continue work in any AI assistant (Antigravity, Claude 
 - [x] API: `bloodbank`
 - [x] API: `events`, `eventgallery`
 - [x] API: `executivecommittee`, `faculty`
-- [ ] API: `notices`, `socialposts`, `slideshow`
-- [ ] API: `pdacc` (stats, lines, updates)
-- [ ] API: `polls`
-- [ ] API: Admin endpoints (stats, activity, approvals)
-- [ ] **Implement Automated Tasks (Cron Jobs)**: Replace Apps Script time triggers for automated role shifts and system maintenance.
+- [x] API: `notices`, `socialposts`, `slideshow`
+- [x] API: `pdacc` (stats, lines, updates)
+- [x] API: `polls`
+- [x] API: Admin endpoints (stats, activity, approvals)
+- [x] **Implement Automated Tasks (Cron Jobs)**: Replace Apps Script time triggers for automated role shifts and system maintenance.
 
 ## 🌐 Phase 4: Frontend Integration & Testing (Offline)
 - [x] Update `frontend/script.js` `API_BASE_URL` to point to `http://localhost:3000/api`.
