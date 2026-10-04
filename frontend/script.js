@@ -1399,11 +1399,11 @@
               const shots = photos.filter(p => p.part === part.n);
               if (!shots.length) return;
               let swiperSlides = shots.map((p, shotIdx) => {
-                  return `<div class="swiper-slide w-64 h-80 rounded-2xl overflow-hidden cursor-pointer shadow-xl relative" onclick="openLightbox(${photos.indexOf(p)})"><img src="${p.src}" class="w-full h-full object-cover"><div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/80 to-transparent text-white text-sm font-bold truncate">${escapeHtml(p.caption || p.bn || '')}</div></div>`;
+                  return `<div class="swiper-slide w-72 sm:w-96 h-96 sm:h-[450px] rounded-2xl overflow-hidden cursor-pointer shadow-xl relative group" onclick="openLightbox(${photos.indexOf(p)})"><img src="${p.src}" class="w-full h-full object-cover"><div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/90 via-black/40 to-transparent text-white text-xs sm:text-sm font-medium line-clamp-2 whitespace-normal leading-tight opacity-100 transition-opacity">${escapeHtml(p.caption || p.bn || '')}</div></div>`;
               }).join('');
 
               html += `
-              <section class="mb-12 last:mb-0 overflow-hidden rounded-3xl bg-white border border-blue-50 p-8 pt-10 pb-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative">
+              <section class="mb-12 last:mb-0 overflow-hidden rounded-3xl bg-white border border-blue-50 p-4 sm:p-8 pt-8 sm:pt-10 pb-8 sm:pb-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative">
                 <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
                 <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-sky-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
                 
@@ -7928,7 +7928,7 @@
         </div>`).join('');
       return `
            <div class="mb-10">
-               <h4 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2"><i data-lucide="handshake" class="w-5 h-5 text-blue-600"></i> ${'Sponsors'}</h4>
+               <h4 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2"><i data-lucide="handshake" class="w-5 h-5 text-blue-600"></i> ${'Sponsors'}</h4>
                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">${cards}</div>
            </div>`;
     }
@@ -8244,7 +8244,7 @@
       if (staticGal.length > 0) {
           staticGalleryHtml = '<div class="swiper-wrapper">' + staticGal.map(x => {
               const src = normalizeAlumniImage(x.image || '');
-              return src ? `<div class="swiper-slide w-64 h-80 rounded-2xl overflow-hidden cursor-pointer shadow-xl relative" onclick="openCustomLightbox('${escapeHtml(src)}', '${escapeHtml(x.caption || title)}')"><img src="${escapeHtml(src)}" class="w-full h-full object-cover"><div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/80 to-transparent text-white text-sm font-bold truncate">${escapeHtml(x.caption || title)}</div></div>` : '';
+              return src ? `<div class="swiper-slide w-72 sm:w-96 h-96 sm:h-[450px] rounded-2xl overflow-hidden cursor-pointer shadow-xl relative group" onclick="openCustomLightbox('${escapeHtml(src)}', '${escapeHtml(x.caption || title)}')"><img src="${escapeHtml(src)}" class="w-full h-full object-cover"><div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/90 via-black/40 to-transparent text-white text-xs sm:text-sm font-medium line-clamp-2 whitespace-normal leading-tight opacity-100 transition-opacity">${escapeHtml(x.caption || title)}</div></div>` : '';
           }).join('') + '</div><div class="swiper-pagination mt-4 relative"></div>';
       }
 
@@ -8255,7 +8255,7 @@
         <div class="p-6 sm:p-10 bg-white sm:rounded-b-3xl">
            <div class="mb-8">
                <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-100 text-blue-700 text-[10px] font-black uppercase tracking-widest rounded-md mb-4">${escapeHtml(e.category || 'Event')}</span>
-               <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 leading-tight">${escapeHtml(title)}</h2>
+               <h2 class="text-xl sm:text-3xl font-extrabold text-slate-900 leading-tight">${escapeHtml(title)}</h2>
            </div>
            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
               ${date ? `<div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0"><i data-lucide="calendar" class="w-5 h-5"></i></div><div><p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Date & Time</p><p class="font-bold text-slate-900">${new Date(date).toLocaleString('en-US', {day:'numeric', month:'long', year:'numeric', hour:'numeric', minute:'2-digit', hour12:true})}</p></div></div>` : ''}
@@ -8263,17 +8263,17 @@
               <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0"><i data-lucide="users" class="w-5 h-5"></i></div><div><p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Organized By</p><p class="font-bold text-slate-900 line-clamp-1">RANGDHANU</p></div></div>
            </div>
            <div class="mb-10">
-               <h4 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2"><i data-lucide="info" class="w-5 h-5 text-blue-600"></i> ইভেন্ট সম্পর্কে বিস্তারিত</h4>
+               <h4 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2"><i data-lucide="info" class="w-5 h-5 text-blue-600"></i> ইভেন্ট সম্পর্কে বিস্তারিত</h4>
                <p class="whitespace-pre-line leading-relaxed text-slate-700 sm:text-lg">${escapeHtml(desc)}</p>
            </div>
 
            ${sponsorSectionHtml(sponsors)}
            
            ${staticGalleryHtml ? `
-           <div class="mt-8 overflow-hidden rounded-3xl bg-white p-8 pt-10 pb-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-blue-50 relative">
+           <div class="mt-8 overflow-hidden rounded-3xl bg-white p-4 sm:p-8 pt-8 sm:pt-10 pb-8 sm:pb-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-blue-50 relative">
                <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
                <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-sky-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
-               <div class="text-center mb-8 relative z-10"><h4 class="text-2xl font-black text-slate-900 tracking-wide uppercase">Gallery</h4><p class="text-slate-500 text-sm mt-1">Explore moments from this event</p></div>
+               <div class="text-center mb-8 relative z-10"><h4 class="text-lg font-extrabold text-slate-900 tracking-wide uppercase">Gallery</h4><p class="text-slate-500 text-sm mt-1">Explore moments from this event</p></div>
                <div id="dynamic-event-gallery" class="swiper event-gallery-swiper relative z-10">${staticGalleryHtml}</div>
            </div>` : `<div id="dynamic-event-gallery"></div>`}
         </div>
@@ -8286,6 +8286,8 @@
                   effect: 'coverflow',
                   grabCursor: true,
                   centeredSlides: true,
+                            preventClicks: false,
+                            preventClicksPropagation: false,
                   slidesPerView: 'auto',
                   coverflowEffect: {
                       rotate: 30,
@@ -8318,20 +8320,20 @@
               if (galHtml) {
                   const combined = staticGal.map(x => {
                       const src = normalizeAlumniImage(x.image || '');
-                      return src ? `<div class="swiper-slide w-64 h-80 rounded-2xl overflow-hidden cursor-pointer shadow-xl relative" onclick="openCustomLightbox('${escapeHtml(src)}', '${escapeHtml(x.caption || title)}')"><img src="${escapeHtml(src)}" class="w-full h-full object-cover"><div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/80 to-transparent text-white text-sm font-bold truncate">${escapeHtml(x.caption || title)}</div></div>` : '';
+                      return src ? `<div class="swiper-slide w-72 sm:w-96 h-96 sm:h-[450px] rounded-2xl overflow-hidden cursor-pointer shadow-xl relative group" onclick="openCustomLightbox('${escapeHtml(src)}', '${escapeHtml(x.caption || title)}')"><img src="${escapeHtml(src)}" class="w-full h-full object-cover"><div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/90 via-black/40 to-transparent text-white text-xs sm:text-sm font-medium line-clamp-2 whitespace-normal leading-tight opacity-100 transition-opacity">${escapeHtml(x.caption || title)}</div></div>` : '';
                   }).join('') + items.map(x => {
                       const src = normalizeAlumniImage(x.image || '');
-                      return src ? `<div class="swiper-slide w-64 h-80 rounded-2xl overflow-hidden cursor-pointer shadow-xl relative" onclick="openCustomLightbox('${escapeHtml(src)}', '${escapeHtml(x.caption || title)}')"><img src="${escapeHtml(src)}" class="w-full h-full object-cover"><div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/80 to-transparent text-white text-sm font-bold truncate">${escapeHtml(x.caption || title)}</div></div>` : '';
+                      return src ? `<div class="swiper-slide w-72 sm:w-96 h-96 sm:h-[450px] rounded-2xl overflow-hidden cursor-pointer shadow-xl relative group" onclick="openCustomLightbox('${escapeHtml(src)}', '${escapeHtml(x.caption || title)}')"><img src="${escapeHtml(src)}" class="w-full h-full object-cover"><div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/90 via-black/40 to-transparent text-white text-xs sm:text-sm font-medium line-clamp-2 whitespace-normal leading-tight opacity-100 transition-opacity">${escapeHtml(x.caption || title)}</div></div>` : '';
                   }).join('');
                   
                   const wrapper = '<div class="swiper-wrapper">' + combined + '</div><div class="swiper-pagination mt-4 relative"></div>';
                   
                   if(!staticGalleryHtml) {
                       galContainer.outerHTML = `
-                         <div class="mt-8 overflow-hidden rounded-3xl bg-white p-8 pt-10 pb-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-blue-50 relative">
+                         <div class="mt-8 overflow-hidden rounded-3xl bg-white p-4 sm:p-8 pt-8 sm:pt-10 pb-8 sm:pb-12 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-blue-50 relative">
                              <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
                              <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-sky-100 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
-                             <div class="text-center mb-8 relative z-10"><h4 class="text-2xl font-black text-slate-900 tracking-wide uppercase">Gallery</h4><p class="text-slate-500 text-sm mt-1">Explore moments from this event</p></div>
+                             <div class="text-center mb-8 relative z-10"><h4 class="text-lg font-extrabold text-slate-900 tracking-wide uppercase">Gallery</h4><p class="text-slate-500 text-sm mt-1">Explore moments from this event</p></div>
                              <div id="dynamic-event-gallery" class="swiper event-gallery-swiper relative z-10">${wrapper}</div>
                          </div>`;
                   } else {
@@ -8342,6 +8344,8 @@
                           effect: 'coverflow',
                           grabCursor: true,
                           centeredSlides: true,
+                            preventClicks: false,
+                            preventClicksPropagation: false,
                           slidesPerView: 'auto',
                           coverflowEffect: { rotate: 30, stretch: 0, depth: 200, modifier: 1, slideShadows: true },
                           pagination: { el: '.event-gallery-swiper .swiper-pagination', clickable: true },
