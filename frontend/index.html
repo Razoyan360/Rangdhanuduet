@@ -2549,14 +2549,20 @@
         </div>
 
         <div class="bg-white p-5 sm:p-6 rounded-3xl max-w-5xl mx-auto mb-10 border border-slate-200 shadow-sm">
-          <!-- Directory Tabs injected to match Alumni view -->
-          <div class="rd-dir-subnav mb-4" role="navigation">
-            <div class="rd-dir-seg" role="group">
-              <button type="button" class="rd-dir-tab" onclick="switchPage('alumni')"><i data-lucide="graduation-cap" class="w-4 h-4"></i><span>Alumni</span></button>
-              <button type="button" class="rd-dir-tab" onclick="setAlumniViewFilter('Running Member'); switchPage('alumni');"><i data-lucide="backpack" class="w-4 h-4"></i><span>Running Member</span></button>
-              <button type="button" class="rd-dir-tab is-active" aria-pressed="true"><i data-lucide="building-2" class="w-4 h-4"></i><span>Faculty</span></button>
+          
+          <!-- Directory Tabs for Faculty View -->
+          <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-6">
+            <div class="bg-slate-100 p-1 rounded-full flex items-center border border-slate-200 shadow-inner rd-dir-seg" role="group">
+              <button type="button" class="alumni-view-tab-btn px-4 py-1.5 rounded-full text-xs font-bold transition" onclick="setAlumniViewFilter('ALL'); switchPage('alumni')">Everyone</button>
+              <button type="button" class="alumni-view-tab-btn px-4 py-1.5 rounded-full text-xs font-bold transition" onclick="setAlumniViewFilter('Alumni'); switchPage('alumni')">Alumni</button>
+              <button type="button" class="alumni-view-tab-btn px-4 py-1.5 rounded-full text-xs font-bold transition" onclick="setAlumniViewFilter('Running Member'); switchPage('alumni')">Running Member</button>
             </div>
+            <button type="button" class="flex items-center gap-1.5 text-xs font-bold bg-white text-slate-800 shadow-sm px-4 py-2 rounded-full ml-auto is-active border border-slate-200">
+              <span>Teachers & Officers</span>
+              <i data-lucide="building-2" class="w-3.5 h-3.5"></i>
+            </button>
           </div>
+
 
           <div class="space-y-4">
             <div class="relative">
