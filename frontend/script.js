@@ -1439,28 +1439,42 @@
     let lightboxItems = [], currentLightboxIdx = 0;
     
     function showLightboxItem(index) {
-      if (!lightboxItems.length) return;
-      currentLightboxIdx = (index + lightboxItems.length) % lightboxItems.length;
-      const img = document.getElementById("lightbox-img"), cap = document.getElementById("lightbox-caption"), ctr = document.getElementById("lightbox-counter");
-      if (!img) return;
-      img.src = lightboxItems[currentLightboxIdx].src;
-      cap.innerText = lightboxItems[currentLightboxIdx].caption || "";
-      if (ctr) ctr.textContent = (currentLightboxIdx + 1) + ' / ' + lightboxItems.length;
-      const overlay = document.getElementById("lightbox-overlay");
-      if (overlay) {
-          overlay.classList.remove("hidden");
-          setTimeout(() => overlay.classList.remove("opacity-0"), 10);
-          document.body.style.overflow = "hidden";
+        if (!lightboxItems.length) return;
+        currentLightboxIdx = (index + lightboxItems.length) % lightboxItems.length;
+        const img = document.getElementById("lightbox-img"), cap = document.getElementById("lightbox-caption"), ctr = document.getElementById("lightbox-counter");
+        if (!img) return;
+        
+        img.src = lightboxItems[currentLightboxIdx].src;
+        cap.innerText = lightboxItems[currentLightboxIdx].caption || "";
+        if (ctr) ctr.textContent = (currentLightboxIdx + 1) + ' / ' + lightboxItems.length;
+        
+        const overlay = document.getElementById("lightbox-overlay");
+        if (overlay && overlay.classList.contains("hidden")) {
+            img.style.transform = "scale(0.85)";
+            img.style.opacity = "0";
+            img.style.transition = "none";
+            
+            overlay.classList.remove("hidden");
+            setTimeout(() => overlay.classList.remove("opacity-0"), 10);
+            document.body.style.overflow = "hidden";
+            
+            setTimeout(() => {
+                img.style.transition = "all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)";
+                img.style.transform = "scale(1)";
+                img.style.opacity = "1";
+            }, 50);
+        } else if (overlay) {
+            img.style.transition = "none";
+            img.style.transform = "scale(0.98)";
+            img.style.opacity = "0.7";
+            setTimeout(() => {
+                img.style.transition = "all 0.3s ease-out";
+                img.style.transform = "scale(1)";
+                img.style.opacity = "1";
+            }, 30);
+        }
+        lucide.createIcons();
       }
-      img.style.transform = "scale(0.9)";
-      img.style.opacity = "0";
-      setTimeout(() => {
-          img.style.transition = "all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)";
-          img.style.transform = "scale(1)";
-          img.style.opacity = "1";
-      }, 50);
-      lucide.createIcons();
-    }
     
     function openLightbox(index) {
       if (!RD_REUNION_VIEW || !RD_REUNION_VIEW.photos) return;
@@ -10170,11 +10184,9 @@ f.reset();
             if (adm && adm.admin) {
               RD_ADMIN.admin = adm.admin;
               if (adm.role) RD_ADMIN.role = adm.role;
-              RD_ADMIN.gate = 'open';
-              RD_ADMIN.state = 'ready';
+              RD_ADMIN.gate = 'checking';
+              RD_ADMIN.state = 'loading';
               adminGateRender();
-              rdAdminNavPaint();
-              memberLoadContacts();
               adminGateVerify(true);
               return;
             }
@@ -10257,7 +10269,7 @@ f.reset();
     function rdIsAuthError(raw) {
       const text = String(raw && raw.message ? raw.message : (raw == null ? '' : raw));
       if (/is not defined|Script function not found|not a function/i.test(text)) return false;
-      return /sign ?-?in|signed in|not on the admin list|admin list|no admin|expired|not authoris|not authoriz|permission denied|token/i.test(text);
+      return /sign ?-?in|signed in|not on the admin list|admin list|no admin|not an admin|expired|not authoris|not authoriz|unauthoriz|permission denied|admin access|token/i.test(text);
     }
 
     /* A later request may still be refused (the Google session can expire, or
@@ -10267,7 +10279,7 @@ f.reset();
       RD_ADMIN.gate = 'denied';
       RD_ADMIN.error = message || '';
       /* An expired sign-in must not be sent a second time. */
-      if (/sign in again|expired|not be verified|not be identified/i.test(RD_ADMIN.error)) {
+      if (/sign in again|expired|not be verified|not be identified|unauthoriz|not an admin|admin access/i.test(RD_ADMIN.error)) {
         rdAdminRemember('');
         try { if (rdGsiReady()) google.accounts.id.disableAutoSelect(); } catch (err) {}
       }
@@ -10316,11 +10328,9 @@ f.reset();
           if (adm && adm.admin) {
             RD_ADMIN.admin = adm.admin;
             if (adm.role) RD_ADMIN.role = adm.role;
-            RD_ADMIN.gate = 'open';
-            RD_ADMIN.state = 'ready';
+            RD_ADMIN.gate = 'checking';
+            RD_ADMIN.state = 'loading';
             adminGateRender();
-            rdAdminNavPaint();
-            memberLoadContacts();
             adminGateVerify(true);
             return;
           }

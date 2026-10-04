@@ -3293,7 +3293,7 @@
   </div>
 
   <!-- ================= SUB-PAGE: PHOTO VIEWER ================= -->
-  <div id="lightbox-overlay" class="fixed inset-0 z-[9999] bg-slate-950/95 backdrop-blur-sm flex-col hidden opacity-0 transition-opacity duration-300 overflow-y-auto">
+  <div id="lightbox-overlay" class="fixed inset-0 z-[9999] bg-slate-950/95 backdrop-blur-sm flex flex-col hidden opacity-0 transition-opacity duration-300 overflow-y-auto">
     <div class="sticky top-0 z-10 bg-slate-950/80 backdrop-blur-md border-b border-white/10">
       <div class="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
         <button type="button" onclick="closeLightbox()" class="text-white hover:text-blue-400 font-bold text-sm flex items-center gap-2 transition px-3 py-1.5 rounded-lg hover:bg-white/10"><i data-lucide="arrow-left" class="w-4 h-4"></i> Back</button>
@@ -3312,7 +3312,7 @@
         <div class="rounded-3xl bg-slate-900/60 border border-white/10 p-3 sm:p-5">
           <div class="relative flex items-center justify-center">
             <button type="button" class="lb-nav lb-nav-prev" onclick="prevLightboxPhoto()" title="আগের ছবি" aria-label="আগের ছবি"><i data-lucide="chevron-left" class="w-6 h-6"></i></button>
-            <img id="lightbox-img" src="" alt="Moment" class="max-h-[68vh] w-auto max-w-full rounded-2xl shadow-2xl object-contain">
+            <img id="lightbox-img" src="" alt="Moment" class="max-h-[85vh] w-auto max-w-full rounded-2xl shadow-2xl object-contain">
             <button type="button" class="lb-nav lb-nav-next" onclick="nextLightboxPhoto()" title="পরের ছবি" aria-label="পরের ছবি"><i data-lucide="chevron-right" class="w-6 h-6"></i></button>
           </div>
           <p id="lightbox-caption" class="text-slate-300 text-sm font-medium mt-4 text-center leading-relaxed"></p>
@@ -3432,7 +3432,7 @@ Do not modify social links or structure without permission.
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" defer></script>
 <!-- JAVASCRIPT LOGIC -->
-<script src="script.js?v=20261005-0021" defer></script>
+<script src="script.js?v=20261005-0026" defer></script>
 
   <!-- PREMIUM GLOBAL LOADER (owner-authorised overlay; all styles in custom.css .rd-gl*) -->
   <div id="demo-loader" class="rd-gl" aria-hidden="true">
