@@ -2,6 +2,7 @@ import { verifyGoogleToken } from './google_verify.js';
 import { uploadBase64ToCloudinary } from './cloudinary_upload.js';
 import cron from 'node-cron';
 import express from 'express';
+import { createHmac, timingSafeEqual } from 'node:crypto';
 import { sendMail } from './mail.js';
 // In-memory OTP store (expires in 10 mins)
 const otpStore = new Map();
@@ -22,13 +23,50 @@ app.use(cors());
 app.use(express.json());
 
 // AUTH HELPERS
+const MEMBER_SESSION_TTL_SECONDS = 30 * 24 * 60 * 60;
+const MEMBER_SESSION_SECRET = process.env.MEMBER_SESSION_SECRET ||
+    process.env.TURSO_AUTH_TOKEN || 'rangdhanu-local-member-session';
+
+function memberSessionToken(email, memberId) {
+    const body = Buffer.from(JSON.stringify({
+        email,
+        memberId,
+        exp: Math.floor(Date.now() / 1000) + MEMBER_SESSION_TTL_SECONDS
+    })).toString('base64url');
+    const signature = createHmac('sha256', MEMBER_SESSION_SECRET)
+        .update(body)
+        .digest('base64url');
+    return `rds.${body}.${signature}`;
+}
+
+function memberSessionEmail(token) {
+    const parts = String(token || '').split('.');
+    if (parts.length !== 3 || parts[0] !== 'rds') return null;
+    const [, body, signature] = parts;
+    const expected = createHmac('sha256', MEMBER_SESSION_SECRET)
+        .update(body)
+        .digest('base64url');
+    const actualBytes = Buffer.from(signature);
+    const expectedBytes = Buffer.from(expected);
+    if (actualBytes.length !== expectedBytes.length ||
+        !timingSafeEqual(actualBytes, expectedBytes)) return null;
+
+    try {
+        const data = JSON.parse(Buffer.from(body, 'base64url').toString('utf8'));
+        if (!data.email || !data.exp || data.exp <= Math.floor(Date.now() / 1000)) return null;
+        return String(data.email).trim().toLowerCase();
+    } catch (err) {
+        return null;
+    }
+}
+
 async function getAdminRole(req, payload) {
     const token = payload?.adminToken || req.query.adminToken || '';
     if (!token) return null;
     const email = await verifyGoogleToken(token);
     if (!email) return null;
     const adminCheck = await db.execute({
-        sql: "SELECT role FROM admins WHERE email = ? COLLATE NOCASE",
+        sql: "SELECT role FROM admins WHERE email = ? COLLATE NOCASE AND UPPER(COALESCE(status, '')) = 'ACTIVE'",
         args: [email]
     });
     if (adminCheck.rows.length === 0) return null;
@@ -38,7 +76,8 @@ async function getAdminRole(req, payload) {
 async function getMemberEmail(req, payload) {
     const token = payload?.memberToken || req.query.memberToken || '';
     if (!token) return null;
-    return await verifyGoogleToken(token);
+    const sessionEmail = memberSessionEmail(token);
+    return sessionEmail || await verifyGoogleToken(token);
 }
 
 function memberRowForFrontend(row) {
@@ -937,7 +976,7 @@ if (action === 'get_env') return res.json({url: process.env.TURSO_DATABASE_URL, 
             if (!email) return res.status(401).json({ success: false, message: 'Invalid token' });
             
             const adminCheck = await db.execute({
-                sql: "SELECT role FROM admins WHERE email = ? COLLATE NOCASE",
+                sql: "SELECT role FROM admins WHERE email = ? COLLATE NOCASE AND UPPER(COALESCE(status, '')) = 'ACTIVE'",
                 args: [email]
             });
             if (adminCheck.rows.length === 0) {
@@ -1927,22 +1966,28 @@ app.post('/api', async (req, res) => {
         }
 
         if (action === 'memberemailstart') {
-            const memberId = (payload.memberId || '').trim();
-            const googleEmail = await getMemberEmail(req, payload); // Just decodes the token
-            
-            if (!googleEmail) return res.status(401).json({ success: false, message: 'Sign in with Google first.' });
+            const memberId = String(payload.memberId || '').trim();
+            const email = String(payload.email || '').trim().toLowerCase();
             if (!memberId) return res.json({ success: false, message: 'Member ID is required.' });
+            if (!email || !email.includes('@')) return res.json({ success: false, message: 'Please enter a valid email address.' });
 
-            const hit = await db.execute({ sql: "SELECT email FROM alumni WHERE member_id = ? COLLATE NOCASE", args: [memberId] });
-            if (hit.rows.length === 0) return res.json({ success: false, message: 'This Member ID was not found.' });
-            
-            const target = hit.rows[0].email;
-            if (!target || !target.includes('@')) {
-                return res.json({ success: false, message: 'There is no email address on your record. Please inform the Association.' });
+            const hit = await db.execute({
+                sql: "SELECT * FROM alumni WHERE member_id = ? COLLATE NOCASE AND email = ? COLLATE NOCASE",
+                args: [memberId, email]
+            });
+            if (hit.rows.length === 0 || String(hit.rows[0].status || '').toUpperCase() !== 'APPROVED') {
+                return res.json({ success: false, message: 'Email and Member ID did not match an approved member record.' });
             }
 
+            const target = String(hit.rows[0].email || '').trim().toLowerCase();
             const code = Math.floor(100000 + Math.random() * 900000).toString();
-            otpStore.set(memberId, { code, googleEmail, expires: Date.now() + 10 * 60000, tries: 0, type: 'link' });
+            otpStore.set(memberId, {
+                code,
+                email: target,
+                expires: Date.now() + 10 * 60000,
+                tries: 0,
+                type: 'member-login'
+            });
 
             const html = `<div style="font-family: sans-serif; padding: 20px; color: #333;"><p>Assalamu alaikum,</p><p>Your sign in code for the Rangdhanu DUET website is: <strong>${code}</strong></p><p>The code works for 10 minutes.</p><br/><p>RANGDHANU DUET</p></div>`;
             const mailRes = await sendMail(target, 'Sign in code - RANGDHANU DUET', html);
@@ -1953,22 +1998,17 @@ app.post('/api', async (req, res) => {
             return res.json({ success: true, sentTo: masked, message: 'OTP sent successfully.' });
         }
 
-        // === 2. MEMBER EMAIL VERIFY (Google Sign-In Link) ===
+        // === 2. MEMBER EMAIL VERIFY (standalone OTP or Google link) ===
         if (action === 'memberemailverify') {
-            const memberId = (payload.memberId || '').trim();
-            const otpCode = (payload.code || '').trim();
+            const memberId = String(payload.memberId || '').trim();
+            const otpCode = String(payload.code || '').trim();
             const googleEmail = await getMemberEmail(req, payload);
-            
-            if (!googleEmail) return res.status(401).json({ success: false, message: 'Sign in with Google first.' });
             if (!memberId || !otpCode) return res.json({ success: false, message: 'Missing data.' });
 
             const saved = otpStore.get(memberId);
-            if (!saved || Date.now() > saved.expires || saved.type !== 'link') {
+            if (!saved || Date.now() > saved.expires) {
                 otpStore.delete(memberId);
                 return res.json({ success: false, message: 'The code has expired. Ask for a new one.' });
-            }
-            if (saved.googleEmail !== googleEmail) {
-                return res.json({ success: false, message: 'That code was requested from a different Google account.' });
             }
             if (saved.code !== otpCode) {
                 saved.tries++;
@@ -1977,6 +2017,34 @@ app.post('/api', async (req, res) => {
                     return res.json({ success: false, message: 'Too many wrong tries. Ask for a new code.' });
                 }
                 return res.json({ success: false, message: `The code did not match. Tries left: ${3 - saved.tries}` });
+            }
+
+            if (saved.type === 'member-login') {
+                const hit = await db.execute({
+                    sql: "SELECT * FROM alumni WHERE member_id = ? COLLATE NOCASE AND email = ? COLLATE NOCASE",
+                    args: [memberId, saved.email]
+                });
+                otpStore.delete(memberId);
+                if (hit.rows.length === 0 || String(hit.rows[0].status || '').toUpperCase() !== 'APPROVED') {
+                    return res.json({ success: false, message: 'Your member record is not approved.' });
+                }
+                const member = hit.rows[0];
+                return res.json({
+                    success: true,
+                    status: 'SUCCESS',
+                    email: saved.email,
+                    memberId,
+                    memberToken: memberSessionToken(saved.email, memberId),
+                    member: memberRowForFrontend(member)
+                });
+            }
+
+            if (!googleEmail || saved.type !== 'link') {
+                otpStore.delete(memberId);
+                return res.status(401).json({ success: false, message: 'Sign in with Google first.' });
+            }
+            if (saved.googleEmail !== googleEmail) {
+                return res.json({ success: false, message: 'That code was requested from a different Google account.' });
             }
 
             otpStore.delete(memberId);
