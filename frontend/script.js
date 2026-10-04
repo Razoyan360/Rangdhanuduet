@@ -1,5 +1,5 @@
     let alumniData = [];
-    const API_BASE_URL = 'http://localhost:3000/api';
+    const API_BASE_URL = 'https://rangdhanuduet.vercel.app/api';
     /* Admin sign-in. Paste the OAuth Client ID from Google Cloud Console
        here, and store the same value in the Apps Script project with
        rdSetAdminClientId('...'). Left empty, the admin page falls back to
@@ -14649,3 +14649,4 @@ function rdNavGlareSync(el) {
   };
 
 })();
+
