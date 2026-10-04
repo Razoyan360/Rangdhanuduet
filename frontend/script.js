@@ -3889,6 +3889,7 @@
       const id = String((document.getElementById('rd-si-id') || {}).value || '').trim();
       if (!email || email.indexOf('@') < 1) { rdMemberMsg('rd-si-msg', 'Please enter a valid email address.'); return; }
       if (!id) { rdMemberMsg('rd-si-msg', 'Please enter your Member ID.'); return; }
+      rdMemberMsg('member-signin-msg', '');
       rdMemberMsg('rd-si-msg', '');
       showGlobalLoader('Sending code...', 'Emailing your sign in code.');
       try {
@@ -6158,7 +6159,7 @@
     }
     
     async function apiPost(action, payload={}){
-      const r=await fetch(API_BASE_URL,{method:'POST', body:JSON.stringify({action,...rdAuthParams(),...payload})});
+      const r=await fetch(API_BASE_URL,{method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action,...rdAuthParams(),...payload})});
       let j;
       try{ j = JSON.parse(await r.text()); } catch(e) { throw new Error('Server returned invalid response.'); }
       /* Without this check a failed write used to fall through into the caller's
