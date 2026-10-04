@@ -9801,7 +9801,8 @@ f.reset();
       { key: 'notices',       label: 'Notices',                 icon: 'megaphone',    action: 'getadminnotices',     custom: true },
       { key: 'social',        label: 'Social Media Corner',     icon: 'share-2',      action: 'getadminsocialposts', custom: true },
       { key: 'slides',        label: 'Slideshows',              icon: 'images',       action: 'getadminslides',      custom: true },
-      { key: 'pdacc',         label: 'PDACC Page',              icon: 'graduation-cap', action: 'getadminpdacc',     custom: true },
+      { key: 'reunion',       label: 'Reunion',                 icon: 'flag',           action: 'getadminreunion',   custom: true },
+        { key: 'pdacc',         label: 'PDACC Page',              icon: 'graduation-cap', action: 'getadminpdacc',     custom: true },
       { key: 'faculty',       label: 'Rangdhanu Family',        icon: 'users-round',  action: 'getadminfaculty',     custom: true },
       { key: 'activity',      label: 'Edit History',            icon: 'history',      action: 'getadminactivity',    custom: true },
       { key: 'unclaimed',     label: 'Unclaimed Profiles',       icon: 'user-round-search', action: 'adminunclaimedprofiles', custom: true },
@@ -10972,7 +10973,8 @@ f.reset();
       if (tab === 'notices') return adminNoticesHtml();
       if (tab === 'social') return adminSocialHtml();
       if (tab === 'slides') return adminSlidesHtml();
-      if (tab === 'pdacc') return adminPdaccHtml();
+      if (tab === 'reunion') return adminReunionHtml();
+        if (tab === 'pdacc') return adminPdaccHtml();
       if (tab === 'faculty') return adminFacultyHtml();
       if (tab === 'activity') return adminActivityHtml();
       if (tab === 'unclaimed') return adminUnclaimedHtml();
@@ -14510,3 +14512,120 @@ function rdNavGlareSync(el) {
   }
   window.addEventListener('load', () => rdNavGlareSync());
 })();
+
+
+function adminReunionHtml() {
+    const data = RD_ADMIN.rows.reunion[0];
+    const parts = data.parts || [];
+    const photos = data.photos || [];
+
+    let out = '<div class="space-y-8">';
+    
+    // Add New Part Section
+    out += '<div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">';
+    out += '<div class="flex items-center justify-between mb-4"><h3 class="text-lg font-bold text-slate-800">Add New Reunion Part</h3></div>';
+    out += '<div class="grid sm:grid-cols-4 gap-4">';
+    out += '<div><label class="block text-xs font-semibold text-slate-500 mb-1">Part Number</label><input type="number" id="reu-n" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm" placeholder="e.g. 1" /></div>';
+    out += '<div><label class="block text-xs font-semibold text-slate-500 mb-1">Icon (Lucide)</label><input type="text" id="reu-icon" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm" placeholder="flag" /></div>';
+    out += '<div><label class="block text-xs font-semibold text-slate-500 mb-1">Title (Bengali)</label><input type="text" id="reu-bn" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm" placeholder="Title BN" /></div>';
+    out += '<div><label class="block text-xs font-semibold text-slate-500 mb-1">Title (English)</label><input type="text" id="reu-en" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm" placeholder="Title EN" /></div>';
+    out += '</div>';
+    out += '<div class="mt-4 flex justify-end"><button type="button" onclick="adminSaveReunionPart()" class="px-5 py-2.5 bg-blue-600 text-white font-bold text-sm rounded-xl hover:bg-blue-700 transition">Save Part</button></div>';
+    out += '</div>';
+
+    // List Existing Parts
+    for (const part of parts) {
+        out += '<div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">';
+        out += '<div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center gap-3">';
+        out += '<div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600"><i data-lucide="' + escapeHtml(part.icon) + '" class="w-5 h-5"></i></div>';
+        out += '<div><h4 class="font-bold text-slate-800">Part ' + part.n + ': ' + escapeHtml(part.bn) + '</h4><p class="text-xs text-slate-500">' + escapeHtml(part.en) + '</p></div>';
+        out += '</div>';
+
+        out += '<div class="p-6">';
+        out += '<div class="mb-4 flex items-center justify-between"><h5 class="font-bold text-slate-700">Gallery Photos</h5></div>';
+        
+        const partPhotos = photos.filter(p => p.part === part.n);
+        
+        out += '<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">';
+        for (const photo of partPhotos) {
+            out += '<div class="relative group aspect-square rounded-xl overflow-hidden bg-slate-100 border border-slate-200">';
+            out += '<img src="' + normalizeAlumniImage(photo.file) + '" class="w-full h-full object-cover" />';
+            out += '<button type="button" onclick="adminDeleteReunionPhoto(' + part.n + ', \'' + photo.photo_id + '\')" class="absolute top-2 right-2 w-8 h-8 rounded-lg bg-white/90 text-red-600 flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow hover:bg-red-50"><i data-lucide="trash-2" class="w-4 h-4"></i></button>';
+            out += '</div>';
+        }
+        out += '</div>';
+        
+        // Upload form
+        out += '<div class="mt-4 pt-4 border-t border-slate-100">';
+        out += '<label class="block text-xs font-semibold text-slate-500 mb-2">Upload More Photos</label>';
+        out += '<input type="file" id="reu-photos-' + part.n + '" multiple accept="image/*" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />';
+        out += '<div class="mt-3 flex justify-end"><button type="button" onclick="adminUploadReunionPhotos(' + part.n + ')" class="px-4 py-2 bg-slate-900 text-white font-bold text-sm rounded-xl hover:bg-slate-800 transition">Upload Photos</button></div>';
+        out += '</div>';
+
+        out += '</div></div>';
+    }
+
+    out += '</div>';
+    
+    // Add dummy container so gallery upload works smoothly
+    return out + '<div id="reu-dummy-wrap"></div>';
+}
+
+async function adminSaveReunionPart() {
+    const n = parseInt(document.getElementById('reu-n').value, 10);
+    const icon = document.getElementById('reu-icon').value.trim();
+    const bn = document.getElementById('reu-bn').value.trim();
+    const en = document.getElementById('reu-en').value.trim();
+    if (!n || !icon || !bn || !en) return alert('All fields are required.');
+    
+    document.getElementById('reu-dummy-wrap').innerHTML = '<div class="fixed inset-0 z-50 bg-white/50 backdrop-blur-sm flex items-center justify-center"><div class="px-6 py-4 bg-white shadow-xl rounded-2xl font-bold text-indigo-600 flex items-center gap-3"><div class="w-5 h-5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div> Saving...</div></div>';
+    try {
+        const res = await apiPost('savereunionpart', { n, icon, bn, en });
+        if (res.success) {
+            loadAdminDashboard(true);
+        } else {
+            alert(res.message || 'Error saving part.');
+        }
+    } catch(e) {
+        alert('Error.');
+    }
+}
+
+async function adminDeleteReunionPhoto(partNumber, photoId) {
+    if (!confirm('Delete this photo?')) return;
+    document.getElementById('reu-dummy-wrap').innerHTML = '<div class="fixed inset-0 z-50 bg-white/50 backdrop-blur-sm flex items-center justify-center"><div class="px-6 py-4 bg-white shadow-xl rounded-2xl font-bold text-indigo-600 flex items-center gap-3"><div class="w-5 h-5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div> Deleting...</div></div>';
+    try {
+        const res = await apiPost('savereunionphotos', { part: partNumber, deleteGallery: [photoId] });
+        if (res.success) {
+            loadAdminDashboard(true);
+        } else {
+            alert(res.message || 'Error deleting.');
+        }
+    } catch(e) {
+        alert('Error.');
+    }
+}
+
+async function adminUploadReunionPhotos(partNumber) {
+    const fileInput = document.getElementById('reu-photos-' + partNumber);
+    if (!fileInput.files.length) return alert('Select files first.');
+    
+    document.getElementById('reu-dummy-wrap').innerHTML = '<div class="fixed inset-0 z-50 bg-white/50 backdrop-blur-sm flex items-center justify-center"><div class="px-6 py-4 bg-white shadow-xl rounded-2xl font-bold text-indigo-600 flex flex-col items-center gap-3"><div class="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div> Uploading... This may take a while.</div></div>';
+    
+    try {
+        const b64s = [];
+        for (let i = 0; i < fileInput.files.length; i++) {
+            b64s.push(await readAsDataURL(fileInput.files[i]));
+        }
+        
+        const res = await apiPost('savereunionphotos', { part: partNumber, gallery: b64s });
+        if (res.success) {
+            loadAdminDashboard(true);
+        } else {
+            alert(res.message || 'Error uploading.');
+        }
+    } catch(e) {
+        alert('Error uploading files.');
+    }
+}
+
