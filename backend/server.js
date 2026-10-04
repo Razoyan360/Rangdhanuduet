@@ -85,7 +85,23 @@ app.get('/api', async (req, res) => {
     try {
         const action = req.query.action;
 
-                if (action === 'get_env') return res.json({url: process.env.TURSO_DATABASE_URL, token: process.env.TURSO_AUTH_TOKEN});
+                
+        if (action === 'getconfig') {
+            const activeMax = Number(await getSetting('ActiveMaxSeries', 25));
+            const arr = [];
+            for (let i = 1; i <= activeMax; i++) {
+                const s = String(i).padStart(2, '0');
+                arr.push(s + (s.endsWith('1') && s !== '11' ? 'st' : s.endsWith('2') && s !== '12' ? 'nd' : s.endsWith('3') && s !== '13' ? 'rd' : 'th') + ' Batch');
+            }
+            const bb = await getSetting('BloodBankHidden', 'NO');
+            return res.json({
+                success: true,
+                activeMaxSeries: activeMax,
+                seriesList: arr,
+                bloodBankHidden: bb === 'YES'
+            });
+        }
+if (action === 'get_env') return res.json({url: process.env.TURSO_DATABASE_URL, token: process.env.TURSO_AUTH_TOKEN});
         if (action === 'alumni') {
             // Get AlumniCutoffSeries from settings for dynamic status calculation
             const cutoffSeries = Number(await getSetting('AlumniCutoffSeries', 20));
