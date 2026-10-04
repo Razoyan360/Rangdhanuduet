@@ -41,6 +41,46 @@ async function getMemberEmail(req, payload) {
     return await verifyGoogleToken(token);
 }
 
+function memberRowForFrontend(row) {
+    return {
+        'Member ID': row.member_id || '',
+        'Full Name (English)': row.full_name_english || '',
+        'Mobile Number': row.mobile_number || '',
+        'WhatsApp Number': row.whatsapp_number || '',
+        'Email': row.email || '',
+        'Present Address': row.present_address || '',
+        'Permanent Address': row.permanent_address || '',
+        'Blood Group': row.blood_group || '',
+        'Department': row.department || '',
+        'Series': row.series || '',
+        'Batch': row.batch || '',
+        'Employment Type': row.employment_type || '',
+        'Current Organization / Company': row.current_organization || '',
+        'Current Designation': row.current_designation || '',
+        'Work Location (Division / Country)': row.work_location || '',
+        'Former Position at Rangdhanu / PDACC': row.former_position || '',
+        'Passport Size Image': row.passport_size_image || '',
+        'Cover Photo': row.cover_photo || '',
+        'Cover Position': row.cover_position || '',
+        'Social Links': row.social_links || '',
+        'Positions': row.positions || '',
+        'Work History': row.work_history || '',
+        'Education': row.education || '',
+        'Papers': row.papers || '',
+        'Thesis Topic': row.thesis_topic || '',
+        'Thesis Details': row.thesis_details || '',
+        'Status': row.status || '',
+        visibility: {
+            mobile: row.visible_mobile_number ? 'MEMBER' : 'ONLY_ME',
+            whatsapp: row.visible_whatsapp_number ? 'MEMBER' : 'ONLY_ME',
+            email: row.visible_email ? 'MEMBER' : 'ONLY_ME',
+            permanent: row.visible_permanent_address ? 'MEMBER' : 'ONLY_ME',
+            present: row.visible_present_address ? 'MEMBER' : 'ONLY_ME',
+            social: row.visible_social_links ? 'MEMBER' : 'ONLY_ME'
+        }
+    };
+}
+
 
 // Utility to log admin activity
 async function logAdminActivity(db, adminEmail, actionType, targetId, details) {
@@ -837,7 +877,7 @@ if (action === 'get_env') return res.json({url: process.env.TURSO_DATABASE_URL, 
             return res.json({ success: true, votes: votes.rows });
         }
 
-        // === MEMBER SIGN IN (stub - needs full auth) ===
+        // === MEMBER SIGN IN ===
         if (action === 'membersignin') {
             const token = payload.memberToken || req.query.memberToken || '';
             if (!token) return res.status(401).json({ success: false, message: 'No token' });
@@ -846,24 +886,44 @@ if (action === 'get_env') return res.json({url: process.env.TURSO_DATABASE_URL, 
             if (!email) return res.status(401).json({ success: false, message: 'Invalid token' });
 
             const memberCheck = await db.execute({
-                sql: "SELECT member_id, status FROM alumni WHERE email = ? COLLATE NOCASE",
+                sql: 'SELECT * FROM alumni WHERE email = ? COLLATE NOCASE',
                 args: [email]
             });
 
             if (memberCheck.rows.length === 0) {
-                return res.json({ status: 'NO_MATCH', email: email });
+                return res.json({ success: true, status: 'NO_MATCH', email });
             }
 
             const memberInfo = memberCheck.rows[0];
-            if (memberInfo.status !== 'APPROVED') {
-                 return res.json({ status: 'NO_MATCH', email: email }); // fallback or unapproved logic
+            if (String(memberInfo.status || '').toUpperCase() !== 'APPROVED') {
+                return res.json({ success: true, status: 'NO_MATCH', email });
             }
 
-            return res.json({ status: 'SUCCESS', memberId: memberInfo.member_id });
+            return res.json({
+                success: true,
+                status: 'SUCCESS',
+                email,
+                memberId: memberInfo.member_id,
+                member: memberRowForFrontend(memberInfo)
+            });
+        }
+
+        if (action === 'memberprofile') {
+            const memberEmail = await getMemberEmail(req, payload);
+            if (!memberEmail) return res.status(401).json({ success: false, message: 'Sign in required.' });
+
+            const hit = await db.execute({
+                sql: 'SELECT * FROM alumni WHERE email = ? COLLATE NOCASE',
+                args: [memberEmail]
+            });
+            if (hit.rows.length === 0) {
+                return res.status(404).json({ success: false, message: 'Your record was not found.' });
+            }
+            return res.json({ success: true, member: memberRowForFrontend(hit.rows[0]) });
         }
 
         // === MEMBER CONTACTS (stub) ===
-        
+
 
         // === MEMBER PROFILE (stub) ===
         
