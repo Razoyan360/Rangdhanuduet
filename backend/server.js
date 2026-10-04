@@ -779,12 +779,19 @@ app.get('/api', async (req, res) => {
             const pending = await db.execute("SELECT COUNT(*) as c FROM alumni WHERE status = 'PENDING'");
             const approved = await db.execute("SELECT COUNT(*) as c FROM alumni WHERE status = 'APPROVED'");
             const events = await db.execute("SELECT COUNT(*) as c FROM events WHERE status = 'PENDING'");
+            const comm = await db.execute("SELECT COUNT(*) as c FROM executive_committee WHERE status = 'PENDING'");
+            const notices = await db.execute("SELECT COUNT(*) as c FROM pdacc_notices");
             return res.json({
                 success: true,
                 pendingMembers: pending.rows[0].c,
                 approvedMembers: approved.rows[0].c,
-                pendingEvents: events.rows[0].c
+                events: events.rows[0].c,
+                committee: comm.rows[0].c,
+                notices: notices.rows[0].c,
+                posts: 0,
+                polls: 0
             });
+        });
         }
 
         // === ADMIN UNCLAIMED PROFILES ===
@@ -1141,9 +1148,26 @@ app.post('/api', async (req, res) => {
         
         if (action === 'savepdaccstats') {
             const data = payload.data || {};
-            // Simplified for mockup
-            return res.json({ success: true, message: 'PDACC stats saved.' });
-        }
+            if (!data.title)  return res.json({ success: false, message: 'Please write the heading.' });
+            if (!data.figure) return res.json({ success: false, message: 'Please write the figure.' });
+            if (!data.unit)   return res.json({ success: false, message: 'Please write what the figure counts.' });
+            if (!data.note)   return res.json({ success: false, message: 'Please write the line under the figure.' });
+            
+            // Upsert into pdacc_stats
+            const hit = await db.execute("SELECT id FROM pdacc_stats WHERE stat_key = 'MAIN'");
+            if (hit.rows.length === 0) {
+                await db.execute({
+                    sql: `INSERT INTO pdacc_stats (stat_key, kicker, title, figure, unit, note, years, years_from) VALUES ('MAIN', ?, ?, ?, ?, ?, ?, ?)`,
+                    args: [data.kicker || '', data.title, data.figure, data.unit, data.note, data.years || '', data.yearsFrom || '']
+                });
+            } else {
+                await db.execute({
+                    sql: `UPDATE pdacc_stats SET kicker = ?, title = ?, figure = ?, unit = ?, note = ?, years = ?, years_from = ? WHERE stat_key = 'MAIN'`,
+                    args: [data.kicker || '', data.title, data.figure, data.unit, data.note, data.years || '', data.yearsFrom || '']
+                });
+            }
+            await logAdminActivity(db, adminEmail, 'UPDATE_PDACC_STATS', 'MAIN', 'Updated PDACC Stats block');
+            return res.json({ success: true, message: 'PDACC stats saved.' });        }
         if (action === 'savepdaccline') {
             const data = payload.data || {};
             if (data.id) {
