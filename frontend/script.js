@@ -5340,7 +5340,7 @@
     }
     function closeAlumniModal() { goBackFromSubPage('profile'); }
     
-    let alumniViewFilter = 'ALL';
+    let alumniViewFilter = 'Alumni';
 
     /* ---------- from the directory to the committee page -----------------
        The directory answers "who is in Rangdhanu"; the committee page answers
@@ -5591,7 +5591,7 @@
         (alumniViewFilter === "ALL" || a.status === alumniViewFilter)
       ));
     }
-    function resetAlumniFilters() { document.getElementById("alumni-search-input").value=""; document.getElementById("alumni-filter-dept").value="ALL"; document.getElementById("alumni-filter-series").value="ALL"; document.getElementById("alumni-filter-blood").value="ALL"; setAlumniViewFilter('ALL'); }
+    function resetAlumniFilters() { document.getElementById("alumni-search-input").value=""; document.getElementById("alumni-filter-dept").value="ALL"; document.getElementById("alumni-filter-series").value="ALL"; document.getElementById("alumni-filter-blood").value="ALL"; setAlumniViewFilter('Alumni'); }
 
     /* ================= BLOOD BANK ============================================
        Full Blood Bank page: load donors from API, filter by group / location /
