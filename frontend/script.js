@@ -6085,7 +6085,7 @@
         const imgInput = f.querySelector('[name="mainImage"]');
         let imgObj = null;
         if (imgInput.files && imgInput.files.length > 0) {
-          imgObj = await filePayload(imgInput.files[0], 4000);
+          imgObj = await filePayload(imgInput.files[0], 1600);
         }
 
         const payload = {
@@ -8041,10 +8041,10 @@
         setProgress(5, 'Preparing images...');
         const gallery=[]; const total = gf.length+1;
         for(let i=0; i<gf.length; i++) {
-          const x = await filePayload(gf[i], 4000); x.sortOrder=i+1; gallery.push(x);
+          const x = await filePayload(gf[i], 1600); x.sortOrder=i+1; gallery.push(x);
           setProgress(Math.round(((i+1)/total)*40), `Gallery image ${i+1}/${gf.length} ready`);
         }
-        const mainPayload = await filePayload(main, 4000);
+        const mainPayload = await filePayload(main, 1600);
         const sponsors = [];
         const sponsorRows = collectSponsorRows();
         for (let i = 0; i < sponsorRows.length; i++) {
@@ -11822,7 +11822,7 @@ f.reset();
         const data = { noticeId: editing || '', kind: kind, title: title, body: body, show: show ? 'YES' : 'NO' };
         /* filePayload leaves a PDF exactly as it is and only shrinks an image
            that is larger than 2400px, so the download stays high resolution. */
-        if (kind === 'FILE' && file) data.file = await filePayload(file, 2400);
+        if (kind === 'FILE' && file) data.file = await filePayload(file, 1600);
         const r = await apiPost('savenotice', { data: data });
         RD_ADMIN.nbEdit = '';
         RD_ADMIN.busy = '';
@@ -13473,7 +13473,7 @@ f.reset();
       
       const imgInput = form.querySelector('[data-ev-image="mainImage"]');
       if (imgInput && imgInput.files && imgInput.files.length > 0) {
-        data.mainImage = await filePayload(imgInput.files[0], 4000);
+        data.mainImage = await filePayload(imgInput.files[0], 1600);
         changed++;
       }
 
@@ -13486,7 +13486,7 @@ f.reset();
           const oldLogo = sp.querySelector('.sp-old-logo').value;
           if (name || logoFile || oldLogo) {
             let logoObj = oldLogo;
-            if (logoFile) logoObj = await filePayload(logoFile, 4000);
+            if (logoFile) logoObj = await filePayload(logoFile, 800);
             newSponsors.push({ name: name, logo: logoObj });
           }
         }
@@ -13498,7 +13498,7 @@ f.reset();
       if (galInput && galInput.files && galInput.files.length > 0) {
         data.gallery = [];
         for (const file of galInput.files) {
-          data.gallery.push(await filePayload(file, 4000));
+          data.gallery.push(await filePayload(file, 1600));
         }
         changed++;
       }
