@@ -1431,8 +1431,8 @@ try {
             mapField('registration_link', 'regLink');
             mapField('facebook_link', 'fbLink');
 
-            if (d.mainImage && d.mainImage.data) {
-                let mainImg = d.mainImage.data;
+            if (d.mainImage && d.mainImage.base64) {
+                let mainImg = d.mainImage.base64;
                 if (mainImg && !mainImg.startsWith('http')) {
                     const res = await uploadBase64ToCloudinary(mainImg, 'Events');
                     if (res.success) mainImg = res.url;
@@ -1443,11 +1443,11 @@ try {
             if (d.sponsors !== undefined) {
                 if (Array.isArray(d.sponsors)) {
                     for (let sp of d.sponsors) {
-                        if (sp.logo && sp.logo.data && !sp.logo.data.startsWith('http')) {
-                            const res = await uploadBase64ToCloudinary(sp.logo.data, 'Sponsors');
+                        if (sp.logo && sp.logo.base64 && !sp.logo.base64.startsWith('http')) {
+                            const res = await uploadBase64ToCloudinary(sp.logo.base64, 'Sponsors');
                             if (res.success) { sp.logo = res.url; } else { sp.logo = ''; }
-                        } else if (sp.logo && sp.logo.data && sp.logo.data.startsWith('http')) {
-                            sp.logo = sp.logo.data;
+                        } else if (sp.logo && sp.logo.base64 && sp.logo.base64.startsWith('http')) {
+                            sp.logo = sp.logo.base64;
                         }
                     }
                 }
@@ -1458,8 +1458,8 @@ try {
             // Handle Gallery Additions
             if (Array.isArray(d.gallery) && d.gallery.length > 0) {
                 for (const b64 of d.gallery) {
-                    if (b64 && b64.data) {
-                        let galImg = b64.data;
+                    if (b64 && b64.base64) {
+                        let galImg = b64.base64;
                         if (galImg && !galImg.startsWith('http')) {
                             const res = await uploadBase64ToCloudinary(galImg, 'Event_Gallery');
                             if (res.success) galImg = res.url;
@@ -1684,7 +1684,7 @@ try {
             const registrationId = 'REG-' + Date.now();
             
             // For now, save the Base64 photo in the photo_url column (or skip if too big, but we will save it)
-            const photoUrl = reg.photo && reg.photo.data ? reg.photo.data : '';
+            const photoUrl = reg.photo && reg.photo.base64 ? reg.photo.base64 : '';
             
             await db.execute({
                 sql: `INSERT INTO alumni (
@@ -1711,7 +1711,7 @@ try {
             const eventId = 'EVT-' + Date.now();
             
             const spStr = ev.sponsors ? JSON.stringify(ev.sponsors) : null;
-            let mainImg = ev.mainImage && ev.mainImage.data ? ev.mainImage.data : '';
+            let mainImg = ev.mainImage && ev.mainImage.base64 ? ev.mainImage.base64 : '';
             if (mainImg && !mainImg.startsWith('http')) {
                 const res = await uploadBase64ToCloudinary(mainImg, 'Events');
                 if (res.success) mainImg = res.url;
@@ -1739,7 +1739,7 @@ try {
             const ev = payload || {};
             const eventId = 'EVT-' + Date.now();
             const spStr = ev.sponsors ? JSON.stringify(ev.sponsors) : null;
-            const mainImg = ev.mainImage && ev.mainImage.data ? ev.mainImage.data : '';
+            const mainImg = ev.mainImage && ev.mainImage.base64 ? ev.mainImage.base64 : '';
 
             await db.execute({
                 sql: `INSERT INTO events (
