@@ -14954,7 +14954,7 @@ async function adminUploadReunionPhotos(partNumber) {
       if (!form) return;
       const isOpen = open !== undefined ? open : form.classList.contains('w-[calc(100vw-32px)]');
       if (!isOpen) {
-        form.classList.remove('w-10', 'bg-slate-100/50', 'border-transparent');
+        form.classList.remove('w-9', 'bg-slate-100', 'border-transparent');
         form.classList.add('w-[calc(100vw-32px)]', 'bg-white', 'shadow-md', 'border-slate-200');
         input.classList.remove('opacity-0', 'pointer-events-none');
         input.classList.add('opacity-100');
@@ -14963,7 +14963,7 @@ async function adminUploadReunionPhotos(partNumber) {
         searchBtn.classList.add('text-blue-600');
         setTimeout(() => input.focus(), 100);
       } else {
-        form.classList.add('w-10', 'bg-slate-100/50', 'border-transparent');
+        form.classList.add('w-9', 'bg-slate-100', 'border-transparent');
         form.classList.remove('w-[calc(100vw-32px)]', 'bg-white', 'shadow-md', 'border-slate-200');
         input.classList.add('opacity-0', 'pointer-events-none');
         input.classList.remove('opacity-100');
@@ -14973,6 +14973,24 @@ async function adminUploadReunionPhotos(partNumber) {
         input.blur();
       }
     };
+
+    
+    // Close mobile search on scroll or click outside
+    document.addEventListener('click', function(e) {
+      const form = document.getElementById('mobile-search-form');
+      if (form && form.classList.contains('w-[calc(100vw-32px)]')) {
+        if (!form.contains(e.target) && e.target.id !== 'mobile-search-btn') {
+          toggleMobileSearch(false);
+        }
+      }
+    });
+
+    window.addEventListener('scroll', function() {
+      const form = document.getElementById('mobile-search-form');
+      if (form && form.classList.contains('w-[calc(100vw-32px)]')) {
+        toggleMobileSearch(false);
+      }
+    }, { passive: true });
 
     window.submitMobileSearch = function() {
       var input = document.getElementById('mobile-search-input');

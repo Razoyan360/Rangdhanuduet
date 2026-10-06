@@ -525,14 +525,14 @@
 <body class="bg-[#F8FAFC] text-slate-800 antialiased selection:bg-blue-600 selection:text-white min-h-screen flex flex-col justify-between">
 
 <!-- NAVBAR -->
-<header class="sticky top-0 z-40 shadow-sm transition-all duration-300 glass-nav">
+<header class="sticky top-0 z-40 shadow-sm transition-all duration-300 glass-nav bg-white">
   <div class="relative z-10 w-full px-4 sm:px-6 lg:px-8 h-14 xl:h-16 flex items-center justify-between gap-2 xl:gap-4">
     <!-- Brand -->
     <div class="brand-lockup flex items-center gap-2 sm:gap-3 group cursor-pointer shrink-0 xl:pr-6" onclick="brandLockupClick(this)">
       <div class="w-9 h-9 xl:w-12 xl:h-12 rounded-full xl:bg-transparent bg-[#f0f9ff] flex items-center justify-center overflow-hidden xl:border-none border-[rgba(14,165,233,.35)] shadow-sm shrink-0">
         <img alt="Rangdhanu DUET Logo" src="logo.png" class="w-7 h-7 xl:w-10 xl:h-10 object-contain xl:p-0 p-[0.1rem]" fetchpriority="high" decoding="async"/>
       </div>
-      <span class="xl:text-[18px] text-[16px] font-extrabold text-slate-800 tracking-wide uppercase brand-name-override whitespace-nowrap">RANGDHANU DUET</span>
+      <span class="xl:text-[18px] text-[18px] font-extrabold text-slate-800 tracking-wide uppercase brand-name-override whitespace-nowrap">RANGDHANU<span class="hidden xl:inline"> DUET</span></span>
     </div>
 
     <!-- Center: Links (Desktop Only) -->
@@ -556,7 +556,7 @@
     </nav>
 
     <!-- Right: Search, Actions, Mobile Buttons -->
-    <div class="flex items-center gap-1.5 xl:gap-3 shrink-0">
+    <div class="flex items-center gap-2 xl:gap-3 shrink-0">
       
       <!-- Search Bar -->
       <form class="hidden xl:flex items-center bg-slate-100 hover:bg-slate-200 transition-colors rounded-full px-3 py-2 border border-transparent focus-within:bg-white focus-within:border-slate-300 focus-within:shadow-sm group" onsubmit="event.preventDefault(); submitDesktopSearch()">
@@ -565,22 +565,22 @@
       </form>
 
       <!-- Mobile Expanding Search Form -->
-      <form id="mobile-search-form" class="xl:hidden absolute right-4 top-1/2 -translate-y-1/2 flex items-center bg-slate-100/50 border border-transparent rounded-full overflow-hidden transition-all duration-300 ease-in-out w-10 h-10 z-20" onsubmit="event.preventDefault(); submitMobileSearch()">
-        <button type="button" id="mobile-search-btn" class="w-10 h-10 shrink-0 flex items-center justify-center text-slate-600 hover:text-blue-600 transition-colors rounded-full z-10" onclick="toggleMobileSearch()">
-          <i data-lucide="search" class="w-[18px] h-[18px]"></i>
+      <form id="mobile-search-form" class="xl:hidden absolute right-4 top-1/2 -translate-y-1/2 flex items-center bg-slate-100 border border-transparent rounded-full overflow-hidden transition-all duration-300 ease-in-out w-9 h-9 z-20" onsubmit="event.preventDefault(); submitMobileSearch()">
+        <button type="button" id="mobile-search-btn" class="w-9 h-9 shrink-0 flex items-center justify-center text-slate-800 hover:bg-slate-200 transition-colors rounded-full z-10" onclick="toggleMobileSearch()">
+          <i data-lucide="search" class="w-[20px] h-[20px]"></i>
         </button>
-        <input type="text" id="mobile-search-input" placeholder="Search..." class="bg-transparent border-none outline-none text-[15px] text-slate-700 w-full pl-1 pr-2 opacity-0 transition-opacity duration-200 pointer-events-none">
-        <button type="button" id="mobile-search-close" class="w-10 h-10 shrink-0 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors opacity-0 pointer-events-none" onclick="toggleMobileSearch(false)">
-          <i data-lucide="x" class="w-4 h-4"></i>
+        <input type="text" id="mobile-search-input" placeholder="Search..." class="bg-transparent border-none outline-none text-[16px] text-slate-800 w-full pl-1 pr-2 opacity-0 transition-opacity duration-200 pointer-events-none">
+        <button type="button" id="mobile-search-close" class="w-9 h-9 shrink-0 flex items-center justify-center text-slate-500 hover:text-rose-500 transition-colors opacity-0 pointer-events-none" onclick="toggleMobileSearch(false)">
+          <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </form>
 
       <!-- Actions -->
-      <div class="flex items-center gap-1.5 xl:gap-2 xl:border-l border-slate-200 xl:pl-4">
+      <div class="flex items-center gap-2 xl:border-l border-slate-200 xl:pl-4">
         <!-- Notification / Alerts (Visible on both Mobile & Desktop) -->
-        <button id="nav-notification-btn" class="hidden w-10 h-10 rounded-full items-center justify-center text-slate-600 hover:bg-slate-100 hover:text-slate-800 transition-colors relative" title="Notifications" onclick="openNotificationPanel()">
-          <i data-lucide="bell" class="w-5 h-5"></i>
-          <span class="absolute top-2 right-2.5 w-2 h-2 bg-rose-500 rounded-full border border-white"></span>
+        <button id="nav-notification-btn" class="hidden w-9 h-9 xl:w-10 xl:h-10 rounded-full items-center justify-center text-slate-800 bg-slate-100 hover:bg-slate-200 transition-colors relative" title="Notifications" onclick="openNotificationPanel()">
+          <i data-lucide="bell" class="w-[20px] h-[20px] xl:w-5 xl:h-5"></i>
+          <span class="absolute top-[1px] right-[2px] w-2.5 h-2.5 bg-rose-500 rounded-full border-2 border-white"></span>
         </button>
 
         <!-- Profile Avatar (Desktop Only) -->
@@ -603,7 +603,7 @@
       </div>
       
       <!-- Spacer for absolute search form -->
-      <div class="xl:hidden w-10 h-10 shrink-0 pointer-events-none"></div>
+      <div class="xl:hidden w-9 h-9 shrink-0 pointer-events-none"></div>
     </div>
   </div>
   <!-- Mobile menu -->
