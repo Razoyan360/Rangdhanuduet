@@ -14792,3 +14792,15 @@ async function adminUploadReunionPhotos(partNumber) {
       }, 100);
     };
 
+
+    window.submitDesktopSearch = function() {
+      var input = document.getElementById("desktop-search-input");
+      if (input && input.value.trim() !== "") {
+        switchPage("search");
+        // We could populate a search results heading here
+      }
+    };
+    window.openNotificationPanel = function() {
+      alert("You have no new notifications.");
+    };
+

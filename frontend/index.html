@@ -524,27 +524,27 @@
 <body class="bg-[#F8FAFC] text-slate-800 antialiased selection:bg-blue-600 selection:text-white min-h-screen flex flex-col justify-between">
 
 <!-- NAVBAR -->
-<header class="sticky top-0 z-40 shadow-sm transition-all duration-300 xl:mt-4 xl:max-w-[1200px] xl:mx-auto xl:rounded-[24px] glass-nav">
-  <div class="relative z-10 w-full px-4 sm:px-6 lg:px-8 h-20 xl:h-14 flex items-center justify-between gap-2 xl:gap-4 xl:px-3">
+<header class="sticky top-0 z-40 shadow-sm transition-all duration-300 glass-nav">
+  <div class="relative z-10 w-full px-4 sm:px-6 lg:px-8 h-20 xl:h-16 flex items-center justify-between gap-2 xl:gap-4">
     <!-- Brand -->
-    <div class="brand-lockup flex items-center gap-3 xl:gap-2 sm:gap-3.5 group cursor-pointer shrink-0 xl:pl-2 xl:pr-6" onclick="brandLockupClick(this)">
-      <div class="xl:w-9 xl:h-9 w-12 h-12 rounded-full xl:bg-white bg-[#f0f9ff] flex items-center justify-center overflow-hidden border xl:border-slate-100 border-[rgba(14,165,233,.35)] shadow-sm shrink-0">
-        <img alt="Rangdhanu DUET Logo" src="logo.png" class="xl:w-7 xl:h-7 w-full h-full object-contain xl:p-0 p-[0.2rem]" fetchpriority="high" decoding="async"/>
+    <div class="brand-lockup flex items-center gap-3 xl:gap-2 sm:gap-3.5 group cursor-pointer shrink-0 xl:pr-6" onclick="brandLockupClick(this)">
+      <div class="xl:w-11 xl:h-11 w-12 h-12 rounded-full xl:bg-transparent bg-[#f0f9ff] flex items-center justify-center overflow-hidden xl:border-none border-[rgba(14,165,233,.35)] shadow-sm shrink-0">
+        <img alt="Rangdhanu DUET Logo" src="logo.png" class="xl:w-9 xl:h-9 w-full h-full object-contain xl:p-0 p-[0.2rem]" fetchpriority="high" decoding="async"/>
       </div>
-      <span class="xl:text-[15px] text-[clamp(.92rem,3vw,1.3rem)] font-bold xl:text-slate-800 text-[#0f172a] tracking-wide uppercase brand-name-override">RANGDHANU</span>
+      <span class="xl:text-[16px] text-[clamp(.92rem,3vw,1.3rem)] font-bold xl:text-slate-800 text-[#0f172a] tracking-wide uppercase brand-name-override">RANGDHANU</span>
       <span class="xl:hidden brand-duet-crest"><img alt="DUET logo" src="duet-logo.png" decoding="async"/></span>
     </div>
 
     <!-- Center: Links (Desktop Only) -->
     <nav class="hidden xl:flex items-center gap-1" id="nav-pill" aria-label="Main">
-      <button class="nav-btn nav-item px-4 py-2 rounded-xl text-[14px] active" data-page="home" onclick="switchPage('home')">Home</button>
-      <button class="nav-btn nav-item px-4 py-2 rounded-xl text-[14px] font-medium" data-page="alumni" onclick="switchPage('alumni')">Directory</button>
-      <button class="nav-btn nav-item px-4 py-2 rounded-xl text-[14px] font-medium" data-page="prokoushali" onclick="switchPage('prokoushali')">PDACC</button>
-      <button class="nav-btn nav-item px-4 py-2 rounded-xl text-[14px] font-medium" data-page="events" onclick="switchPage('events')">Events</button>
-      <button class="nav-btn nav-item px-4 py-2 rounded-xl text-[14px] font-medium" data-page="committee" onclick="switchPage('committee')">Committee</button>
+      <button class="nav-btn nav-item px-4 py-2.5 rounded-xl text-[14.5px] active" data-page="home" onclick="switchPage('home')">Home</button>
+      <button class="nav-btn nav-item px-4 py-2.5 rounded-xl text-[14.5px] font-medium" data-page="alumni" onclick="switchPage('alumni')">Directory</button>
+      <button class="nav-btn nav-item px-4 py-2.5 rounded-xl text-[14.5px] font-medium" data-page="prokoushali" onclick="switchPage('prokoushali')">PDACC</button>
+      <button class="nav-btn nav-item px-4 py-2.5 rounded-xl text-[14.5px] font-medium" data-page="events" onclick="switchPage('events')">Events</button>
+      <button class="nav-btn nav-item px-4 py-2.5 rounded-xl text-[14.5px] font-medium" data-page="committee" onclick="switchPage('committee')">Committee</button>
       
       <div class="rd-more-wrap relative flex items-center" id="rd-more-wrap-desktop">
-        <button type="button" class="rd-more-btn nav-item px-3 py-2 rounded-xl text-[14px] font-medium flex items-center gap-1" id="rd-more-btn-desktop" onclick="rdMoreToggle('desktop')" aria-haspopup="true" aria-expanded="false">More <i data-lucide="chevron-down" class="w-4 h-4"></i></button>
+        <button type="button" class="rd-more-btn nav-item px-3 py-2.5 rounded-xl text-[14.5px] font-medium flex items-center gap-1" id="rd-more-btn-desktop" onclick="rdMoreToggle('desktop')" aria-haspopup="true" aria-expanded="false">More <i data-lucide="chevron-down" class="w-4 h-4"></i></button>
         <div class="rd-more-panel" id="rd-more-panel-desktop" role="menu">
           <button onclick="switchPage('bloodbank'); rdMoreClose('desktop')">Blood Bank</button>
           <button onclick="switchPage('polls'); rdMoreClose('desktop')">Polls</button>
@@ -556,38 +556,37 @@
     </nav>
 
     <!-- Right: Search, Actions, Mobile Buttons -->
-    <div class="flex items-center gap-2 xl:gap-3 shrink-0 xl:pr-1">
+    <div class="flex items-center gap-2 xl:gap-3 shrink-0">
       
       <!-- Search Bar -->
-      <div class="hidden xl:flex items-center bg-slate-100/80 hover:bg-slate-200/80 transition-colors rounded-full px-3 py-1.5 border border-transparent hover:border-slate-200 group cursor-pointer" onclick="switchPage('search')">
-        <i data-lucide="search" class="w-4 h-4 text-slate-400 group-hover:text-slate-600"></i>
-        <span class="text-[13px] text-slate-400 w-28 ml-2 font-medium text-left">Search...</span>
-        <div class="bg-white border border-slate-200 text-slate-400 text-[10px] font-bold px-1.5 py-0.5 rounded ml-2 shadow-sm">⌘K</div>
-      </div>
+      <form class="hidden xl:flex items-center bg-slate-100 hover:bg-slate-200 transition-colors rounded-full px-3 py-2 border border-transparent focus-within:bg-white focus-within:border-slate-300 focus-within:shadow-sm group" onsubmit="event.preventDefault(); submitDesktopSearch()">
+        <i data-lucide="search" class="w-4 h-4 text-slate-400"></i>
+        <input type="text" id="desktop-search-input" placeholder="Search..." class="bg-transparent border-none outline-none text-[14.5px] text-slate-700 w-40 focus:w-64 transition-all placeholder:text-slate-400 ml-2 font-medium">
+      </form>
 
       <!-- Actions -->
-      <div class="hidden xl:flex items-center gap-1 border-l border-slate-200 pl-3">
-        <!-- Notification / Blood Bank -->
-        <button class="w-9 h-9 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors relative" title="Notifications & Blood Directory" onclick="switchPage('bloodbank')">
-          <i data-lucide="bell" class="w-[18px] h-[18px]"></i>
-          <span class="absolute top-2 right-2.5 w-1.5 h-1.5 bg-rose-500 rounded-full border border-white"></span>
+      <div class="hidden xl:flex items-center gap-2 border-l border-slate-200 pl-4">
+        <!-- Notification / Alerts -->
+        <button id="nav-notification-btn" class="hidden w-10 h-10 rounded-full items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors relative" title="Notifications" onclick="openNotificationPanel()">
+          <i data-lucide="bell" class="w-5 h-5"></i>
+          <span class="absolute top-2 right-2.5 w-2 h-2 bg-rose-500 rounded-full border border-white"></span>
         </button>
 
         <!-- Profile Avatar -->
-        <button id="nav-member-btn" type="button" class="w-9 h-9 rounded-full bg-slate-100 border border-slate-200 text-slate-500 flex items-center justify-center ml-1 hover:ring-2 ring-blue-500/20 ring-offset-2 transition-all shadow-sm overflow-hidden" title="My Profile" onclick="rdMemberNavClick()" data-page="my-profile">
-           <i data-lucide="user" class="w-4 h-4" id="nav-member-icon"></i>
+        <button id="nav-member-btn" type="button" class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 text-slate-500 flex items-center justify-center hover:ring-2 ring-blue-500/20 ring-offset-2 transition-all shadow-sm overflow-hidden" title="My Profile" onclick="rdMemberNavClick()" data-page="my-profile">
+           <i data-lucide="user" class="w-5 h-5" id="nav-member-icon"></i>
         </button>
         
-        <div id="nav-admin-menu" class="hidden items-center gap-1 ml-1">
-          <button type="button" class="w-9 h-9 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors relative" title="Admin Dashboard" onclick="switchPage('admin')">
-            <i data-lucide="shield-check" class="w-[18px] h-[18px]"></i>
-            <span id="nav-admin-badge" class="hidden absolute top-0 right-0 w-2 h-2 bg-rose-500 rounded-full border border-white"></span>
+        <div id="nav-admin-menu" class="hidden items-center gap-1">
+          <button type="button" class="w-10 h-10 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors relative" title="Admin Dashboard" onclick="switchPage('admin')">
+            <i data-lucide="shield-check" class="w-5 h-5"></i>
+            <span id="nav-admin-badge" class="hidden absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border border-white"></span>
           </button>
         </div>
       </div>
 
       <div class="hidden xl:block">
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 pl-2">
           <button id="nav-membership-cta" class="nav-cta hidden" onclick="switchPage('register')">Membership Application</button>
         </div>
       </div>
@@ -3407,37 +3406,61 @@
 
 
   <!-- SEARCH PAGE -->
-  <div class="page-view" id="page-search">
-    <div class="subpage-bar">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 xl:py-4">
+  <!-- SEARCH PAGE -->
+  <div class="page-view bg-[#F0F2F5] min-h-screen" id="page-search">
+    <div class="subpage-bar bg-white border-b border-slate-200">
+      <div class="max-w-[1400px] mx-auto px-4 sm:px-6 py-3">
         <button class="subpage-back" onclick="switchPage('home')"><i data-lucide="arrow-left" class="w-4 h-4"></i>Back to Home</button>
       </div>
     </div>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <h2 class="text-3xl font-bold text-slate-800 mb-6"><i data-lucide="search" class="inline-block w-8 h-8 mr-2 text-blue-600"></i>Universal Search</h2>
+
+    <div class="max-w-[1400px] mx-auto pt-6 pb-12 px-4 sm:px-6 flex flex-col md:flex-row gap-6 items-start">
       
-      <!-- Search Input -->
-      <div class="relative max-w-2xl mb-10">
-        <input type="text" id="search-page-input" class="w-full bg-white border border-slate-300 rounded-2xl px-5 py-4 pl-14 text-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="Search members, blood donors, notices, events..." autocomplete="off">
-        <i data-lucide="search" class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 w-6 h-6"></i>
-      </div>
-
-      <!-- Categories Tabs (Facebook like) -->
-      <div class="flex items-center gap-2 mb-8 overflow-x-auto pb-2" id="search-tabs">
-        <button class="px-5 py-2.5 rounded-full bg-blue-600 text-white font-semibold whitespace-nowrap" data-tab="all">All Results</button>
-        <button class="px-5 py-2.5 rounded-full bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold whitespace-nowrap" data-tab="members">Profiles & Directory</button>
-        <button class="px-5 py-2.5 rounded-full bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold whitespace-nowrap" data-tab="blood">Blood Bank</button>
-        <button class="px-5 py-2.5 rounded-full bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold whitespace-nowrap" data-tab="notices">Notices</button>
-        <button class="px-5 py-2.5 rounded-full bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold whitespace-nowrap" data-tab="events">Events</button>
-      </div>
-
-      <!-- Search Results Container -->
-      <div id="search-results-container" class="space-y-8">
-        <div class="text-center text-slate-500 py-10">
-          <i data-lucide="search-x" class="w-12 h-12 mx-auto mb-3 opacity-50"></i>
-          <p class="text-lg">Type something to search across the entire platform.</p>
+      <!-- Left Sidebar (Filters) -->
+      <div class="w-full md:w-[320px] shrink-0 bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:sticky md:top-24">
+        <h3 class="text-xl font-bold text-slate-800 mb-4 pb-3 border-b border-slate-100">Search results</h3>
+        
+        <h4 class="text-[15px] font-semibold text-slate-800 mb-3 px-1">Filters</h4>
+        
+        <div class="space-y-1" id="search-filters">
+          <button class="w-full flex items-center gap-3 px-3 py-2 bg-slate-100 text-slate-800 rounded-lg font-medium transition-colors text-left" data-tab="all">
+            <div class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-sm"><i data-lucide="layers" class="w-5 h-5"></i></div>
+            All
+          </button>
+          
+          <button class="w-full flex items-center gap-3 px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-lg font-medium transition-colors text-left" data-tab="members">
+            <div class="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center"><i data-lucide="users" class="w-5 h-5"></i></div>
+            Profiles & Directory
+          </button>
+          
+          <button class="w-full flex items-center gap-3 px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-lg font-medium transition-colors text-left" data-tab="blood">
+            <div class="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center"><i data-lucide="droplet" class="w-5 h-5"></i></div>
+            Blood Bank
+          </button>
+          
+          <button class="w-full flex items-center gap-3 px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-lg font-medium transition-colors text-left" data-tab="notices">
+            <div class="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center"><i data-lucide="bell" class="w-5 h-5"></i></div>
+            Notices
+          </button>
+          
+          <button class="w-full flex items-center gap-3 px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-lg font-medium transition-colors text-left" data-tab="events">
+            <div class="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center"><i data-lucide="calendar" class="w-5 h-5"></i></div>
+            Events
+          </button>
         </div>
       </div>
+
+      <!-- Main Content (Results) -->
+      <div class="flex-1 w-full max-w-3xl">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8" id="search-results-container">
+          <div class="text-center text-slate-500 py-12">
+            <i data-lucide="search" class="w-14 h-14 mx-auto mb-4 text-slate-300"></i>
+            <p class="text-[17px] font-semibold text-slate-700">Search for something</p>
+            <p class="text-[14px] mt-1">Results will appear here based on your search query.</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
