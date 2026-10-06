@@ -68,7 +68,7 @@
       'event-detail': { parent: 'events', needsData: true  },
       'my-info':      { parent: 'alumni', needsData: false },
       'profile':      { parent: 'alumni', needsData: true  },
-      'member-signin': { parent: 'alumni', needsData: false },
+      'member-signin': { parent: 'home', needsData: false },
       'forgot-email': { parent: 'member-signin', needsData: false },
       /* Its own section, and needsData is false on purpose: the row comes
          from the server on the page's own request, so a reload lands here
@@ -210,7 +210,7 @@
       rdNavGlareSync();
       const menu = document.getElementById('mobile-menu');
       if (menu && !menu.classList.contains('hidden')) { menu.classList.add('hidden'); syncMobileMenuButton(); }
-      if (updateUrl) { const urlId = pageUrlId(pageId); const basePath = window.location.pathname === '/' ? '' : window.location.pathname.replace(/\/[^\/]+(\/.*)?$/, ''); history.pushState({page: pageId, scrollY: 0}, '', basePath + (pageId==='home' ? '/' : `/${urlId}`)); }
+      if (updateUrl) { const urlId = pageUrlId(pageId); const basePath = window.RD_BASE_PATH || ''; history.pushState({page: pageId, scrollY: 0}, '', basePath + (pageId==='home' ? '/' : `/${urlId}`)); }
       rdPageScroll[pageId] = scrollY;
       window.scrollTo({ top: scrollY, behavior: 'auto' });
       try {
@@ -259,7 +259,7 @@
       if (/^profile\/.+/.test(rawPage)) rawPage = 'profile';
       const aliases = { directory: 'alumni', family: 'alumni', pdacc: 'prokoushali', signin: 'member-signin', notice: 'noticeboard', status: 'notice' };
       const page = aliases[rawPage] || rawPage;
-      if (aliases[rawPage]) const bp2 = window.location.pathname === '/' ? '' : window.location.pathname.replace(/\/[^\/]+(\/.*)?$/, ''); history.replaceState({page: page}, '', bp2 + `/${pageUrlId(page)}`);
+      if (aliases[rawPage]) const bp2 = window.RD_BASE_PATH || ''; history.replaceState({page: page}, '', bp2 + `/${pageUrlId(page)}`);
       if (!page || !document.getElementById(`page-${page}`)) return 'home';
       const sub = RD_SUBPAGES[page];
       if (!allowSubPages && sub && sub.needsData) return sub.parent;
@@ -288,7 +288,7 @@
       if (!a) return;   /* unknown id: leave the visitor on the directory */
       openAlumniProfileModal(a);
       history.replaceState({ page: 'profile' }, '',
-        const bpP = window.location.pathname === '/' ? '' : window.location.pathname.replace(/\/profile(\/.*)?$/, ''); history.replaceState({ page: 'profile' }, '', bpP + '/profile/' + encodeURIComponent(memberId));
+        const bpP = window.RD_BASE_PATH || ''; history.replaceState({ page: 'profile' }, '', bpP + '/profile/' + encodeURIComponent(memberId));
     }
 
     function rdSharedEventId() {
@@ -305,7 +305,7 @@
         });
         if (i < 0) return;
         openDynamicEvent(i);
-        const bpE = window.location.pathname === '/' ? '' : window.location.pathname.replace(/\/events(\/.*)?$/, ''); history.replaceState({ page: 'event-detail' }, '', bpE + '/events/' + encodeURIComponent(eventId));
+        const bpE = window.RD_BASE_PATH || ''; history.replaceState({ page: 'event-detail' }, '', bpE + '/events/' + encodeURIComponent(eventId));
       }
       
       function rdRouteFromLocation() {
@@ -3336,7 +3336,7 @@
          address bar. #profile/<memberId> reopens the public card for anyone,
          while the contact rows inside it stay gated to signed-in members. */
       const url = (mp && mp.memberId)
-        ? location.origin + (location.pathname === '/' ? '' : location.pathname.replace(/\/profile(\/.*)?$/, '')) + '/profile/' + encodeURIComponent(mp.memberId)
+        ? location.origin + (window.RD_BASE_PATH || '') + '/profile/' + encodeURIComponent(mp.memberId)
         : location.href;
       const title = (mp && mp.name ? mp.name + ' - ' : '') + RD_MP_ORG;
       if (navigator.share) {
@@ -4172,8 +4172,10 @@
       if (desktopBtn) {
         if (on && RD_MEMBER && RD_MEMBER.me && RD_MEMBER.me.photo) {
           desktopBtn.innerHTML = '<img src="' + escapeHtml(RD_MEMBER.me.photo) + '" class="w-full h-full object-cover" alt="Profile">';
+        } else if (on) {
+          desktopBtn.innerHTML = '<i data-lucide="user" class="w-5 h-5"></i>';
         } else {
-          desktopBtn.innerHTML = '<i data-lucide="user" class="w-4 h-4"></i>';
+          desktopBtn.innerHTML = '<i data-lucide="log-in" class="w-5 h-5"></i>';
         }
         if (window.lucide && typeof lucide.createIcons === 'function') lucide.createIcons();
       }
@@ -8349,7 +8351,7 @@
         </div>
       `;
       openSubPage('event-detail', 'events');
-        if (id) const bp3 = window.location.pathname === '/' ? '' : window.location.pathname.replace(/\/events(\/.*)?$/, ''); history.replaceState({ page: 'event-detail' }, '', bp3 + '/events/' + encodeURIComponent(id));
+        if (id) const bp3 = window.RD_BASE_PATH || ''; history.replaceState({ page: 'event-detail' }, '', bp3 + '/events/' + encodeURIComponent(id));
       lucide.createIcons();
       if(staticGal.length > 0) {
           setTimeout(() => {
@@ -14803,4 +14805,124 @@ async function adminUploadReunionPhotos(partNumber) {
     window.openNotificationPanel = function() {
       alert("You have no new notifications.");
     };
+
+
+    // UNIVERSAL SEARCH LOGIC
+    let currentSearchQuery = "";
+    let currentSearchTab = "all";
+
+    window.submitDesktopSearch = function() {
+      var input = document.getElementById("desktop-search-input");
+      if (input && input.value.trim() !== "") {
+        currentSearchQuery = input.value.trim();
+        switchPage("search");
+        var pageInput = document.getElementById("search-page-input");
+        if (pageInput) {
+            pageInput.value = currentSearchQuery;
+        }
+        performUniversalSearch();
+      }
+    };
+
+    function performUniversalSearch() {
+        const container = document.getElementById("search-results-container");
+        if (!container) return;
+        
+        if (!currentSearchQuery || currentSearchQuery.length < 2) {
+            container.innerHTML = `
+                <div class="text-center text-slate-500 py-12">
+                    <i data-lucide="search" class="w-14 h-14 mx-auto mb-4 text-slate-300"></i>
+                    <p class="text-[17px] font-semibold text-slate-700">Search for something</p>
+                    <p class="text-[14px] mt-1">Type at least 2 characters to search.</p>
+                </div>
+            `;
+            if (window.lucide && typeof lucide.createIcons === "function") lucide.createIcons();
+            return;
+        }
+
+        // Show loading state
+        container.innerHTML = `
+            <div class="text-center text-slate-500 py-12">
+                <i data-lucide="loader-2" class="w-10 h-10 mx-auto mb-4 text-blue-500 animate-spin"></i>
+                <p class="text-[15px] font-medium text-slate-600">Searching for "${escapeHtml(currentSearchQuery)}"...</p>
+            </div>
+        `;
+        if (window.lucide && typeof lucide.createIcons === "function") lucide.createIcons();
+
+        // Simulate network delay and show dummy results
+        setTimeout(() => {
+            const resultsHTML = `
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-slate-800 border-b border-slate-100 pb-2">Results for "${escapeHtml(currentSearchQuery)}" in ${currentSearchTab.toUpperCase()}</h3>
+                    
+                    <div class="p-4 rounded-xl border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer bg-slate-50/50">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                                <i data-lucide="user" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-[16px]">User matches for "${escapeHtml(currentSearchQuery)}"</h4>
+                                <p class="text-sm text-slate-500">Found in Directory</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-xl border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer bg-slate-50/50">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center text-rose-600">
+                                <i data-lucide="droplet" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-[16px]">Blood donors matching "${escapeHtml(currentSearchQuery)}"</h4>
+                                <p class="text-sm text-slate-500">Found in Blood Bank</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-center text-sm text-slate-400 pt-4">More results will be integrated via backend API later.</p>
+                </div>
+            `;
+            container.innerHTML = resultsHTML;
+            if (window.lucide && typeof lucide.createIcons === "function") lucide.createIcons();
+        }, 600);
+    }
+
+    // Attach listeners once DOM is ready
+    document.addEventListener("DOMContentLoaded", function() {
+        const searchInput = document.getElementById("search-page-input");
+        if (searchInput) {
+            searchInput.addEventListener("input", (e) => {
+                currentSearchQuery = e.target.value.trim();
+                performUniversalSearch();
+            });
+        }
+
+        const tabs = document.querySelectorAll("#search-filters button");
+        tabs.forEach(tab => {
+            tab.addEventListener("click", () => {
+                // Remove active styling from all
+                tabs.forEach(t => {
+                    t.classList.remove("bg-slate-100", "text-slate-800");
+                    t.classList.add("text-slate-700");
+                    const iconWrap = t.querySelector("div");
+                    if (iconWrap) {
+                        iconWrap.classList.remove("bg-blue-600", "text-white", "shadow-sm");
+                        iconWrap.classList.add("bg-slate-200");
+                    }
+                });
+                
+                // Add active styling to clicked
+                tab.classList.add("bg-slate-100", "text-slate-800");
+                tab.classList.remove("text-slate-700");
+                const iconWrap = tab.querySelector("div");
+                if (iconWrap) {
+                    iconWrap.classList.add("bg-blue-600", "text-white", "shadow-sm");
+                    iconWrap.classList.remove("bg-slate-200");
+                }
+
+                currentSearchTab = tab.getAttribute("data-tab");
+                performUniversalSearch();
+            });
+        });
+    });
 
