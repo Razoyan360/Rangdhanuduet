@@ -1889,48 +1889,75 @@ app.post('/api', async (req, res) => {
             const memberEmail = await getMemberEmail(req, payload);
             if (!memberEmail) return res.status(401).json({ success: false, message: 'Sign in required.' });
             
-            const hit = await db.execute({ sql: "SELECT id FROM alumni WHERE email = ?", args: [memberEmail] });
+            const hit = await db.execute({ sql: "SELECT * FROM alumni WHERE email = ?", args: [memberEmail] });
             if (hit.rows.length === 0) return res.json({ success: false, message: 'Your record was not found.' });
             
-            const p = payload.data || {};
-            // Fields allowed to be edited by member
+            const memberId = hit.rows[0].id;
+            const p = payload.data || payload || {};
+            
             const updates = [];
             const args = [];
             
-            const mapField = (dbField, jsonField, isBool = false) => {
+            const mapField = (dbField, jsonField) => {
                 if (p[jsonField] !== undefined) {
                     updates.push(`${dbField} = ?`);
-                    args.push(isBool ? (p[jsonField] === 'true' || p[jsonField] === true || p[jsonField] === '1' ? 1 : 0) : p[jsonField]);
+                    args.push(p[jsonField] === null ? '' : String(p[jsonField]));
                 }
             };
-
-            mapField('blood_group', 'Blood Group');
-            mapField('mobile_number', 'Mobile Number');
-            mapField('visible_mobile_number', 'Visible Mobile Number', true);
-            mapField('whatsapp_number', 'WhatsApp Number');
-            mapField('visible_whatsapp_number', 'Visible WhatsApp Number', true);
-            mapField('present_address', 'Present Address');
-            mapField('visible_present_address', 'Visible Present Address', true);
-            mapField('permanent_address', 'Permanent Address');
-            mapField('visible_permanent_address', 'Visible Permanent Address', true);
-            mapField('employment_type', 'Employment Type');
-            mapField('current_organization', 'Current Organization / Company');
-            mapField('current_designation', 'Current Designation');
-            mapField('work_location', 'Work Location (Division / Country)');
-            mapField('former_position_pdacc', 'Former Position at Rangdhanu / PDACC');
-            mapField('cover_position', 'Cover Position');
-            mapField('social_links', 'Social Links');
-            mapField('visible_social_links', 'Visible Social Links', true);
             
+            // Map frontend payload fields to DB columns
+            mapField('blood_group', 'blood');
+            if (p['willDonate'] !== undefined) {
+                updates.push('blood_donor = ?');
+                args.push(p['willDonate'] === 'YES' ? 1 : 0);
+            }
+            mapField('last_blood_donation', 'lastDonation');
+            
+            mapField('mobile_number', 'mobile');
+            mapField('whatsapp_number', 'whatsapp');
+            // Email is usually read-only, but let's allow updating if provided and valid? Wait, email shouldn't be changed.
+            
+            mapField('present_address', 'presentAddress');
+            mapField('permanent_address', 'permanentAddress');
+            
+            mapField('social_links', 'socialLinks');
+            mapField('work_history', 'workHistory');
+            mapField('positions', 'positions');
+            mapField('education', 'education');
+            mapField('former_position', 'formerPosition');
+            mapField('thesis_topic', 'thesisTopic');
+            mapField('thesis_details', 'thesisDetails');
+            mapField('papers', 'papers');
+            mapField('cover_position', 'coverPosition');
+            mapField('cover_photo', 'coverPhoto');
+
+            // Visibility handling
+            if (p.visibility && typeof p.visibility === 'object') {
+                const vis = p.visibility;
+                const mapVis = (dbField, visKey) => {
+                    if (vis[visKey] !== undefined) {
+                        updates.push(`${dbField} = ?`);
+                        args.push(vis[visKey] === 'PUBLIC' ? 1 : 0);
+                    }
+                };
+                mapVis('visible_mobile_number', 'Mobile Number');
+                mapVis('visible_whatsapp_number', 'WhatsApp Number');
+                mapVis('visible_email', 'Email');
+                mapVis('visible_present_address', 'Present Address');
+                mapVis('visible_permanent_address', 'Permanent Address');
+                mapVis('visible_social_links', 'Social Links');
+            }
+
             if (updates.length > 0) {
-                args.push(hit.rows[0].id);
+                args.push(memberId);
                 await db.execute({
                     sql: `UPDATE alumni SET ${updates.join(', ')} WHERE id = ?`,
                     args
                 });
             }
             
-            return res.json({ success: true, message: 'Profile updated successfully.' });
+            const updated = await db.execute({ sql: "SELECT * FROM alumni WHERE id = ?", args: [memberId] });
+            return res.json({ success: true, message: 'Profile updated successfully.', member: memberRowForFrontend(updated.rows[0]) });
         }
 
         // === MEMBER SAVE PHOTO ===
