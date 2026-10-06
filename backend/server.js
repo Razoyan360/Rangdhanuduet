@@ -1292,6 +1292,11 @@ app.post('/api', async (req, res) => {
             return res.json({ success: true, message: 'Reunion part saved.' });
         }
 
+        if (action === 'savereunionphotocaption') {
+            await db.execute({ sql: "UPDATE reunion_photos SET caption = ? WHERE photo_id = ?", args: [payload.caption || '', payload.photoId] });
+            return res.json({ success: true });
+        }
+        
         if (action === 'savereunionphotos') {
             const data = payload.data || {};
             const part = data.part;
