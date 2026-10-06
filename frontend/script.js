@@ -133,7 +133,7 @@
 
     function pageUrlId(pageId) {
       const publicIds = {
-        alumni: 'family',
+        alumni: 'directory',
         prokoushali: 'pdacc',
         'member-signin': 'signin',
         noticeboard: 'notice',
@@ -178,7 +178,7 @@
       if (!history.state || !history.state.page) return;
       const scrollY = window.scrollY;
       rdPageScroll[history.state.page] = scrollY;
-      history.replaceState({ ...history.state, scrollY: scrollY }, '', window.location.pathname + window.location.hash);
+      history.replaceState({ ...history.state, scrollY: scrollY }, '', window.location.pathname + window.location.search);
     }
 
     function switchPage(pageId, updateUrl = true) {
@@ -210,7 +210,7 @@
       rdNavGlareSync();
       const menu = document.getElementById('mobile-menu');
       if (menu && !menu.classList.contains('hidden')) { menu.classList.add('hidden'); syncMobileMenuButton(); }
-      if (updateUrl) { const urlId = pageUrlId(pageId); history.pushState({page: pageId, scrollY: 0}, '', window.location.pathname + (pageId==='home'?'':`#${urlId}`)); }
+      if (updateUrl) { const urlId = pageUrlId(pageId); history.pushState({page: pageId, scrollY: 0}, '', window.location.pathname.replace(/\/[^\/]+(\/.*)?$/, '') + (pageId==='home' ? '/' : `/${urlId}`)); }
       rdPageScroll[pageId] = scrollY;
       window.scrollTo({ top: scrollY, behavior: 'auto' });
       try {
@@ -257,9 +257,9 @@
          profile sub-page (parent: the directory) so a cold load of the link
          lands on the alumni list and then opens the card. */
       if (/^profile\/.+/.test(rawPage)) rawPage = 'profile';
-      const aliases = { family: 'alumni', pdacc: 'prokoushali', signin: 'member-signin', notice: 'noticeboard', status: 'notice' };
+      const aliases = { directory: 'alumni', family: 'alumni', pdacc: 'prokoushali', signin: 'member-signin', notice: 'noticeboard', status: 'notice' };
       const page = aliases[rawPage] || rawPage;
-      if (aliases[rawPage]) history.replaceState({page: page}, '', window.location.pathname + `#${pageUrlId(page)}`);
+      if (aliases[rawPage]) history.replaceState({page: page}, '', window.location.pathname.replace(/\/[^\/]+(\/.*)?$/, '') + `/${pageUrlId(page)}`);
       if (!page || !document.getElementById(`page-${page}`)) return 'home';
       const sub = RD_SUBPAGES[page];
       if (!allowSubPages && sub && sub.needsData) return sub.parent;
@@ -271,7 +271,7 @@
 
     /* The member id carried by a #profile/<id> share link, or null. */
     function rdSharedProfileId() {
-      const m = /^#profile\/(.+)$/.exec(window.location.hash || '');
+      const m = /^#?profile\/(.+)$/.exec((window.location.pathname + window.location.hash).replace(/^\/Rangdhanuduet\//i, '/').replace(/^\/Rangdhanu-\//i, '/').replace(/^\//, '') || '');
       return m ? decodeURIComponent(m[1].trim()) : null;
     }
 
@@ -291,11 +291,30 @@
         window.location.pathname + '#profile/' + encodeURIComponent(memberId));
     }
 
-    function rdRouteFromLocation() {
-      const shareId = rdSharedProfileId();
-      if (shareId) { rdOpenSharedProfile(shareId); return; }
-      switchPage(getPageFromLocation(), false);
-    }
+    function rdSharedEventId() {
+        const m = /^#?events\/(.+)$/.exec((window.location.pathname + window.location.hash).replace(/^\/Rangdhanuduet\//i, '/').replace(/^\/Rangdhanu-\//i, '/').replace(/^\//, '') || '');
+        return m ? decodeURIComponent(m[1].trim()) : null;
+      }
+      
+      async function rdOpenSharedEvent(eventId) {
+        if (!eventId) return;
+        switchPage('events', false);
+        try { if (!window.publicEvents || !window.publicEvents.length) await loadPublicEvents(); } catch (e) {}
+        const i = (window.publicEvents || []).findIndex(function (e) {
+          return String(e.eventId || e['Event ID'] || '') === String(eventId);
+        });
+        if (i < 0) return;
+        openDynamicEvent(i);
+        history.replaceState({ page: 'event-detail' }, '', window.location.pathname.replace(/\/events(\/.*)?$/, '') + '/events/' + encodeURIComponent(eventId));
+      }
+      
+      function rdRouteFromLocation() {
+        const shareId = rdSharedProfileId();
+        if (shareId) { rdOpenSharedProfile(shareId); return; }
+        const eventId = rdSharedEventId();
+        if (eventId) { rdOpenSharedEvent(eventId); return; }
+        switchPage(getPageFromLocation(), false);
+      }
     window.addEventListener('popstate', rdRouteFromLocation);
     window.addEventListener('hashchange', rdRouteFromLocation);
 
@@ -8330,6 +8349,7 @@
         </div>
       `;
       openSubPage('event-detail', 'events');
+        if (id) history.replaceState({ page: 'event-detail' }, '', window.location.pathname.replace(/\/events(\/.*)?$/, '') + '/events/' + encodeURIComponent(id));
       lucide.createIcons();
       if(staticGal.length > 0) {
           setTimeout(() => {
