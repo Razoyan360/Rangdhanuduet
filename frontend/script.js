@@ -252,11 +252,14 @@
     }
 
     function getPageFromLocation(allowSubPages = true) {
-      let rawPage = window.location.hash.replace('#','').trim();
-      /* A shared profile link is #profile/<memberId>. It resolves to the public
-         profile sub-page (parent: the directory) so a cold load of the link
-         lands on the alumni list and then opens the card. */
-      if (/^profile\/.+/.test(rawPage)) rawPage = 'profile';
+        let basePathRegex = new RegExp('^' + (window.RD_BASE_PATH || '').replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&') + '/?');
+        let rawPage = window.location.pathname.replace(basePathRegex, '').trim();
+        if (!rawPage) rawPage = window.location.hash.replace('#','').trim();
+        /* A shared profile link is #profile/<memberId>. It resolves to the public
+           profile sub-page (parent: the directory) so a cold load of the link
+           lands on the alumni list and then opens the card. */
+        if (/^profile\/.+/.test(rawPage)) rawPage = 'profile';
+        if (/^events\/.+/.test(rawPage)) rawPage = 'event-detail';
       const aliases = { directory: 'alumni', family: 'alumni', pdacc: 'prokoushali', signin: 'member-signin', notice: 'noticeboard', status: 'notice' };
       const page = aliases[rawPage] || rawPage;
       if (aliases[rawPage]) { const bp2 = window.RD_BASE_PATH || ''; history.replaceState({page: page}, '', bp2 + `/${pageUrlId(page)}`); }
@@ -271,7 +274,8 @@
 
     /* The member id carried by a #profile/<id> share link, or null. */
     function rdSharedProfileId() {
-      const m = /^#?profile\/(.+)$/.exec((window.location.pathname + window.location.hash).replace(/^\/Rangdhanuduet\//i, '/').replace(/^\/Rangdhanu-\//i, '/').replace(/^\//, '') || '');
+      let basePathRegex = new RegExp('^' + (window.RD_BASE_PATH || '').replace(/[-/\\^$*+?.()|[\]{}]/g, '\\const m = /^#?profile\/(.+)$/.exec((window.location.pathname + window.location.hash).replace(/^\/Rangdhanuduet\//i, '/').replace(/^\/Rangdhanu-\//i, '/').replace(/^\//, '') || '');') + '/?');
+        const m = /^#?profile\/(.+)$/.exec((window.location.pathname + window.location.hash).replace(basePathRegex, '') || '');
       return m ? decodeURIComponent(m[1].trim()) : null;
     }
 
@@ -287,12 +291,12 @@
       const a = alumniData.find(function (r) { return String(r.memberId) === String(memberId); });
       if (!a) return;   /* unknown id: leave the visitor on the directory */
       openAlumniProfileModal(a);
-      history.replaceState({ page: 'profile' }, '',
         const bpP = window.RD_BASE_PATH || ''; history.replaceState({ page: 'profile' }, '', bpP + '/profile/' + encodeURIComponent(memberId));
     }
 
     function rdSharedEventId() {
-        const m = /^#?events\/(.+)$/.exec((window.location.pathname + window.location.hash).replace(/^\/Rangdhanuduet\//i, '/').replace(/^\/Rangdhanu-\//i, '/').replace(/^\//, '') || '');
+        let basePathRegex = new RegExp('^' + (window.RD_BASE_PATH || '').replace(/[-/\\^$*+?.()|[\]{}]/g, '\\const m = /^#?events\/(.+)$/.exec((window.location.pathname + window.location.hash).replace(/^\/Rangdhanuduet\//i, '/').replace(/^\/Rangdhanu-\//i, '/').replace(/^\//, '') || '');') + '/?');
+        const m = /^#?events\/(.+)$/.exec((window.location.pathname + window.location.hash).replace(basePathRegex, '') || '');
         return m ? decodeURIComponent(m[1].trim()) : null;
       }
       
@@ -8351,7 +8355,7 @@
         </div>
       `;
       openSubPage('event-detail', 'events');
-        if (id) const bp3 = window.RD_BASE_PATH || ''; history.replaceState({ page: 'event-detail' }, '', bp3 + '/events/' + encodeURIComponent(id));
+        if (id) { const bp3 = window.RD_BASE_PATH || ''; history.replaceState({ page: 'event-detail' }, '', bp3 + '/events/' + encodeURIComponent(id)); }
       lucide.createIcons();
       if(staticGal.length > 0) {
           setTimeout(() => {
