@@ -210,7 +210,7 @@
       rdNavGlareSync();
       const menu = document.getElementById('mobile-menu');
       if (menu && !menu.classList.contains('hidden')) { menu.classList.add('hidden'); syncMobileMenuButton(); }
-      if (updateUrl) { const urlId = pageUrlId(pageId); history.pushState({page: pageId, scrollY: 0}, '', window.location.pathname.replace(/\/[^\/]+(\/.*)?$/, '') + (pageId==='home' ? '/' : `/${urlId}`)); }
+      if (updateUrl) { const urlId = pageUrlId(pageId); const basePath = window.location.pathname === '/' ? '' : window.location.pathname.replace(/\/[^\/]+(\/.*)?$/, ''); history.pushState({page: pageId, scrollY: 0}, '', basePath + (pageId==='home' ? '/' : `/${urlId}`)); }
       rdPageScroll[pageId] = scrollY;
       window.scrollTo({ top: scrollY, behavior: 'auto' });
       try {
@@ -259,7 +259,7 @@
       if (/^profile\/.+/.test(rawPage)) rawPage = 'profile';
       const aliases = { directory: 'alumni', family: 'alumni', pdacc: 'prokoushali', signin: 'member-signin', notice: 'noticeboard', status: 'notice' };
       const page = aliases[rawPage] || rawPage;
-      if (aliases[rawPage]) history.replaceState({page: page}, '', window.location.pathname.replace(/\/[^\/]+(\/.*)?$/, '') + `/${pageUrlId(page)}`);
+      if (aliases[rawPage]) const bp2 = window.location.pathname === '/' ? '' : window.location.pathname.replace(/\/[^\/]+(\/.*)?$/, ''); history.replaceState({page: page}, '', bp2 + `/${pageUrlId(page)}`);
       if (!page || !document.getElementById(`page-${page}`)) return 'home';
       const sub = RD_SUBPAGES[page];
       if (!allowSubPages && sub && sub.needsData) return sub.parent;
@@ -288,7 +288,7 @@
       if (!a) return;   /* unknown id: leave the visitor on the directory */
       openAlumniProfileModal(a);
       history.replaceState({ page: 'profile' }, '',
-        window.location.pathname + '#profile/' + encodeURIComponent(memberId));
+        const bpP = window.location.pathname === '/' ? '' : window.location.pathname.replace(/\/profile(\/.*)?$/, ''); history.replaceState({ page: 'profile' }, '', bpP + '/profile/' + encodeURIComponent(memberId));
     }
 
     function rdSharedEventId() {
@@ -305,7 +305,7 @@
         });
         if (i < 0) return;
         openDynamicEvent(i);
-        history.replaceState({ page: 'event-detail' }, '', window.location.pathname.replace(/\/events(\/.*)?$/, '') + '/events/' + encodeURIComponent(eventId));
+        const bpE = window.location.pathname === '/' ? '' : window.location.pathname.replace(/\/events(\/.*)?$/, ''); history.replaceState({ page: 'event-detail' }, '', bpE + '/events/' + encodeURIComponent(eventId));
       }
       
       function rdRouteFromLocation() {
@@ -3336,7 +3336,7 @@
          address bar. #profile/<memberId> reopens the public card for anyone,
          while the contact rows inside it stay gated to signed-in members. */
       const url = (mp && mp.memberId)
-        ? location.origin + location.pathname + '#profile/' + encodeURIComponent(mp.memberId)
+        ? location.origin + (location.pathname === '/' ? '' : location.pathname.replace(/\/profile(\/.*)?$/, '')) + '/profile/' + encodeURIComponent(mp.memberId)
         : location.href;
       const title = (mp && mp.name ? mp.name + ' - ' : '') + RD_MP_ORG;
       if (navigator.share) {
@@ -8349,7 +8349,7 @@
         </div>
       `;
       openSubPage('event-detail', 'events');
-        if (id) history.replaceState({ page: 'event-detail' }, '', window.location.pathname.replace(/\/events(\/.*)?$/, '') + '/events/' + encodeURIComponent(id));
+        if (id) const bp3 = window.location.pathname === '/' ? '' : window.location.pathname.replace(/\/events(\/.*)?$/, ''); history.replaceState({ page: 'event-detail' }, '', bp3 + '/events/' + encodeURIComponent(id));
       lucide.createIcons();
       if(staticGal.length > 0) {
           setTimeout(() => {
