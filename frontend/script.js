@@ -3974,7 +3974,7 @@
       });
       if (quiet && !RD_MEMBER.wantLoader) { RD_MEMBER.wantLoader = false; rdMemberPaintSignInLinks(); return; }
       RD_MEMBER.wantLoader = false;
-      hideGlobalLoader(true, null, 'Signed in successfully.');
+      hideGlobalLoader(true, null, 'Signed in successfully.', { autoClose: true });
         rdMemberMsg('member-signin-msg', 'You are signed in.', 'ok');
       rdMemberPaintLinkBox();
       /* No page of its own for this. A member who signs in is taken to the
