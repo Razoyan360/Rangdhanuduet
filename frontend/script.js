@@ -4149,8 +4149,16 @@
       const mobileMemberBtn = document.getElementById('mobile-member-btn');
       if (mobileMemberBtn) mobileMemberBtn.style.display = memberEntryVisible ? '' : 'none';
       const applicationVisible = !restoring && !on && !adminOn;
-      const t = document.getElementById('nav-member-text');
-      if (t) t.textContent = restoring ? 'Restoring...' : (on ? 'My Profile' : 'Sign In');
+      const desktopBtn = document.getElementById('nav-member-btn');
+      if (desktopBtn) {
+        if (on && RD_MEMBER && RD_MEMBER.me && RD_MEMBER.me.photo) {
+          desktopBtn.innerHTML = '<img src="' + escapeHtml(RD_MEMBER.me.photo) + '" class="w-full h-full object-cover" alt="Profile">';
+        } else {
+          desktopBtn.innerHTML = '<i data-lucide="user" class="w-4 h-4"></i>';
+        }
+        if (window.lucide && typeof lucide.createIcons === 'function') lucide.createIcons();
+      }
+
       const memberLabel = document.getElementById('mobile-member-label');
       if (memberLabel) memberLabel.textContent = restoring ? 'Restoring...' : (on ? 'My Profile' : 'Sign In');
       const memberTileIcon = document.getElementById('mobile-member-tile-icon');
@@ -14754,4 +14762,13 @@ async function adminUploadReunionPhotos(partNumber) {
         alert('Error uploading files.');
     }
 }
+
+
+    window.openUniversalSearch = function() {
+      switchPage("search");
+      setTimeout(function() {
+        var input = document.getElementById("search-page-input");
+        if (input) input.focus();
+      }, 100);
+    };
 
