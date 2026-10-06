@@ -729,9 +729,9 @@
       box.innerHTML =
         '<p class="text-white/80 text-[9px] sm:text-[11px] font-extrabold uppercase" style="letter-spacing:.34em">' +
           escapeHtml(v.kicker) + '</p>' +
-        '<h2 class="text-white font-extrabold tracking-tight leading-[1.08] mt-2 text-[1.1rem] sm:text-4xl md:text-5xl">' +
+        '<h2 class="text-white font-extrabold tracking-tight leading-[1.08] mt-2 text-[15px] sm:text-4xl md:text-5xl">' +
           escapeHtml(v.title) + '</h2>' +
-        '<p class="text-white/90 font-semibold mt-2.5 max-w-2xl leading-snug text-[9px] sm:text-xs md:text-base">' +
+        '<p class="text-white/90 font-semibold mt-2.5 max-w-2xl leading-snug text-[8px] sm:text-xs md:text-base">' +
           escapeHtml(v.sub) + '</p>';
       box.classList.add('rd-hero-anim');
       if (window.lucide) lucide.createIcons();
@@ -781,7 +781,7 @@
           <div class="rd-cap absolute inset-x-0 bottom-0 p-4 sm:p-6 md:p-7 z-30">
             <span class="rd-cap-badge inline-flex items-center px-3 py-1 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-white text-[8px] sm:text-[10px] font-bold">${escapeHtml(s.badge || 'RANGDHANU • DUET')}</span>
             <span class="rd-cap-line"></span>
-            <h2 class="rd-cap-title text-[10px] sm:text-sm md:text-base font-bold text-white/95 mt-2 leading-snug max-w-2xl">${escapeHtml(s.title || '')}</h2>
+            <h2 class="rd-cap-title text-[9px] sm:text-sm md:text-base font-bold text-white/95 mt-2 leading-snug max-w-2xl">${escapeHtml(s.title || '')}</h2>
           </div>
         </div>`).join('');
 
@@ -927,7 +927,7 @@
           '<span class="rd-cap-badge inline-flex items-center px-3 py-1 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-white text-[8px] sm:text-[10px] font-bold">' +
             escapeHtml(s.badge || 'PDACC') + '</span>' +
           '<span class="rd-cap-line"></span>' +
-          '<h2 class="rd-cap-title text-[10px] sm:text-sm md:text-base font-bold text-white/95 mt-2 leading-snug max-w-2xl">' +
+          '<h2 class="rd-cap-title text-[9px] sm:text-sm md:text-base font-bold text-white/95 mt-2 leading-snug max-w-2xl">' +
             escapeHtml(s.title || '') + '</h2>' +
         '</div></div>';
     }
@@ -959,7 +959,7 @@
           <div class="rd-cap absolute inset-x-0 bottom-0 p-4 sm:p-6 md:p-7 z-30">
             <span class="rd-cap-badge inline-flex items-center px-3 py-1 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-white text-[8px] sm:text-[10px] font-bold">${escapeHtml(s.badge || 'PDACC')}</span>
             <span class="rd-cap-line"></span>
-            <h2 class="rd-cap-title text-[10px] sm:text-sm md:text-base font-bold text-white/95 mt-2 leading-snug max-w-2xl">${escapeHtml(s.title || '')}</h2>
+            <h2 class="rd-cap-title text-[9px] sm:text-sm md:text-base font-bold text-white/95 mt-2 leading-snug max-w-2xl">${escapeHtml(s.title || '')}</h2>
           </div>
         </div>`).join('');
 
@@ -1029,7 +1029,7 @@
           (String(v.title).length <= 12 ? 'text-[1.35rem] sm:text-4xl md:text-5xl'
                                        : 'text-[1.05rem] sm:text-2xl md:text-3xl') + '">' +
           escapeHtml(v.title) + '</h2>' +
-        '<p class="text-white/90 font-semibold mt-2.5 max-w-2xl leading-snug text-[9px] sm:text-xs md:text-base">' +
+        '<p class="text-white/90 font-semibold mt-2.5 max-w-2xl leading-snug text-[8px] sm:text-xs md:text-base">' +
           escapeHtml(v.sub) + '</p>' +
         '<p class="text-white/70 font-bold mt-1.5 max-w-2xl leading-snug text-[10px] sm:text-xs md:text-sm">' +
           escapeHtml(v.sub2) + '</p>';
