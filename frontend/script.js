@@ -14770,6 +14770,8 @@ function adminReunionHtml() {
   
           out += '</div></div>';
       }
+      return out + '<div id="reu-dummy-wrap"></div>';
+  }
 
 async function adminSaveReunionPart(partId = 'new') {
       const isNew = partId === 'new';
@@ -15053,5 +15055,3 @@ async function adminUploadReunionPhotos(partNumber) {
           await apiPost('savereunionphotocaption', { photoId, caption: caption.trim() });
       } catch(e) {}
   }
-
-}
