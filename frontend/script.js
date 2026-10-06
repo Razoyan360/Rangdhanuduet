@@ -3842,9 +3842,10 @@
         const who = await apiGet('adminrole', { adminToken: token });
         if (who && who.success) {
           rdAdminRemember(token);
-          switchPage('admin');
-          adminGateVerify();
-          return;
+            switchPage('admin');
+            adminGateVerify();
+            hideGlobalLoader(true, null, 'Signed in as Admin', { autoClose: true });
+            return;
         }
       } catch (err) {
         /* Not an admin -- adminrole answers success:false and apiGet throws.
@@ -6083,7 +6084,7 @@
     const RD_IMG_SKIP_UNDER = 1536 * 1024;           // keep < 1.5MB files as-is (preserves lossless PNGs)
     const RD_IMG_TARGET_BYTES = 3 * 1024 * 1024;     // base64 adds ~33%, so keep headroom under 5MB
     const RD_IMG_QUALITY_STEPS = [0.86, 0.78, 0.70, 0.60, 0.50];
-    const RD_IMG_HARD_LIMIT = 5 * 1024 * 1024;       // must match MAX_PHOTO_BYTES in Code.gs
+    const RD_IMG_HARD_LIMIT = 3 * 1024 * 1024;       // must match MAX_PHOTO_BYTES in Code.gs
 
     function rdLoadImage(file) {
       return new Promise((resolve, reject) => {

@@ -20,7 +20,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '5mb' }));
 
 // AUTH HELPERS
 const MEMBER_SESSION_TTL_SECONDS = 30 * 24 * 60 * 60;
