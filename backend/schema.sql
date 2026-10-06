@@ -289,3 +289,31 @@ CREATE TABLE IF NOT EXISTS activity_log (
     ip_address TEXT,
     result TEXT
 );
+
+-- ==========================================
+-- 9. REUNION CONTENT
+-- ==========================================
+CREATE TABLE IF NOT EXISTS reunion_parts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    part_number INTEGER UNIQUE,
+    icon TEXT,
+    title_bn TEXT,
+    title_en TEXT,
+    video_link TEXT,
+    desc_bn TEXT,
+    desc_en TEXT,
+    video_link TEXT,
+    desc_bn TEXT,
+    desc_en TEXT
+);
+
+CREATE TABLE IF NOT EXISTS reunion_photos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    photo_id TEXT UNIQUE,
+    part_number INTEGER,
+    image_url TEXT,
+    caption TEXT,
+    sort_order INTEGER,
+    uploaded_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(part_number) REFERENCES reunion_parts(part_number)
+);

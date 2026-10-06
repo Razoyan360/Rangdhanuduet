@@ -133,6 +133,22 @@ async function logAdminActivity(db, adminEmail, actionType, targetId, details) {
     }
 }
 
+async function resolveAdminImage(value, folder) {
+    if (!value) return '';
+    if (typeof value === 'object' && value.base64) {
+        const uploaded = await uploadBase64ToCloudinary(value.base64, folder, value.mimeType || 'image/jpeg');
+        if (!uploaded.success) throw new Error(uploaded.error || 'Image upload failed.');
+        return uploaded.url;
+    }
+    const text = String(value).trim();
+    if (text.indexOf('data:image') === 0) {
+        const uploaded = await uploadBase64ToCloudinary(text, folder);
+        if (!uploaded.success) throw new Error(uploaded.error || 'Image upload failed.');
+        return uploaded.url;
+    }
+    return text;
+}
+
 // PUBLIC POST ACTIONS that do not require auth
 const PUBLIC_POST_ACTIONS = [
     'adminrole', 'membersignin', 'getemailhint', 'memberemailstart', 'memberemailverify',
@@ -147,6 +163,19 @@ const db = createClient({
     url: process.env.TURSO_DATABASE_URL || `file:${dbPath}`,
     authToken: process.env.TURSO_AUTH_TOKEN
 });
+
+/* Older reunion databases predate the bilingual description/video fields.
+   Add them lazily and tolerate already-migrated deployments. */
+const reunionSchemaReady = (async function () {
+    const columns = [
+        ['video_link', 'TEXT'],
+        ['desc_bn', 'TEXT'],
+        ['desc_en', 'TEXT']
+    ];
+    for (const column of columns) {
+        try { await db.execute(`ALTER TABLE reunion_parts ADD COLUMN ${column[0]} ${column[1]}`); } catch (err) {}
+    }
+})();
 
 // Helper to get settings
 async function getSetting(key, defaultValue) {
@@ -453,14 +482,18 @@ if (action === 'get_env') return res.json({url: process.env.TURSO_DATABASE_URL, 
         }
 
         if (action === 'reunion' || action === 'getadminreunion') {
+            await reunionSchemaReady;
             const partsResult = await db.execute('SELECT * FROM reunion_parts ORDER BY part_number ASC');
             const photosResult = await db.execute('SELECT * FROM reunion_photos ORDER BY sort_order ASC, id ASC');
-            
+
             const parts = partsResult.rows.map(row => ({
                 n: row.part_number,
                 icon: row.icon,
                 bn: row.title_bn,
-                en: row.title_en
+                en: row.title_en,
+                video_link: row.video_link || '',
+                desc_bn: row.desc_bn || '',
+                desc_en: row.desc_en || ''
             }));
 
             const photos = photosResult.rows.map(row => ({
@@ -483,7 +516,8 @@ if (action === 'get_env') return res.json({url: process.env.TURSO_DATABASE_URL, 
                 'Department': row.department,
                 'Series': row.series,
                 'Status': row.status || 'PENDING',
-                'Passport Size Image': row.passport_size_image,
+                'Passport Size Image': row.passport_size_image || row.photo_url || '',
+                'Cover Photo': row.cover_photo || '',
                 'Rejection Reason': row.admin_note,
                 'Admin Note': row.admin_note,
                 'Mobile Number': row.mobile_number,
@@ -530,6 +564,19 @@ if (action === 'get_env') return res.json({url: process.env.TURSO_DATABASE_URL, 
             const resData = await db.execute("SELECT * FROM executive_committee");
             const data = resData.rows.map(row => ({
                 'ID': row.id,
+                'Entry ID': row.entry_id,
+                entryId: row.entry_id || row.id,
+                fullName: row.full_name,
+                position: row.position,
+                session: row.session_year,
+                committee: row.committee_name,
+                department: row.department,
+                series: row.series,
+                mobile: row.mobile_number,
+                email: row.email,
+                status: row.status,
+                photo: row.photo_url,
+                adminNote: row.admin_note,
                 'Full Name': row.full_name,
                 'Department': row.department,
                 'Series': row.series,
@@ -543,14 +590,21 @@ if (action === 'get_env') return res.json({url: process.env.TURSO_DATABASE_URL, 
         }
 
         if (action === 'getadminfaculty') {
-            const resData = await db.execute("SELECT * FROM alumni WHERE record_type = 'Teacher' OR record_type = 'Officer'");
+            const resData = await db.execute("SELECT * FROM alumni WHERE record_type IN ('Teacher', 'Officer', 'Staff')");
             const data = resData.rows.map(row => ({
                 'Member ID': row.member_id || row.id,
                 'Full Name (English)': row.full_name_english,
                 'Department': row.department,
                 'Current Designation': row.current_designation,
+                'Academic Degree': row.academic_degree,
+                'Diploma Institute': row.diploma_institute,
+                'Office Phone': row.office_phone,
+                'DUET Profile': row.duet_profile,
+                'Blood Group': row.blood_group,
+                'Email': row.email,
                 'Status': row.status,
                 'Passport Size Image': row.passport_size_image,
+                'Cover Photo': row.cover_photo,
                 'Admin Note': row.admin_note,
                 'Record Type': row.record_type
             }));
@@ -565,7 +619,9 @@ if (action === 'get_env') return res.json({url: process.env.TURSO_DATABASE_URL, 
                 title: r.title,
                 body: r.body,
                 fileUrl: r.file_url,
+                viewUrl: r.file_url,
                 fileId: r.file_id,
+                fileType: r.file_type || '',
                 show: r.is_show ? 'YES' : 'NO',
                 postedDate: r.posted_date,
                 pinned: r.is_pinned
@@ -613,6 +669,8 @@ if (action === 'get_env') return res.json({url: process.env.TURSO_DATABASE_URL, 
             const rows = resData.rows.map(r => ({
                 slideId: r.file_id,
                 fileId: r.file_id,
+                url: r.file_id,
+                fileName: r.file_name || r.file_id,
                 caption: r.caption,
                 badge: r.badge,
                 place: r.place,
@@ -1003,8 +1061,16 @@ if (action === 'get_env') return res.json({url: process.env.TURSO_DATABASE_URL, 
             const events = await db.execute("SELECT COUNT(*) as c FROM events WHERE status = 'PENDING'");
             const comm = await db.execute("SELECT COUNT(*) as c FROM executive_committee WHERE status = 'PENDING'");
             const notices = await db.execute("SELECT COUNT(*) as c FROM pdacc_notices");
+            const counts = {
+                registrations: { pending: Number(pending.rows[0].c) || 0, total: (Number(pending.rows[0].c) || 0) + (Number(approved.rows[0].c) || 0) },
+                events: { pending: Number(events.rows[0].c) || 0 },
+                committee: { pending: Number(comm.rows[0].c) || 0 },
+                notices: { total: Number(notices.rows[0].c) || 0 },
+                polls: { total: 0 }
+            };
             return res.json({
                 success: true,
+                counts,
                 pendingMembers: pending.rows[0].c,
                 approvedMembers: approved.rows[0].c,
                 events: events.rows[0].c,
@@ -1271,24 +1337,21 @@ app.post('/api', async (req, res) => {
         }
         
         if (action === 'savereunionpart') {
-            const data = payload.data || {};
-            if (data.image && !data.image.startsWith('http')) {
-                const res = await uploadBase64ToCloudinary(data.image, 'PDU-' + Date.now() + '.jpg', 'image/jpeg', 'PDACC');
-                if (res.success) data.image = res.url;
-            }
-            if (data.id) {
-                // Update
-                await db.execute({
-                    sql: 'UPDATE reunion_parts SET icon = ?, title_bn = ?, title_en = ? WHERE part_number = ?',
-                    args: [data.icon, data.bn, data.en, data.n]
-                });
+            await reunionSchemaReady;
+            const data = payload.data || payload || {};
+            const n = Number(data.n || data.partNumber);
+            const icon = String(data.icon || '').trim();
+            const bn = String(data.bn || data.titleBn || '').trim();
+            const en = String(data.en || data.titleEn || '').trim();
+            if (!n || !icon || !bn || !en) return res.json({ success: false, message: 'Part number, icon and titles are required.' });
+            const values = [icon, bn, en, data.video_link || data.videoLink || '', data.desc_bn || data.descriptionBn || '', data.desc_en || data.descriptionEn || ''];
+            const existing = await db.execute({ sql: 'SELECT part_number FROM reunion_parts WHERE part_number = ?', args: [n] });
+            if (existing.rows.length) {
+                await db.execute({ sql: 'UPDATE reunion_parts SET icon = ?, title_bn = ?, title_en = ?, video_link = ?, desc_bn = ?, desc_en = ? WHERE part_number = ?', args: values.concat(n) });
             } else {
-                // Insert
-                await db.execute({
-                    sql: 'INSERT INTO reunion_parts (part_number, icon, title_bn, title_en) VALUES (?, ?, ?, ?)',
-                    args: [data.n, data.icon, data.bn, data.en]
-                });
+                await db.execute({ sql: 'INSERT INTO reunion_parts (part_number, icon, title_bn, title_en, video_link, desc_bn, desc_en) VALUES (?, ?, ?, ?, ?, ?, ?)', args: [n].concat(values) });
             }
+            await logAdminActivity(db, adminEmail, 'SAVE_REUNION_PART', String(n), 'Saved reunion part content');
             return res.json({ success: true, message: 'Reunion part saved.' });
         }
 
@@ -1298,72 +1361,96 @@ app.post('/api', async (req, res) => {
         }
         
         if (action === 'savereunionphotos') {
-            const data = payload.data || {};
-            const part = data.part;
-            
-            // Delete marked ones
-            if (Array.isArray(data.deleteGallery) && data.deleteGallery.length > 0) {
+            await reunionSchemaReady;
+            const data = payload.data || payload || {};
+            const part = Number(data.part || data.partNumber);
+            if (!part) return res.json({ success: false, message: 'Reunion part is required.' });
+            if (Array.isArray(data.deleteGallery)) {
                 for (const galId of data.deleteGallery) {
-                    await db.execute({
-                        sql: 'DELETE FROM reunion_photos WHERE photo_id = ? AND part_number = ?',
-                        args: [galId, part]
-                    });
+                    await db.execute({ sql: 'DELETE FROM reunion_photos WHERE photo_id = ? AND part_number = ?', args: [galId, part] });
                 }
             }
-
-            // Insert new ones
-            if (Array.isArray(data.gallery) && data.gallery.length > 0) {
+            if (Array.isArray(data.gallery)) {
+                const count = await db.execute({ sql: 'SELECT COUNT(*) AS c FROM reunion_photos WHERE part_number = ?', args: [part] });
+                let order = Number(count.rows[0] && count.rows[0].c) || 0;
                 for (const imgData of data.gallery) {
-                    let finalImg = imgData;
-                    if (imgData && !imgData.startsWith('http')) {
-                        const res = await uploadBase64ToCloudinary(imgData, 'Reunion');
-                        if (res.success) finalImg = res.url;
-                    }
+                    const finalImg = await resolveAdminImage(imgData, 'Reunion');
+                    if (!finalImg) continue;
+                    order += 1;
                     const photoId = 'REU-' + Date.now() + Math.floor(Math.random() * 1000);
-                    await db.execute({
-                        sql: 'INSERT INTO reunion_photos (photo_id, part_number, image_url, sort_order) VALUES (?, ?, ?, ?)',
-                        args: [photoId, part, finalImg, 999] // Default sort order
-                    });
+                    await db.execute({ sql: 'INSERT INTO reunion_photos (photo_id, part_number, image_url, sort_order) VALUES (?, ?, ?, ?)', args: [photoId, part, finalImg, order] });
                 }
             }
+            await logAdminActivity(db, adminEmail, 'SAVE_REUNION_PHOTOS', String(part), 'Updated reunion gallery');
             return res.json({ success: true, message: 'Reunion photos saved.' });
         }
 
         if (action === 'saveslide') {
             const data = payload.data || {};
-            if (data.id) {
-                await db.execute({
-                    sql: 'UPDATE slideshow SET caption = ?, badge = ?, place = ?, is_show = ? WHERE file_id = ?',
-                    args: [data.caption || '', data.badge || '', data.place || '', data.show === 'YES' ? 1 : 0, data.id]
-                });
+            const id = String(data.id || data.slideId || '').trim();
+            const visible = data.isShow !== undefined ? !!data.isShow : String(data.show || 'YES').toUpperCase() !== 'NO';
+            let finalUrl = data.url || undefined;
+            if (data.file) finalUrl = await resolveAdminImage(data.file, 'Slideshow');
+            if (id) {
+                const updates = ['caption = ?', 'badge = ?', 'place = ?', 'is_show = ?'];
+                const args = [data.caption || '', data.badge || '', data.place || 'home', visible ? 1 : 0];
+                if (finalUrl !== undefined) { updates.push('file_id = ?'); args.push(finalUrl); }
+                args.push(id);
+                await db.execute({ sql: `UPDATE slideshow SET ${updates.join(', ')} WHERE file_id = ?`, args });
             } else {
-                let finalUrl = 'SL-AUTO-' + Date.now();
-                if (data.file && data.file.base64) {
-                    const res = await uploadBase64ToCloudinary(data.file.base64, 'Slideshow');
-                    if (res.success) finalUrl = res.url;
-                }
+                finalUrl = finalUrl || 'SL-AUTO-' + Date.now();
                 await db.execute({
                     sql: 'INSERT INTO slideshow (file_id, caption, badge, place, is_show, sort_order) VALUES (?, ?, ?, ?, ?, ?)',
-                    args: [finalUrl, data.caption || '', data.badge || '', data.place || '', data.show === 'YES' ? 1 : 0, 99]
+                    args: [finalUrl, data.caption || '', data.badge || '', data.place || 'home', visible ? 1 : 0, Number(data.sortOrder) || 99]
                 });
             }
+            await logAdminActivity(db, adminEmail, 'SAVE_SLIDE', id || finalUrl, 'Saved slideshow image and caption');
             return res.json({ success: true, message: 'Slide saved.' });
         }
         if (action === 'deleteslide') {
             const data = payload.data || {};
-            await db.execute({
-                sql: 'DELETE FROM slideshow WHERE file_id = ?',
-                args: [data.id]
-            });
+            const id = data.id || data.slideId;
+            await db.execute({ sql: 'DELETE FROM slideshow WHERE file_id = ?', args: [id] });
+            await logAdminActivity(db, adminEmail, 'DELETE_SLIDE', id, 'Deleted slideshow image');
             return res.json({ success: true, message: 'Slide deleted.' });
         }
 
         if (action === 'savefaculty') {
-            const data = payload.data || {};
-            await db.execute({
-                sql: "UPDATE alumni SET status = 'APPROVED' WHERE member_id = ?",
-                args: [data.id]
-            });
+            const data = payload.faculty || payload.data || {};
+            const id = String(data['Member ID'] || data.memberId || data.id || '').trim();
+            const name = String(data['Full Name (English)'] || data.name || '').trim();
+            if (!name) return res.json({ success: false, message: 'Name is required.' });
+            const kind = String(data['Record Type'] || data.recordType || 'Teacher').trim();
+            const photo = await resolveAdminImage(data.photo || data['Passport Size Image'], 'Faculty');
+            const values = {
+                record_type: kind,
+                full_name_english: name,
+                current_designation: data['Current Designation'] || data.designation || '',
+                department: data.Department || data.department || '',
+                academic_degree: data['Academic Degree'] || data.degree || '',
+                office_phone: data['Office Phone'] || data.officePhone || '',
+                blood_group: data['Blood Group'] || data.bloodGroup || '',
+                email: data.Email || data.email || '',
+                status: 'APPROVED'
+            };
+            if (photo) values.passport_size_image = photo;
+            const keys = Object.keys(values);
+            const args = keys.map(key => values[key]);
+            if (id) {
+                args.push(id);
+                await db.execute({
+                    sql: `UPDATE alumni SET ${keys.map(key => key + ' = ?').join(', ')} WHERE member_id = ?`,
+                    args
+                });
+            } else {
+                const prefix = kind === 'Officer' ? 'RD-O-' : kind === 'Staff' ? 'RD-S-' : 'RD-T-';
+                const newId = prefix + Date.now();
+                await db.execute({
+                    sql: `INSERT INTO alumni (member_id, ${keys.join(', ')}) VALUES (?, ${keys.map(() => '?').join(', ')})`,
+                    args: [newId].concat(args)
+                });
+            }
+            await logAdminActivity(db, adminEmail, id ? 'UPDATE_FACULTY' : 'CREATE_FACULTY', id || name, 'Saved Rangdhanu Family record');
             return res.json({ success: true, message: 'Faculty saved.' });
         }
 
@@ -1378,8 +1465,29 @@ app.post('/api', async (req, res) => {
             await db.execute({ sql: "UPDATE alumni SET status = 'REJECTED', admin_note = ? WHERE member_id = ?", args: [payload.adminNote || '', id] });
             return res.json({ success: true, message: 'Member rejected.' });
         }
-        
-        
+
+        if (action === 'adminupdatemember') {
+            const data = payload.data || {};
+            const id = String(data.memberId || data.registrationId || '').trim();
+            if (!id) return res.json({ success: false, message: 'Member ID is required.' });
+            const map = {
+                name: 'full_name_english', department: 'department', series: 'series', batch: 'batch',
+                organization: 'current_organization', designation: 'current_designation'
+            };
+            const updates = [];
+            const args = [];
+            Object.keys(map).forEach(key => {
+                if (data[key] !== undefined) { updates.push(map[key] + ' = ?'); args.push(String(data[key] || '').trim()); }
+            });
+            if (data.photo) { updates.push('passport_size_image = ?'); args.push(await resolveAdminImage(data.photo, 'Alumni')); }
+            if (data.cover) { updates.push('cover_photo = ?'); args.push(await resolveAdminImage(data.cover, 'Alumni_Covers')); }
+            if (!updates.length) return res.json({ success: false, message: 'Nothing was changed.' });
+            args.push(id);
+            await db.execute({ sql: `UPDATE alumni SET ${updates.join(', ')} WHERE member_id = ?`, args });
+            await logAdminActivity(db, adminEmail, 'UPDATE_MEMBER', id, 'Updated member application record');
+            return res.json({ success: true, message: 'Member record updated.' });
+        }
+
         if (action === 'approveeventgallery') {
             const galleryId = payload.data ? payload.data.galleryId : (payload.galleryId || '');
             if (!galleryId) return res.json({ success: false, message: 'Gallery ID missing.' });
@@ -1509,13 +1617,30 @@ app.post('/api', async (req, res) => {
 
         if (action === 'approveexecutivecommittee') {
             const id = payload.data ? payload.data.entryId : null;
-            if (id) { await db.execute({ sql: "UPDATE executive_committee SET status = 'APPROVED' WHERE entry_id = ?", args: [id] }); await logAdminActivity(db, adminEmail, 'APPROVE_EC', id, 'Approved EC member'); }
+            if (id) { await db.execute({ sql: "UPDATE executive_committee SET status = 'APPROVED' WHERE entry_id = ? OR id = ?", args: [id, id] }); await logAdminActivity(db, adminEmail, 'APPROVE_EC', id, 'Approved EC member'); }
             return res.json({ success: true, message: 'Committee member approved.' });
         }
         if (action === 'rejectexecutivecommittee') {
             const id = payload.data ? payload.data.entryId : null;
-            if (id) await db.execute({ sql: "UPDATE executive_committee SET status = 'REJECTED', admin_note = ? WHERE entry_id = ?", args: [payload.data.adminNote || '', id] });
+            if (id) await db.execute({ sql: "UPDATE executive_committee SET status = 'REJECTED', admin_note = ? WHERE entry_id = ? OR id = ?", args: [payload.data.adminNote || '', id, id] });
             return res.json({ success: true, message: 'Committee member rejected.' });
+        }
+
+        if (action === 'adminupdatecommittee') {
+            const data = payload.data || {};
+            const id = String(data.entryId || '').trim();
+            if (!id) return res.json({ success: false, message: 'Committee entry ID is required.' });
+            const updates = [];
+            const args = [];
+            if (data.fullName !== undefined) { updates.push('full_name = ?'); args.push(String(data.fullName).trim()); }
+            if (data.position !== undefined) { updates.push('position = ?'); args.push(String(data.position).trim()); }
+            if (data.session !== undefined) { updates.push('session_year = ?'); args.push(String(data.session).trim()); }
+            if (data.photo) { updates.push('photo_url = ?'); args.push(await resolveAdminImage(data.photo, 'Committee')); }
+            if (!updates.length) return res.json({ success: false, message: 'Nothing was changed.' });
+            args.push(id);
+            await db.execute({ sql: `UPDATE executive_committee SET ${updates.join(', ')} WHERE entry_id = ? OR id = ?`, args: args.concat(id) });
+            await logAdminActivity(db, adminEmail, 'UPDATE_EC', id, 'Updated committee entry');
+            return res.json({ success: true, message: 'Committee entry updated.' });
         }
 
         if (action === 'deletefaculty') {
@@ -1525,23 +1650,25 @@ app.post('/api', async (req, res) => {
 
         if (action === 'savenotice') {
             const data = payload.data || {};
-            if (data.id) {
-                await db.execute({
-                    sql: 'UPDATE notices SET kind = ?, title = ?, body = ?, file_url = ?, is_pinned = ?, is_show = ? WHERE notice_id = ?',
-                    args: [data.kind, data.title, data.body, data.fileUrl, data.pinned ? 1 : 0, data.isShow ? 1 : 0, data.id]
-                });
+            const visible = data.isShow !== undefined ? !!data.isShow : String(data.show || 'YES').toUpperCase() !== 'NO';
+            const pinned = data.pinned !== undefined ? !!data.pinned : false;
+            const id = String(data.id || data.noticeId || '').trim();
+            let fileUrl = data.fileUrl === undefined ? undefined : String(data.fileUrl || '').trim();
+            if (data.file) fileUrl = await resolveAdminImage(data.file, 'Notices');
+            if (id) {
+                const updates = ['kind = ?', 'title = ?', 'body = ?', 'is_pinned = ?', 'is_show = ?'];
+                const args = [data.kind || 'FILE', data.title || '', data.body || '', pinned ? 1 : 0, visible ? 1 : 0];
+                if (fileUrl !== undefined) { updates.push('file_url = ?'); args.push(fileUrl); }
+                args.push(id);
+                await db.execute({ sql: `UPDATE notices SET ${updates.join(', ')} WHERE notice_id = ?`, args });
             } else {
                 const newId = 'NOT-' + Date.now();
-                if (data.image && !data.image.startsWith('http')) {
-                    const res = await uploadBase64ToCloudinary(data.image, newId + '.jpg', 'image/jpeg', 'Notices');
-                    if (res.success) data.image = res.url;
-                }
                 await db.execute({
                     sql: 'INSERT INTO notices (notice_id, kind, title, body, file_url, is_pinned, is_show) VALUES (?, ?, ?, ?, ?, ?, ?)',
-                    args: [newId, data.kind, data.title, data.body, data.fileUrl, data.pinned ? 1 : 0, data.isShow ? 1 : 0]
+                    args: [newId, data.kind || 'FILE', data.title || '', data.body || '', fileUrl || '', pinned ? 1 : 0, visible ? 1 : 0]
                 });
             }
-            await logAdminActivity(db, adminEmail, 'SAVE_NOTICE', noticeId, 'Saved notice');
+            await logAdminActivity(db, adminEmail, 'SAVE_NOTICE', id || 'new', 'Saved notice');
             return res.json({ success: true, message: 'Notice saved.' });
         }
         if (action === 'setnoticeshow') {
@@ -1549,29 +1676,31 @@ app.post('/api', async (req, res) => {
             return res.json({ success: true, message: 'Notice visibility updated.' });
         }
         if (action === 'deletenotice') {
-            await db.execute({ sql: "DELETE FROM notices WHERE notice_id = ?", args: [payload.noticeId] });
-            await logAdminActivity(db, adminEmail, 'DELETE_NOTICE', payload.data.noticeId, 'Deleted notice');
+            const noticeId = payload.noticeId || (payload.data && payload.data.noticeId);
+            await db.execute({ sql: "DELETE FROM notices WHERE notice_id = ?", args: [noticeId] });
+            await logAdminActivity(db, adminEmail, 'DELETE_NOTICE', noticeId, 'Deleted notice');
             return res.json({ success: true, message: 'Notice deleted.' });
         }
 
         if (action === 'savesocialpost') {
             const data = payload.data || {};
-            if (data.id) {
-                await db.execute({
-                    sql: 'UPDATE social_posts SET kind = ?, title = ?, caption = ?, link = ?, image_url = ?, is_show = ? WHERE post_id = ?',
-                    args: [data.kind, data.title, data.caption, data.link, data.image, data.isShow ? 1 : 0, data.id]
-                });
+            const visible = data.isShow !== undefined ? !!data.isShow : String(data.show || 'YES').toUpperCase() !== 'NO';
+            const id = String(data.id || data.postId || '').trim();
+            let image = data.image === undefined ? undefined : await resolveAdminImage(data.image, 'Social_Posts');
+            if (id) {
+                const updates = ['kind = ?', 'title = ?', 'caption = ?', 'link = ?', 'is_show = ?'];
+                const args = [data.kind || 'NEWS', data.title || '', data.caption || '', data.link || '', visible ? 1 : 0];
+                if (image !== undefined) { updates.push('image_url = ?'); args.push(image); }
+                args.push(id);
+                await db.execute({ sql: `UPDATE social_posts SET ${updates.join(', ')} WHERE post_id = ?`, args });
             } else {
                 const newId = 'SOC-' + Date.now();
-                if (data.image && !data.image.startsWith('http')) {
-                    const res = await uploadBase64ToCloudinary(data.image, newId + '.jpg', 'image/jpeg', 'Social_Posts');
-                    if (res.success) data.image = res.url;
-                }
                 await db.execute({
                     sql: 'INSERT INTO social_posts (post_id, kind, title, caption, link, image_url, is_show) VALUES (?, ?, ?, ?, ?, ?, ?)',
-                    args: [newId, data.kind, data.title, data.caption, data.link, data.image, data.isShow ? 1 : 0]
+                    args: [newId, data.kind || 'NEWS', data.title || '', data.caption || '', data.link || '', image || '', visible ? 1 : 0]
                 });
             }
+            await logAdminActivity(db, adminEmail, 'SAVE_SOCIAL_POST', id || 'new', 'Saved social media post');
             return res.json({ success: true, message: 'Social post saved.' });
         }
         if (action === 'setsocialpostshow') {
@@ -1588,7 +1717,21 @@ app.post('/api', async (req, res) => {
             return res.json({ success: true, message: 'Slide visibility updated.' });
         }
         if (action === 'moveslide') {
-            // For moveslide, normally we swap sort_order. For now, just return success.
+            const slideId = payload.slideId || (payload.data && payload.data.slideId);
+            const dir = String(payload.dir || (payload.data && payload.data.dir) || 'DOWN').toUpperCase();
+            const current = await db.execute({ sql: 'SELECT file_id, place, sort_order FROM slideshow WHERE file_id = ?', args: [slideId] });
+            if (!current.rows.length) return res.json({ success: false, message: 'Slide not found.' });
+            const row = current.rows[0];
+            const neighbour = await db.execute({
+                sql: dir === 'UP'
+                    ? 'SELECT file_id, sort_order FROM slideshow WHERE place = ? AND sort_order < ? ORDER BY sort_order DESC LIMIT 1'
+                    : 'SELECT file_id, sort_order FROM slideshow WHERE place = ? AND sort_order > ? ORDER BY sort_order ASC LIMIT 1',
+                args: [row.place || 'home', row.sort_order]
+            });
+            if (!neighbour.rows.length) return res.json({ success: true, message: 'Slide is already at the edge.' });
+            const other = neighbour.rows[0];
+            await db.execute({ sql: 'UPDATE slideshow SET sort_order = ? WHERE file_id = ?', args: [other.sort_order, row.file_id] });
+            await db.execute({ sql: 'UPDATE slideshow SET sort_order = ? WHERE file_id = ?', args: [row.sort_order, other.file_id] });
             return res.json({ success: true, message: 'Slide moved.' });
         }
 
@@ -1617,11 +1760,14 @@ app.post('/api', async (req, res) => {
             return res.json({ success: true, message: 'PDACC stats saved.' });        }
         if (action === 'savepdaccline') {
             const data = payload.data || {};
-            if (data.id) {
-                await db.execute({ sql: "UPDATE pdacc_notices SET notice_text = ?, is_show = ? WHERE line_id = ?", args: [data.text, data.isShow ? 1 : 0, data.id] });
+            const id = String(data.id || data.lineId || '').trim();
+            const visible = data.isShow !== undefined ? !!data.isShow : String(data.show || 'YES').toUpperCase() !== 'NO';
+            if (id) {
+                await db.execute({ sql: "UPDATE pdacc_notices SET notice_text = ?, is_show = ? WHERE line_id = ?", args: [data.text || '', visible ? 1 : 0, id] });
             } else {
-                await db.execute({ sql: "INSERT INTO pdacc_notices (line_id, notice_text, is_show) VALUES (?, ?, ?)", args: ['PDNL-' + Date.now(), data.text, data.isShow ? 1 : 0] });
+                await db.execute({ sql: "INSERT INTO pdacc_notices (line_id, notice_text, is_show) VALUES (?, ?, ?)", args: ['PDNL-' + Date.now(), data.text || '', visible ? 1 : 0] });
             }
+            await logAdminActivity(db, adminEmail, 'SAVE_PDACC_LINE', id || 'new', 'Saved PDACC notice line');
             return res.json({ success: true, message: 'PDACC line saved.' });
         }
         if (action === 'setpdacclineshow') {
@@ -1635,11 +1781,22 @@ app.post('/api', async (req, res) => {
         
         if (action === 'savepdaccupdate') {
             const data = payload.data || {};
-            if (data.id) {
-                await db.execute({ sql: "UPDATE pdacc_updates SET title = ?, description = ?, link = ?, image_url = ?, is_show = ? WHERE update_id = ?", args: [data.title, data.description, data.link, data.image, data.isShow ? 1 : 0, data.id] });
+            const id = String(data.id || data.updateId || '').trim();
+            const visible = data.isShow !== undefined ? !!data.isShow : String(data.show || 'YES').toUpperCase() !== 'NO';
+            let image = data.image === undefined ? undefined : await resolveAdminImage(data.image, 'PDACC');
+            if (id) {
+                const updates = ['title = ?', 'description = ?', 'link = ?', 'is_show = ?'];
+                const args = [data.title || '', data.description || '', data.link || '', visible ? 1 : 0];
+                if (image !== undefined) { updates.push('image_url = ?'); args.push(image); }
+                args.push(id);
+                await db.execute({ sql: `UPDATE pdacc_updates SET ${updates.join(', ')} WHERE update_id = ?`, args });
             } else {
-                await db.execute({ sql: "INSERT INTO pdacc_updates (update_id, title, description, link, image_url, is_show) VALUES (?, ?, ?, ?, ?, ?)", args: ['PDU-' + Date.now(), data.title, data.description, data.link, data.image, data.isShow ? 1 : 0] });
+                await db.execute({
+                    sql: "INSERT INTO pdacc_updates (update_id, title, description, link, image_url, is_show) VALUES (?, ?, ?, ?, ?, ?)",
+                    args: ['PDU-' + Date.now(), data.title || '', data.description || '', data.link || '', image || '', visible ? 1 : 0]
+                });
             }
+            await logAdminActivity(db, adminEmail, 'SAVE_PDACC_UPDATE', id || 'new', 'Saved PDACC update');
             return res.json({ success: true, message: 'PDACC update saved.' });
         }
         if (action === 'setpdaccupdateshow') {
@@ -1653,31 +1810,50 @@ app.post('/api', async (req, res) => {
 
         
         if (action === 'polledit') {
-            const pollId = payload.data?.pollId;
-            const qText = payload.data?.questionText;
-            const type = payload.data?.type;
-            const endsAt = payload.data?.endsAt || null;
-            const allowAdd = payload.data?.allowAdd === 'YES' ? 1 : 0;
-            const opts = Array.isArray(payload.data?.options) ? JSON.stringify(payload.data.options) : '[]';
-
-            if (!pollId || !qText || !type) return res.json({ success: false, message: 'Missing poll parameters' });
-
+            const data = payload.data || {};
+            const pollId = data.pollId;
+            const qText = String(data.questionText || data.question || '').trim();
+            const type = data.type || 'single';
+            const endsAt = data.endsAt || data.endAt || null;
+            const opts = Array.isArray(data.options) ? JSON.stringify(data.options) : '[]';
+            if (!pollId || !qText || !type || JSON.parse(opts).length < 2) return res.json({ success: false, message: 'Missing poll parameters.' });
             await db.execute({
-                sql: "UPDATE polls SET question = ?, poll_type = ?, ends_at = ?, allow_add = ?, options = ? WHERE poll_id = ?",
-                args: [qText, type, endsAt, allowAdd, opts, pollId]
+                sql: "UPDATE polls SET question = ?, poll_type = ?, end_at = ?, options = ?, updated_at = CURRENT_TIMESTAMP WHERE poll_id = ?",
+                args: [qText, type, endsAt, opts, pollId]
             });
             await logAdminActivity(db, adminEmail, 'EDIT_POLL', pollId, 'Edited poll: ' + qText);
             return res.json({ success: true, message: 'Poll updated successfully.' });
         }
 
         if (action === 'pollcreate') {
-            // Mockup
-            return res.json({ success: true, message: 'Poll created.' });
+            const data = payload.data || {};
+            const question = String(data.question || '').trim();
+            const options = Array.isArray(data.options) ? data.options.map(x => String(x || '').trim()).filter(Boolean) : [];
+            if (!question || options.length < 2) return res.json({ success: false, message: 'A question and at least two options are required.' });
+            const pollId = 'POLL-' + Date.now();
+            await db.execute({
+                sql: 'INSERT INTO polls (poll_id, question, poll_type, max_pick, options, eligible_series, end_at, status, result_visibility, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                args: [pollId, question, data.type || 'single', Number(data.maxPick) || 1, JSON.stringify(options), JSON.stringify(data.eligibleSeries || []), data.endAt || null, data.status || 'open', data.resultVisibility || 'voters', adminEmail || 'admin']
+            });
+            await logAdminActivity(db, adminEmail, 'CREATE_POLL', pollId, 'Created poll: ' + question);
+            return res.json({ success: true, pollId, message: 'Poll created.' });
         }
         if (action === 'pollstatus') {
+            const data = payload.data || {};
+            const pollId = data.pollId;
+            const status = String(data.status || '').toLowerCase();
+            if (!pollId || ['draft', 'open', 'closed'].indexOf(status) < 0) return res.json({ success: false, message: 'Invalid poll status.' });
+            await db.execute({ sql: 'UPDATE polls SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE poll_id = ?', args: [status, pollId] });
+            await logAdminActivity(db, adminEmail, 'POLL_STATUS', pollId, 'Set poll status to ' + status);
             return res.json({ success: true, message: 'Poll status updated.' });
         }
         if (action === 'polldelete') {
+            const data = payload.data || {};
+            const pollId = data.pollId;
+            if (!pollId) return res.json({ success: false, message: 'Poll ID is required.' });
+            await db.execute({ sql: 'DELETE FROM poll_votes WHERE poll_id = ?', args: [pollId] });
+            await db.execute({ sql: 'DELETE FROM polls WHERE poll_id = ?', args: [pollId] });
+            await logAdminActivity(db, adminEmail, 'DELETE_POLL', pollId, 'Deleted poll');
             return res.json({ success: true, message: 'Poll deleted.' });
         }
 
@@ -1742,7 +1918,7 @@ app.post('/api', async (req, res) => {
             const ev = payload || {};
             const eventId = 'EVT-' + Date.now();
             const spStr = ev.sponsors ? JSON.stringify(ev.sponsors) : null;
-            const mainImg = ev.mainImage && ev.mainImage.base64 ? ev.mainImage.base64 : '';
+            const mainImg = ev.mainImage ? await resolveAdminImage(ev.mainImage, 'Events') : '';
 
             await db.execute({
                 sql: `INSERT INTO events (

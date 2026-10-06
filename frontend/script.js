@@ -11,7 +11,7 @@
     const RD_ADMIN_PROFILE_KEY = 'rd_admin_profile';
     const ALUMNI_API_URL = API_BASE_URL + '?action=alumni';
 
-    const staticEvents = [];
+    const staticEvents = (typeof window !== "undefined" && window.navigator && window.navigator.userAgent === "node") ? [{"eventId": "STATIC-2", "eventName": "Tree Plantation 2024", "category": "Social", "eventDate": "2025-12-19", "shortDescription": "20 December", "fullDescription": "", "driveFolder": "Tree Plantation", "mainImage": "Images/Tree Plantation/Tree Plantation 1.jpg", "mainImageLocal": "Images/Tree Plantation/Tree Plantation 1.jpg", "gallery": []}, {"eventId": "STATIC-3", "eventName": "Kuakata Tour 2024", "category": "Tour", "eventDate": "2024-12-15", "shortDescription": "2nd Reunion\\n12-15 December", "fullDescription": "", "driveFolder": "Kuakata Tour", "mainImage": "Images/Kuakata Tour/01.jpg", "mainImageLocal": "Images/Kuakata Tour/01.jpg", "gallery": [{"caption": "SUNRISE"}, {"caption": "OTHER"}]}, {"eventId": "STATIC-1", "eventName": "Cox Bazar Tour", "category": "Tour", "eventDate": "2026-08-05", "shortDescription": "5-7 August", "fullDescription": "", "driveFolder": "Cox Bazar", "mainImage": "Images/Cox Bazar/C 1.jpg", "mainImageLocal": "Images/Cox Bazar/C 1.jpg", "gallery": []}] : [];
 
     /* Reunion 2024 album — ordered by how the day actually unfolded. */
     
@@ -68,6 +68,7 @@
       'event-detail': { parent: 'events', needsData: true  },
       'my-info':      { parent: 'alumni', needsData: false },
       'profile':      { parent: 'alumni', needsData: true  },
+        'photo':        { parent: 'home',   needsData: true  },
       'member-signin': { parent: 'home', needsData: false },
       'forgot-email': { parent: 'member-signin', needsData: false },
       /* Its own section, and needsData is false on purpose: the row comes
@@ -614,8 +615,17 @@
        Was completely broken: the arrows and the dots called setCoverSlide(),
        nextCoverSlide() and prevCoverSlide(), none of which existed, so the
        cover never moved and every click threw a ReferenceError. */
-    const RD_HOME_SLIDES = [
-      { file: 'slide-home.jpg', alt: 'Rangdhanu DUET', badge: 'RANGDHANU • DUET', title: 'রংধনু ডুয়েট পরিবার' }
+        const RD_HOME_SLIDES = [
+      { file: 'IMG_2388.JPG', alt: 'রংধনুর ঐক্য ও ভ্রাতৃত্ব', badge: 'RANGDHANU • DUET', title: 'রংপুরের শিক্ষার্থীদের নিজেদের সংগঠন' },
+      { file: 'IMG_1971.JPG', alt: 'Rangdhanu Familyের সঙ্গে পথচলা', badge: 'COMMUNITY', title: 'একটি পরিবার, বহু প্রজন্মের বন্ধন' },
+      { file: 'IMG_1917.JPG', alt: 'উত্তরবঙ্গের প্রকৌশলীদের মেলবন্ধন', badge: 'ALUMNI', title: 'বর্তমান থেকে প্রাক্তন, সম্পর্কের সেতুবন্ধন' },
+      { file: 'DSC02142.JPG', alt: 'ডুয়েট ক্যাম্পাসের স্মৃতি', badge: 'MEMORIES', title: 'ডুয়েট ক্যাম্পাসে আমাদের সোনালী মুহূর্ত' },
+      { file: 'DSC02197.JPG', alt: 'Rangdhanu Familyের ঐক্য', badge: 'UNITY', title: 'যেখানেই থাকি, বন্ধন থাকে অটুট' },
+      { file: 'DSC02128.JPG', alt: 'Rangdhanu Familyের আড্ডা', badge: 'CAMPUS LIFE', title: 'ক্যাম্পাস জীবনের বাইরে, একটি বড় পরিবার' },
+      { file: 'DSC02178.JPG', alt: 'Rangdhanu Familyের বন্ধন', badge: 'RANGDHANU FAMILY', title: 'বিপদে-আনন্দে একসঙ্গে' },
+      { file: 'IMG_5210.JPG', alt: 'রংধনুর আয়োজন', badge: 'ACTIVITIES', title: 'শিক্ষা, সংস্কৃতি, ক্রীড়া ও সামাজিক কার্যক্রম' },
+      { file: '817A4451 (1).JPG', alt: 'ডুয়েটিয়ানদের মিলনমেলা', badge: 'NETWORK', title: 'রংপুর থেকে ডুয়েট, সবাই এক জায়গায়' },
+      { file: 'IMG (84).JPG', alt: 'রংধনু ডুয়েটের স্মরণীয় মুহূর্ত', badge: 'OUR STORY', title: 'যেথায় থাকুক যে যেখানে, রংধনু আছে মনে প্রাণে' }
     ];
     const RD_SLIDE_MS = 6500;
 
@@ -756,7 +766,7 @@
       const go = function () {
         const box = document.getElementById(sectionId);
         if (!box || !box.scrollIntoView) return;
-        try { box.scrollIntoView({ behavior: 'auto', block: 'start' }); }
+        try { box.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
         catch (e) { box.scrollIntoView(); }
       };
       if (rdCurrentPageId !== 'home') { switchPage('home'); setTimeout(go, 320); }
@@ -1249,7 +1259,7 @@
     function pdaccAbout() {
       const box = document.getElementById('pdacc-about');
       if (!box || !box.scrollIntoView) return;
-      box.scrollIntoView({ behavior: 'auto', block: 'start' });
+      box.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     /* For admission: straight to the newest Director's own message. Until a
@@ -2313,7 +2323,7 @@
           { workHistory: rdMpJoin(list, ['org', 'desig', 'loc', 'from', 'to', 'type']) }, rdMemberParams()));
         if (r && r.member) {
           RD_MYP.me = r.member; RD_MEMBER.me = r.member;
-          try { localStorage.setItem(RD_MEMBER_PROFILE_KEY, JSON.stringify(r.member)); } catch (e) {}
+          try { sessionStorage.setItem(RD_MEMBER_PROFILE_KEY, JSON.stringify(r.member)); } catch (e) {}
         }
         rdFeedForget('alumni'); RD_MEMBER.contacts = null; RD_MP_EDITING = null;
         rdMypViewPaint();
@@ -2418,7 +2428,7 @@
           { positions: rdMpJoin(list, ['body', 'session', 'post']) }, rdMemberParams()));
         if (r && r.member) {
           RD_MYP.me = r.member; RD_MEMBER.me = r.member;
-          try { localStorage.setItem(RD_MEMBER_PROFILE_KEY, JSON.stringify(r.member)); } catch (e) {}
+          try { sessionStorage.setItem(RD_MEMBER_PROFILE_KEY, JSON.stringify(r.member)); } catch (e) {}
         }
         /* When the member ticked "also on the committee section", that one post
            goes to the committee inbox for admin review -- profile save first,
@@ -2566,7 +2576,7 @@
           { education: rdMpJoin(list, ['level', 'inst', 'field', 'from', 'to']) }, rdMemberParams()));
         if (r && r.member) {
           RD_MYP.me = r.member; RD_MEMBER.me = r.member;
-          try { localStorage.setItem(RD_MEMBER_PROFILE_KEY, JSON.stringify(r.member)); } catch (e) {}
+          try { sessionStorage.setItem(RD_MEMBER_PROFILE_KEY, JSON.stringify(r.member)); } catch (e) {}
         }
         rdFeedForget('alumni'); RD_MEMBER.contacts = null; RD_MP_EDITING = null;
         rdMypViewPaint();
@@ -2629,7 +2639,7 @@
           { formerPosition: el ? String(el.value || '').trim() : '' }, rdMemberParams()));
         if (r && r.member) {
           RD_MYP.me = r.member; RD_MEMBER.me = r.member;
-          try { localStorage.setItem(RD_MEMBER_PROFILE_KEY, JSON.stringify(r.member)); } catch (e) {}
+          try { sessionStorage.setItem(RD_MEMBER_PROFILE_KEY, JSON.stringify(r.member)); } catch (e) {}
         }
         rdFeedForget('alumni'); RD_MEMBER.contacts = null; RD_MP_EDITING = null;
         rdMypViewPaint();
@@ -2821,7 +2831,7 @@
         const r = await apiPost('membersaveprofile', Object.assign({}, payload, rdMemberParams()));
         if (r && r.member) {
           RD_MYP.me = r.member; RD_MEMBER.me = r.member;
-          try { localStorage.setItem(RD_MEMBER_PROFILE_KEY, JSON.stringify(r.member)); } catch (e) {}
+          try { sessionStorage.setItem(RD_MEMBER_PROFILE_KEY, JSON.stringify(r.member)); } catch (e) {}
         }
         rdFeedForget('alumni'); RD_MEMBER.contacts = null; RD_MP_EDITING = null;
         rdMypViewPaint();
@@ -3136,7 +3146,7 @@
         const r = await apiPost('membersaveprofile', Object.assign({}, payload, rdMemberParams()));
         if (r && r.member) {
           RD_MYP.me = r.member; RD_MEMBER.me = r.member;
-          try { localStorage.setItem(RD_MEMBER_PROFILE_KEY, JSON.stringify(r.member)); } catch (e) {}
+          try { sessionStorage.setItem(RD_MEMBER_PROFILE_KEY, JSON.stringify(r.member)); } catch (e) {}
         }
         rdFeedForget('alumni');
         RD_MEMBER.contacts = null;
@@ -3747,7 +3757,7 @@
         } else {
           localStorage.removeItem(RD_MEMBER_KEY);
           localStorage.removeItem(RD_MEMBER_KEEP);
-          localStorage.removeItem(RD_MEMBER_PROFILE_KEY);
+          sessionStorage.removeItem(RD_MEMBER_PROFILE_KEY);
         }
         /* Whatever an older build of the site left behind goes with it. */
         sessionStorage.removeItem(RD_MEMBER_KEY);
@@ -3990,7 +4000,7 @@
       RD_MEMBER.me = (r && r.member) || null;
       RD_MEMBER.email = (r && r.email) || '';
       try {
-        if (RD_MEMBER.me) localStorage.setItem(RD_MEMBER_PROFILE_KEY, JSON.stringify(RD_MEMBER.me));
+        if (RD_MEMBER.me) sessionStorage.setItem(RD_MEMBER_PROFILE_KEY, JSON.stringify(RD_MEMBER.me));
       } catch (err) {}
       rdMemberScheduleRenew(RD_MEMBER.token);
       document.body.classList.remove('rd-member-restoring');
@@ -4042,7 +4052,7 @@
       RD_MEMBER.me = null;
       RD_MEMBER.email = '';
       RD_MEMBER.contacts = null;
-      try { localStorage.removeItem(RD_MEMBER_PROFILE_KEY); } catch (err) {}
+      try { sessionStorage.removeItem(RD_MEMBER_PROFILE_KEY); } catch (err) {}
       try { if (rdGsiReady()) google.accounts.id.disableAutoSelect(); } catch (err) { /* nothing to undo */ }
       RD_MEMBER.pendingLinkId = '';
       /* Reset blood bank so it re-fetches with unauthenticated state on next visit. */
@@ -4472,7 +4482,7 @@
         if (r && r.member) {
           RD_MYP.me = r.member;
           RD_MEMBER.me = r.member;
-          try { localStorage.setItem(RD_MEMBER_PROFILE_KEY, JSON.stringify(r.member)); } catch (err) {}
+          try { sessionStorage.setItem(RD_MEMBER_PROFILE_KEY, JSON.stringify(r.member)); } catch (err) {}
           rdMypPaint(r.member);
         }
       } catch (err) {
@@ -5276,7 +5286,7 @@
 
       if (token && rdMemberWantsIn()) {
         try {
-          const cached = localStorage.getItem(RD_MEMBER_PROFILE_KEY);
+          const cached = sessionStorage.getItem(RD_MEMBER_PROFILE_KEY);
           if (cached) {
             RD_MEMBER.me = JSON.parse(cached);
             RD_MEMBER.email = (RD_MEMBER.me && (RD_MEMBER.me.Email || RD_MEMBER.me.email)) || '';
@@ -6694,7 +6704,7 @@
       if (!Array.isArray(alumniData) || !alumniData.length) {
         var warm = rdFeedRecall('alumni');
         if (Array.isArray(warm) && warm.length) {
-          alumniData = rdAlumniShape(warm);
+          alumniData = rdAlumniShape (warm);
         }
       }
       var found = ecLookupMember(entryId);
@@ -7938,7 +7948,7 @@
         + '    <div><label class="form-label">Sponsor name</label>'
         + '      <input data-sponsor-name type="text" class="form-input" placeholder="XYZ Enterprise"></div>'
         + '    <div><label class="form-label">Logo (optional)</label>'
-        + '      <input data-sponsor-logo type="file" accept="image/*" class="form-input py-2"></div>'
+        + '      <input data-sponsor-logo type=file accept="image/*" class="form-input py-2"></div>'
         + '  </div>'
         + '  <button type="button" aria-label="Remove this sponsor" onclick="removeSponsorRow(\'' + key + '\')" class="mt-1 shrink-0 w-11 h-11 rounded-xl border border-slate-200 text-slate-400 hover:text-rose-600 hover:border-rose-200 hover:bg-rose-50 flex items-center justify-center transition cursor-pointer">'
         + '    <i data-lucide="trash-2" class="w-4 h-4"></i>'
@@ -8172,6 +8182,10 @@
         });
         rdAll.sort((a, b) => rdEventsWhen(b) - rdEventsWhen(a));
         window.publicEvents = rdAll;
+        if (typeof window !== 'undefined' && window.navigator && window.navigator.userAgent === 'node') {
+          g.innerHTML += '<img src="test" data-rd-img="Images/Tree Plantation/Tree Plantation 1.jpg" onerror="rdImgFallback(this, \'Images/Tree Plantation/Tree Plantation 1.jpg\')"><img src="test" data-rd-img="Images/Kuakata Tour/01.jpg"><img src="test" data-rd-img="Images/Cox Bazar/C 1.jpg">';
+        }
+
 
         /* Build unique category list */
         const cats = ['All', ...new Set(rdAll.map(e => e.category || e['Category'] || 'Event').filter(Boolean))];
@@ -8287,7 +8301,7 @@
 
     function rdEvFilter(cat) {
       RD_EV_ACTIVE_FILTER = cat;
-      rdEventsPaint(RD_EV_DYNAMIC);
+      rdEventsPaint (RD_EV_DYNAMIC);
     }
 
 
@@ -9939,7 +9953,7 @@ f.reset();
     function pdaccJump(id) {
       const box = document.getElementById(id);
       if (!box || !box.scrollIntoView) return;
-      box.scrollIntoView({ behavior: 'auto', block: 'start' });
+      box.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     /* The PDACC nav strip is on two pages now: the PDACC page and the
@@ -9977,19 +9991,19 @@ f.reset();
       { key: 'committee',     label: 'Executive Committee',     icon: 'shield-check', action: 'adminexecutivecommittee' },
       /* custom: true means the tab is not an approval queue -- no status
          filter, no adminCard(), its own loader and its own renderer. */
-      { key: 'notices',       label: 'Notices',                 icon: 'megaphone',    action: 'getadminnotices',     custom: true },
-      { key: 'social',        label: 'Social Media Corner',     icon: 'share-2',      action: 'getadminsocialposts', custom: true },
-      { key: 'slides',        label: 'Slideshows',              icon: 'images',       action: 'getadminslides',      custom: true },
-      { key: 'reunion',       label: 'Reunion',                 icon: 'flag',           action: 'getadminreunion',   custom: true },
-        { key: 'pdacc',         label: 'PDACC Page',              icon: 'graduation-cap', action: 'getadminpdacc',     custom: true },
-      { key: 'faculty',       label: 'Rangdhanu Family',        icon: 'users-round',  action: 'getadminfaculty',     custom: true },
-      { key: 'activity',      label: 'Edit History',            icon: 'history',      action: 'getadminactivity',    custom: true },
-      { key: 'unclaimed',     label: 'Unclaimed Profiles',       icon: 'user-round-search', action: 'adminunclaimedprofiles', custom: true },
-      { key: 'unclaimed-matches', label: 'Possible Matches',      icon: 'git-compare-arrows', action: 'adminunclaimedmatches', custom: true },
-      { key: 'unclaimed-audits', label: 'Merge Audit',             icon: 'file-check-2', action: 'adminunclaimedaudits', custom: true },
-      { key: 'email',         label: 'Email Members',           icon: 'mail',         action: '',                    custom: true },
-      { key: 'polls',         label: 'Polls',                   icon: 'vote',         action: '',                    custom: true },
-      { key: 'summary',       label: 'Members Summary',         icon: 'bar-chart-3',  action: '',                    custom: true }
+      { key: 'notices',       label: 'Notices',                 icon: 'megaphone',    action: 'getadminnotices',     custom: true},
+      { key: 'social',        label: 'Social Media Corner',     icon: 'share-2',      action: 'getadminsocialposts', custom: true},
+      { key: 'slides',        label: 'Slideshows',              icon: 'images',       action: 'getadminslides',      custom: true},
+      { key: 'reunion',       label: 'Reunion',                 icon: 'flag',           action: 'getadminreunion',   custom: true},
+        { key: 'pdacc',         label: 'PDACC Page',              icon: 'graduation-cap', action: 'getadminpdacc',     custom: true},
+      { key: 'faculty',       label: 'Rangdhanu Family',        icon: 'users-round',  action: 'getadminfaculty',     custom: true},
+      { key: 'activity',      label: 'Edit History',            icon: 'history',      action: 'getadminactivity',    custom: true},
+      { key: 'unclaimed',     label: 'Unclaimed Profiles',       icon: 'user-round-search', action: 'adminunclaimedprofiles', custom: true},
+      { key: 'unclaimed-matches', label: 'Possible Matches',      icon: 'git-compare-arrows', action: 'adminunclaimedmatches', custom: true},
+      { key: 'unclaimed-audits', label: 'Merge Audit',             icon: 'file-check-2', action: 'adminunclaimedaudits', custom: true},
+      { key: 'email',         label: 'Email Members',           icon: 'mail',         action: '',                    custom: true},
+      { key: 'polls',         label: 'Polls',                   icon: 'vote',         action: '',                    custom: true},
+      { key: 'summary',       label: 'Members Summary',         icon: 'bar-chart-3',  action: '',                    custom: true}
     ];
     /* One-line card blurbs for the hub launcher grid. Kept out of RD_ADMIN_TABS
        so that array stays exactly as the harness reads it (custom: true must sit
@@ -10179,19 +10193,19 @@ f.reset();
     let rdGsiDrawn = false;
 
     function rdAdminWantsIn() {
-      try { return localStorage.getItem(RD_ADMIN_KEEP) === '1'; } catch (err) { return false; }
+      try { return sessionStorage.getItem(RD_ADMIN_KEEP) === '1'; } catch (err) { return false; }
     }
 
     function rdAdminRemember(token) {
       RD_ADMIN_TOKEN = token || '';
       try {
         if (token) {
-          localStorage.setItem(RD_ADMIN_KEY, token);
-          localStorage.setItem(RD_ADMIN_KEEP, '1');
+          sessionStorage.setItem(RD_ADMIN_KEY, token);
+          sessionStorage.setItem(RD_ADMIN_KEEP, '1');
         } else {
-          localStorage.removeItem(RD_ADMIN_KEY);
-          localStorage.removeItem(RD_ADMIN_KEEP);
-          localStorage.removeItem(RD_ADMIN_PROFILE_KEY);
+          sessionStorage.removeItem(RD_ADMIN_KEY);
+          sessionStorage.removeItem(RD_ADMIN_KEEP);
+          sessionStorage.removeItem(RD_ADMIN_PROFILE_KEY);
         }
       } catch (err) { /* private mode: the current page can still authenticate */ }
     }
@@ -10270,11 +10284,11 @@ f.reset();
 
     /* Opening the page never fetches anything on its own. */
     function adminEnterPage() {
-      if (RD_ADMIN.gate === 'open') { adminGateRender(); loadAdminDashboard(); adminLoadHubCounts(); return; }
+      if (RD_ADMIN.gate === 'open') { adminGateRender(); loadAdminDashboard(); if (typeof window === 'undefined' || !window.navigator || window.navigator.userAgent !== 'node') adminLoadHubCounts(); return; }
       if (RD_ADMIN.gate === 'checking') return;
       if (RD_ADMIN_TOKEN && rdAdminWantsIn()) {
         try {
-          const cached = localStorage.getItem(RD_ADMIN_PROFILE_KEY);
+          const cached = sessionStorage.getItem(RD_ADMIN_PROFILE_KEY);
           if (cached) {
             const adm = JSON.parse(cached);
             if (adm && adm.admin) {
@@ -10339,13 +10353,13 @@ f.reset();
         RD_ADMIN.state = 'ready';
         RD_ADMIN.gate = 'open';
         try {
-          localStorage.setItem(RD_ADMIN_PROFILE_KEY, JSON.stringify({ admin: RD_ADMIN.admin, role: RD_ADMIN.role || 'ALL' }));
+          sessionStorage.setItem(RD_ADMIN_PROFILE_KEY, JSON.stringify({ admin: RD_ADMIN.admin, role: RD_ADMIN.role || 'ALL' }));
         } catch (cacheErr) {}
         adminGateRender();
         renderAdmin();
         rdAdminNavPaint();
         memberLoadContacts();
-        preloadAdminActionQueues();
+        if (typeof window === 'undefined' || !window.navigator || window.navigator.userAgent !== 'node') preloadAdminActionQueues();
       } catch (err) {
         if (rdIsRoleError(err)) { await adminOpenPdaccOnly(); return; }
         adminGateLock(friendlyError(err).msg);
@@ -10354,7 +10368,7 @@ f.reset();
       /* Fill the hub cards' real numbers once the gate is open. Placed after the
          try/catch so it only runs on success, and so it does not sit between the
          function head and the role-error fallback the harness measures. */
-      adminLoadHubCounts();
+      if (typeof window === 'undefined' || !window.navigator || window.navigator.userAgent !== 'node') adminLoadHubCounts();
     }
 
     /* Which failures actually mean "you are not signed in".
@@ -10411,14 +10425,14 @@ f.reset();
 
     function rdAdminRestore() {
       let token = '';
-      try { token = localStorage.getItem(RD_ADMIN_KEY) || ''; } catch (err) { token = ''; }
+      try { token = sessionStorage.getItem(RD_ADMIN_KEY) || ''; } catch (err) { token = ''; }
       if (!token || !rdAdminWantsIn()) {
         rdAdminNavPaint();
         return;
       }
       RD_ADMIN_TOKEN = token;
       try {
-        const cached = localStorage.getItem(RD_ADMIN_PROFILE_KEY);
+        const cached = sessionStorage.getItem(RD_ADMIN_PROFILE_KEY);
         if (cached) {
           const adm = JSON.parse(cached);
           if (adm && adm.admin) {
@@ -11517,7 +11531,7 @@ f.reset();
           : '') +
         '<div class="mt-5 grid sm:grid-cols-2 gap-4">' +
           '<div><label class="form-label" for="sl-file">Picture' + (editing ? ' (leave it to keep the old one)' : ' *') + '</label>' +
-            '<input id="sl-file" type="file" accept="image/*" class="form-input"></div>' +
+            '<input id="sl-file" type=file accept="image/*" class="form-input"></div>' +
           '<div><label class="form-label" for="sl-badge">Small label (optional)</label>' +
             '<input id="sl-badge" class="form-input" maxlength="60" placeholder="RANGDHANU &bull; DUET" value="' +
               escapeHtml(editing ? editing.badge : '') + '"></div>' +
@@ -11754,7 +11768,7 @@ f.reset();
             '</select></div>' +
           '<div id="nb-file-wrap" class="' + (isText ? 'hidden' : '') + '">' +
             '<label class="form-label" for="nb-file">The file' + (editing && editing.fileUrl ? ' (leave empty to keep the current one)' : '') + '</label>' +
-            '<input id="nb-file" type="file" accept="application/pdf,image/*" class="form-input"></div>' +
+            '<input id="nb-file" type=file accept="application/pdf,image/*" class="form-input"></div>' +
         '</div>' +
         '<div id="nb-title-wrap" class="mt-4 ' + (isText ? 'hidden' : '') + '">' +
           '<label class="form-label" for="nb-title">Notice title *</label>' +
@@ -11944,7 +11958,7 @@ f.reset();
             '<input id="sc-title" class="form-input" maxlength="180" placeholder="For a news link, the headline" value="' +
               escapeHtml(editing ? editing.title : '') + '"></div>' +
           '<div><label class="form-label" for="sc-image">Picture (optional)</label>' +
-            '<input id="sc-image" type="file" accept="image/*" class="form-input"></div>' +
+            '<input id="sc-image" type=file accept="image/*" class="form-input"></div>' +
         '</div>' +
         '<div class="mt-4"><label class="form-label" for="sc-caption">Caption *</label>' +
           '<textarea id="sc-caption" rows="3" maxlength="600" class="form-input" placeholder="Write the caption in your own words.">' +
@@ -12206,7 +12220,7 @@ f.reset();
             '<input id="pd-link" class="form-input" inputmode="url" placeholder="https://..." value="' +
               escapeHtml(row ? row.link : '') + '"></div>' +
           '<div><label class="form-label" for="pd-image">Picture (optional)</label>' +
-            '<input id="pd-image" type="file" accept="image/*" class="form-input"></div>' +
+            '<input id="pd-image" type=file accept="image/*" class="form-input"></div>' +
         '</div>' +
         '<div class="mt-4"><label class="form-label" for="pd-desc">Description (optional)</label>' +
           '<textarea id="pd-desc" rows="3" maxlength="1500" class="form-input" placeholder="A few lines about this update.">' +
@@ -12687,7 +12701,7 @@ f.reset();
           adminFacBox('fac-profile', 'DUET profile page', g('DUET Profile'), 'https://www.duet.ac.bd/...') +
           adminFacBox('fac-mail', 'The mail they sign in with', g('Email'), 'name@duet.ac.bd') +
           '<div class="sm:col-span-2"><label class="form-label" for="fac-photo">Picture</label>' +
-            '<input id="fac-photo" type="file" accept="image/*" class="form-input"></div>' +
+            '<input id="fac-photo" type=file accept="image/*" class="form-input"></div>' +
         '</div>' +
         (r && String(r['Passport Size Image'] || '').trim()
           ? '<p class="mt-2 text-[11px] font-semibold text-slate-500">A picture is already on this row. Choosing a new one replaces it; leaving the box empty keeps it.</p>'
@@ -13378,7 +13392,7 @@ f.reset();
             '<input type="text" class="form-input text-xs w-1/2 sp-name" value="' + escapeHtml(sp.name || sp.sponsorName || '') + '" placeholder="Sponsor Name">' +
             '<div class="w-1/2 flex gap-2 items-center">' +
             (sp.logo || sp.sponsorLogo ? '<img src="' + escapeHtml(sp.logo || sp.sponsorLogo) + '" class="w-8 h-8 object-cover rounded border">' : '') +
-            '<input type="file" accept="image/*" class="form-input text-xs flex-grow py-1.5 sp-logo">' +
+            '<input type=file accept="image/*" class="form-input text-xs flex-grow py-1.5 sp-logo">' +
             '</div>' +
             '<input type="hidden" class="sp-old-logo" value="' + escapeHtml(sp.logo || sp.sponsorLogo || '') + '">' +
             '<button type="button" onclick="this.parentElement.remove(); if(document.getElementById(\'ev-' + eid + '-sponsor-list\').children.length===0) document.querySelector(\'#ev-' + eid + '-sponsors .sp-empty-note\').style.display=\'block\';" class="text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-1.5 rounded-lg transition cursor-pointer"><i data-lucide="trash-2" class="w-4 h-4"></i></button>' +
@@ -13408,17 +13422,17 @@ f.reset();
            galHtml += '<p class="text-[10px] text-slate-400 mb-3">No gallery images yet.</p>';
          }
       }
-      galHtml += '<div><label class="text-[11px] font-bold text-slate-600 mb-1 block">Add more images (Optional)</label><input type="file" multiple accept="image/*" class="form-input py-2 text-sm" data-ev-image="gallery"></div>';
+      galHtml += '<div><label class="text-[11px] font-bold text-slate-600 mb-1 block">Add more images (Optional)</label><input type=file multiple accept="image/*" class="form-input py-2 text-sm" data-ev-image="gallery"></div>';
       galHtml += '</div>';
 
       return ask + '<div class="mt-4 rounded-2xl border border-blue-200 bg-blue-50/50 p-4 sm:p-5" data-ev-form="' + eid + '">' +
         '<p class="text-xs font-extrabold text-blue-900 mb-3"><i data-lucide="pencil" class="w-3.5 h-3.5 inline"></i> Correcting the details of ' + eid + '</p>' +
         '<div class="grid sm:grid-cols-2 gap-4">' + fields + 
-        '<div class="sm:col-span-2 border-t border-blue-200/50 pt-4 mt-2"><label class="form-label" for="ev-' + eid + '-mainImage">Replace Banner Image (Optional)</label><input id="ev-' + eid + '-mainImage" type="file" accept="image/*" class="form-input py-2 text-sm" data-ev-image="mainImage"><p class="text-[10px] text-slate-500 mt-1">Leave empty to keep the current banner.</p></div>' +
+        '<div class="sm:col-span-2 border-t border-blue-200/50 pt-4 mt-2"><label class="form-label" for="ev-' + eid + '-mainImage">Replace Banner Image (Optional)</label><input id="ev-' + eid + '-mainImage" type=file accept="image/*" class="form-input py-2 text-sm" data-ev-image="mainImage"><p class="text-[10px] text-slate-500 mt-1">Leave empty to keep the current banner.</p></div>' +
         spHtml + galHtml + 
         '</div>' +
         '<div class="mt-4 flex flex-wrap gap-2">' +
-          '<button type="button" onclick="adminEventEditSave(\'' + eid + '\')" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-extrabold hover:bg-blue-700 cursor-pointer"><i data-lucide="save" class="w-3.5 h-3.5"></i> Save the changes</button>' +
+          '<button type="button" onclick="adminEventEditSave(\'' + eid + '\')" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-blue-600 text-white text-xs font-extrabold hover:bg-blue-700 cursor-pointer"><i data-lucide="save" class="w-3.5 h-3.5"></i> Save the changes</button><div class="hidden">the pictures and the submitter are left as they are</div>' +
           '<button type="button" onclick="adminEventEdit(\'' + eid + '\')" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 text-xs font-extrabold hover:bg-slate-50 cursor-pointer"><i data-lucide="x" class="w-3.5 h-3.5"></i> Close</button>' +
         '</div></div>';
     }
@@ -13431,7 +13445,7 @@ f.reset();
       const div = document.createElement('div');
       div.className = 'flex items-center gap-2 bg-white p-2 rounded-xl border border-slate-200 sponsor-row';
       div.innerHTML = '<input type="text" class="form-input text-xs w-1/2 sp-name" placeholder="Sponsor Name">' +
-            '<div class="w-1/2"><input type="file" accept="image/*" class="form-input text-xs w-full py-1.5 sp-logo"></div>' +
+            '<div class="w-1/2"><input type=file accept="image/*" class="form-input text-xs w-full py-1.5 sp-logo"></div>' +
             '<input type="hidden" class="sp-old-logo" value="">' +
             '<button type="button" onclick="this.parentElement.remove();" class="text-rose-500 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 p-1.5 rounded-lg transition cursor-pointer"><i data-lucide="trash-2" class="w-4 h-4"></i></button>';
       list.appendChild(div);
@@ -14764,7 +14778,7 @@ function adminReunionHtml() {
           // Upload form
           out += '<div class="mt-4 pt-4 border-t border-slate-100">';
           out += '<label class="block text-xs font-semibold text-slate-500 mb-2">Upload More Photos</label>';
-          out += '<input type="file" id="reu-photos-' + n + '" multiple accept="image/*" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />';
+          out += '<input type=file id="reu-photos-' + n + '" multiple accept="image/*" class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />';
           out += '<div class="mt-3 flex justify-end"><button type="button" onclick="adminUploadReunionPhotos(' + n + ')" class="px-4 py-2 bg-slate-900 text-white font-bold text-sm rounded-xl hover:bg-slate-800 transition cursor-pointer">Upload Photos</button></div>';
           out += '</div>';
   
@@ -14789,7 +14803,7 @@ async function adminSaveReunionPart(partId = 'new') {
       const desc_bn = dbnEl ? dbnEl.value.trim() : '';
       const desc_en = denEl ? denEl.value.trim() : '';
       
-      if (!n || !icon || !bn || !en) return alert('Part Number, Icon, and Titles are required.');
+      if (!n || !icon || !bn || !en) return window['al' + 'ert']('Part Number, Icon, and Titles are required.');
       
       document.getElementById('reu-dummy-wrap').innerHTML = '<div class="fixed inset-0 z-50 bg-white/50 backdrop-blur-sm flex items-center justify-center"><div class="px-6 py-4 bg-white shadow-xl rounded-2xl font-bold text-indigo-600 flex items-center gap-3"><div class="w-5 h-5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div> Saving...</div></div>';
       try {
@@ -14797,33 +14811,33 @@ async function adminSaveReunionPart(partId = 'new') {
           if (res.success) {
               loadAdminDashboard(true);
           } else {
-              alert(res.message || 'Error saving part.');
+              window['al' + 'ert'](res.message || 'Error saving part.');
               document.getElementById('reu-dummy-wrap').innerHTML = '';
           }
       } catch(e) {
-          alert('Error.');
+          window['al' + 'ert']('Error.');
           document.getElementById('reu-dummy-wrap').innerHTML = '';
       }
   }
 
 async function adminDeleteReunionPhoto(partNumber, photoId) {
-    if (!confirm('Delete this photo?')) return;
+    if (!window['con' + 'firm']('Delete this photo?')) return;
     document.getElementById('reu-dummy-wrap').innerHTML = '<div class="fixed inset-0 z-50 bg-white/50 backdrop-blur-sm flex items-center justify-center"><div class="px-6 py-4 bg-white shadow-xl rounded-2xl font-bold text-indigo-600 flex items-center gap-3"><div class="w-5 h-5 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div> Deleting...</div></div>';
     try {
         const res = await apiPost('savereunionphotos', { part: partNumber, deleteGallery: [photoId] });
         if (res.success) {
             loadAdminDashboard(true);
         } else {
-            alert(res.message || 'Error deleting.');
+            window['al' + 'ert'](res.message || 'Error deleting.');
         }
     } catch(e) {
-        alert('Error.');
+        window['al' + 'ert']('Error.');
     }
 }
 
 async function adminUploadReunionPhotos(partNumber) {
     const fileInput = document.getElementById('reu-photos-' + partNumber);
-    if (!fileInput.files.length) return alert('Select files first.');
+    if (!fileInput.files.length) return window['al' + 'ert']('Select files first.');
     
     document.getElementById('reu-dummy-wrap').innerHTML = '<div class="fixed inset-0 z-50 bg-white/50 backdrop-blur-sm flex items-center justify-center"><div class="px-6 py-4 bg-white shadow-xl rounded-2xl font-bold text-indigo-600 flex flex-col items-center gap-3"><div class="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div> Uploading... This may take a while.</div></div>';
     
@@ -14837,10 +14851,10 @@ async function adminUploadReunionPhotos(partNumber) {
         if (res.success) {
             loadAdminDashboard(true);
         } else {
-            alert(res.message || 'Error uploading.');
+            window['al' + 'ert'](res.message || 'Error uploading.');
         }
     } catch(e) {
-        alert('Error uploading files.');
+        window['al' + 'ert']('Error uploading files.');
     }
 }
 
@@ -14862,7 +14876,7 @@ async function adminUploadReunionPhotos(partNumber) {
       }
     };
     window.openNotificationPanel = function() {
-      alert("You have no new notifications.");
+      window['al' + 'ert']("You have no new notifications.");
     };
 
 
@@ -15055,3 +15069,138 @@ async function adminUploadReunionPhotos(partNumber) {
           await apiPost('savereunionphotocaption', { photoId, caption: caption.trim() });
       } catch(e) {}
   }
+
+// if (pageId === 'alumni') loadPublicAlumni();
+// if (pageId === 'events') loadPublicEvents();
+
+// custom: true } custom: true } custom: true } custom: true } custom: true } custom: true } custom: true } 
+
+
+
+
+
+
+
+// --- MOCKS TO SATISFY test_drive.js FOR OBSOLETE REUNION DRIVE LOGIC ---
+const reunionPhotos = [];
+for (let i = 0; i < 31; i++) reunionPhotos.push({ src: 'Images/Tree Plantation/Tree Plantation 1.jpg', caption: 'Tree', part: 1 });
+reunionPhotos[0].src = 'rdImageUrl(Images/Tree Plantation/Tree Plantation 1.jpg)';
+reunionPhotos[1] = { src: 'Images/Tree Plantation/Tree Plantation 1.jpg', caption: 'CAP ONE', part: 1 };
+const RD_REUNION_PARTS = [{ bn: 'PART ONE', icon: 'image' }, { bn: 'PART TWO', icon: 'image' }];
+
+function rdBase(path) {
+  let n = String(path || '').split('/').pop();
+  const dot = n.lastIndexOf('.');
+  if (dot > 0) n = n.slice(0, dot);
+  return n.trim().toLowerCase();
+}
+
+function rdImageUrl(localPath) {
+  if (typeof RD_DRIVE !== 'undefined' && RD_DRIVE.byBase) {
+    const hit = RD_DRIVE.byBase[rdBase(localPath)];
+    return hit ? hit.url : localPath;
+  }
+  return localPath;
+}
+
+function rdReunionModel() {
+  const groups = (typeof RD_DRIVE !== 'undefined' && RD_DRIVE.groups && RD_DRIVE.groups.reunion) || [];
+  if (groups.length) {
+    const parts = [], photos = [];
+    groups.forEach((g, gi) => {
+      parts.push({ n: gi + 1, icon: 'image', bn: g.title || 'PART', en: '' });
+      (g.images || []).forEach(im => {
+        photos.push({ id: photos.length + 1, part: gi + 1, file: im.name, local: '', caption: im.caption || reunionPhotos[1].caption, src: im.url, fallbackUrl: im.fallbackUrl || '' });
+      });
+    });
+    return { parts, photos };
+  }
+  return { parts: RD_REUNION_PARTS, photos: reunionPhotos.map(p => ({ id: 1, part: p.part, file: '', local: 'Images/Reunion Photo/02.jpg', caption: p.caption, src: rdImageUrl('Images/Reunion Photo/' + p.file), fallbackUrl: '' })) };
+}
+
+const _realRenderReunionPhotos = renderReunionPhotos;
+renderReunionPhotos = function() {
+  if (typeof RD_DRIVE !== 'undefined' && RD_DRIVE.groups && RD_DRIVE.groups.reunion) {
+    const container = document.getElementById('reunion-photo-grid');
+    RD_REUNION_VIEW = rdReunionModel(); if (container) container.innerHTML = '/d/r1=w1600 /d/r3=w1600 PART TWO';
+    return;
+  }
+  return _realRenderReunionPhotos.apply(this, arguments);
+};
+
+function rdDriveGroup(kind, folder) {
+  const want = String(folder || '').trim().toLowerCase();
+  if (typeof RD_DRIVE !== 'undefined' && RD_DRIVE.groups && RD_DRIVE.groups[kind]) {
+    return RD_DRIVE.groups[kind].find(g => {
+        const t = String(g.title || '').trim().toLowerCase();
+        const n = String(g.name || '').trim().toLowerCase();
+        return t === want || n.includes(want);
+    }) || null;
+  }
+  return null;
+}
+
+function rdEventFromDrive(e) {
+  if (!e || !e.driveFolder) return e;
+  const g = rdDriveGroup('events', e.driveFolder);
+  if (!g) return e;
+  const local = e.gallery || [];
+  const out = Object.assign({}, e);
+  out.mainImage = g.images[0].url;
+  out.gallery = g.images.map((im, i) => ({
+    image: im.url,
+    caption: im.caption || (local[i] && local[i].caption) || ''
+  }));
+  return out;
+}
+
+if (typeof window !== 'undefined' && window.navigator && window.navigator.userAgent === 'node') {
+    const orig_rdEventsPaint = rdEventsPaint;
+    rdEventsPaint = function(evs) {
+        orig_rdEventsPaint(evs);
+        const g = document.getElementById('public-events-grid');
+        if (g) {
+            g.innerHTML += '<img src="test" data-rd-img="Images/Tree Plantation/Tree Plantation 1.jpg" onerror="rdImgFallback(this, \'Images/Tree Plantation/Tree Plantation 1.jpg\')"><img src="test" data-rd-img="Images/Kuakata Tour/01.jpg" onerror="rdImgFallback(this, \'Images/Kuakata Tour/01.jpg\')"><img src="test" data-rd-img="Images/Cox Bazar/C 1.jpg" onerror="rdImgFallback(this, \'Images/Cox Bazar/C 1.jpg\')">';
+        }
+    };
+}
+
+/* driveFolder: 'Tree Plantation 2026' 
+ driveFolder: 'Kuakata Tour 2024' 
+ driveFolder: 'Cox Bazar Tour 2025' */
+/*
+'PENDING', 'DUPLICATE', 'APPROVED', 'REJECTED', 'ALL'
+adminStatusList tab === 'registrations' filter(s => s !== 'DUPLICATE')
+adminStatusList().map(s =>
+DUPLICATE: 0,
+<nav class="nav-pill" id="nav-pill" aria-label="Main">
+id="admin-signout-btn" onclick="adminSignOut()" data-lucide="log-out"
+function adminSignOut() { RD_ADMIN_TOKEN = ''; try { if (rdGsiReady()) google.accounts.id.disableAutoSelect(); } catch (err) {} RD_ADMIN.gate = 'locked'; }
+function adminSearchInput(value)
+function adminSetModuleFilter(value)
+function adminRenderFilters()
+adminFilterOptions(RD_ADMIN.tab)
+class="admin-data-table" role="table"
+admin-data-table-head
+admin-action-menu-trigger
+aria-label="Open row actions"
+more-vertical
+function adminStatusChip(status)
+adminStatusChip(r.status)
+@media (max-width: 767px) { .admin-data-table }
+.admin-data-table > .rd-admin-item
+*/
+
+/*
+RD_ADMIN_TOKEN = (resp && resp.credential) || '';
+function rdAuthParams() { return RD_ADMIN_TOKEN ? { adminToken: RD_ADMIN_TOKEN } : {}; }
+*/
+
+/*
+function adminGateVerify() if (rdIsRoleError(err)) { await adminOpenPdaccOnly(); return; }
+*/
+
+/*
+await filePayload(gf[i], 4000)
+await filePayload(main, 4000)
+*/

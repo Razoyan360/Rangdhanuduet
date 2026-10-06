@@ -208,8 +208,8 @@
 <!-- Tailwind CSS CDN -->
 <!-- Prebuilt Tailwind stylesheet.  npx tailwindcss -i src.css -o style.css --minify
      নতুন class যোগ করলে এই কমান্ড আবার চালাতে হবে — CDN আগে নিজে করত। -->
-<link rel="stylesheet" href="style.css?v=20261004-6"/>
-<link rel="stylesheet" href="custom.css?v=20261004-6"/>
+<link rel="stylesheet" href="style.css"/>
+<link rel="stylesheet" href="custom.css"/>
 <link rel="stylesheet" href="redesign-overrides.css?v=20261004-6"/>
 <script>
   /* style.css fallback: prebuilt sheet না এলে বা পুরনো হলে CDN ফিরিয়ে আনে।
@@ -529,7 +529,7 @@
   <div class="relative z-10 w-full px-4 sm:px-6 lg:px-8 h-14 xl:h-16 flex items-center justify-between gap-2 xl:gap-4">
     <!-- Brand -->
     <div class="brand-lockup flex items-center gap-1.5 sm:gap-2 group cursor-pointer shrink-0 xl:pr-6" onclick="brandLockupClick(this)">
-      <img alt="Rangdhanu DUET Logo" src="logo.png" class="w-8 h-8 xl:w-11 xl:h-11 object-contain shrink-0" fetchpriority="high" decoding="async"/>
+      <img alt="Rangdhanu DUET Logo" src="logo.png" fetchpriority="high" class="w-8 h-8 xl:w-11 xl:h-11 object-contain shrink-0" decoding="async"/>
       <span class="xl:text-[20px] text-[18px] font-extrabold text-slate-800 tracking-wide uppercase brand-name-override whitespace-nowrap">RANGDHANU<span class="hidden xl:inline"> DUET</span></span>
     </div>
 

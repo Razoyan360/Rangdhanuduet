@@ -11,16 +11,16 @@ cloudinary.config({
   api_secret
 });
 
-export async function uploadBase64ToCloudinary(base64String, folderName) {
+export async function uploadBase64ToCloudinary(base64String, folderName, mimeType = 'image/jpeg') {
   try {
     let imageStr = base64String;
-    if (!imageStr.startsWith('data:image')) {
-      imageStr = `data:image/jpeg;base64,${base64String}`;
+    if (!/^data:/i.test(imageStr)) {
+      imageStr = `data:${mimeType};base64,${base64String}`;
     }
 
     const result = await cloudinary.uploader.upload(imageStr, {
       folder: folderName,
-      resource_type: 'image',
+      resource_type: String(mimeType).toLowerCase() === 'application/pdf' ? 'raw' : 'image',
     });
 
     return {
