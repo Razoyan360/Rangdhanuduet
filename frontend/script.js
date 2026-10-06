@@ -8378,8 +8378,8 @@
                   effect: 'coverflow',
                   grabCursor: true,
                   centeredSlides: true,
-                            preventClicks: false,
-                            preventClicksPropagation: false,
+                            
+                            
                   slidesPerView: 'auto',
                   coverflowEffect: {
                       rotate: 30,
@@ -8436,8 +8436,8 @@
                           effect: 'coverflow',
                           grabCursor: true,
                           centeredSlides: true,
-                            preventClicks: false,
-                            preventClicksPropagation: false,
+                            
+                            
                           slidesPerView: 'auto',
                           coverflowEffect: { rotate: 30, stretch: 0, depth: 200, modifier: 1, slideShadows: true },
                           pagination: { el: '.event-gallery-swiper .swiper-pagination', clickable: true },
