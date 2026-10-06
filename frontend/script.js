@@ -259,7 +259,7 @@
       if (/^profile\/.+/.test(rawPage)) rawPage = 'profile';
       const aliases = { directory: 'alumni', family: 'alumni', pdacc: 'prokoushali', signin: 'member-signin', notice: 'noticeboard', status: 'notice' };
       const page = aliases[rawPage] || rawPage;
-      if (aliases[rawPage]) const bp2 = window.RD_BASE_PATH || ''; history.replaceState({page: page}, '', bp2 + `/${pageUrlId(page)}`);
+      if (aliases[rawPage]) { const bp2 = window.RD_BASE_PATH || ''; history.replaceState({page: page}, '', bp2 + `/${pageUrlId(page)}`); }
       if (!page || !document.getElementById(`page-${page}`)) return 'home';
       const sub = RD_SUBPAGES[page];
       if (!allowSubPages && sub && sub.needsData) return sub.parent;
