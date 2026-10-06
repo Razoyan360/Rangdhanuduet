@@ -13443,7 +13443,7 @@ f.reset();
       const row = adminFind(id);
       try {
         const res = await apiGet('eventgallery', { eventId: id });
-        if (row) row.fetchedGallery = Array.isArray(res.gallery) ? res.gallery : [];
+        if (row) row.fetchedGallery = Array.isArray(res.gallery) ? res.gallery : (Array.isArray(res.data) ? res.data : []);
       } catch(e) {
         if (row) row.fetchedGallery = [];
       }
