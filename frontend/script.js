@@ -1314,7 +1314,8 @@
       document.body.classList.add('rd-member-restoring');
       const bootShareId = rdSharedProfileId();
       const startPage = bootShareId ? 'alumni' : getPageFromLocation(false);
-      history.replaceState({page: startPage}, '', window.location.pathname + (startPage==='home'?'':`#${pageUrlId(startPage)}`));
+      const bPath = window.RD_BASE_PATH || '';
+      history.replaceState({page: startPage}, '', bPath + (startPage === 'home' ? '/' : `/${pageUrlId(startPage)}`));
       switchPage(startPage, false);
       if (bootShareId) rdOpenSharedProfile(bootShareId);
       /* The head script's stop-gap rule has done its job; drop it so it cannot
