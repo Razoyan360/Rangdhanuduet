@@ -506,10 +506,21 @@ if (action === 'get_env') return res.json({url: process.env.TURSO_DATABASE_URL, 
                 'Event Name': row.event_name,
                 'Category': row.category,
                 'Status': row.status,
-                'Main Image/Poster': row.main_image,
+                'Main Image': row.main_image,
                 'Admin Note': row.admin_note,
                 'Event Date': row.event_date,
+                'Start Time': row.start_time,
+                'End Time': row.end_time,
                 'Venue': row.venue,
+                'Google Maps Link': row.google_maps_link,
+                'Organized By': row.organized_by,
+                'Contact Person': row.contact_person,
+                'Contact Number': row.contact_number,
+                'Registration Link': row.registration_link,
+                'Facebook Link': row.facebook_link,
+                'Short Description': row.short_description,
+                'Full Description': row.full_description,
+                'Sponsors': row.sponsors,
                 'Featured': row.featured ? '1' : '0'
             }));
             return res.json({ success: true, data });
@@ -1419,10 +1430,25 @@ app.post('/api', async (req, res) => {
             mapField('facebook_link', 'fbLink');
 
             if (d.mainImage && d.mainImage.data) {
+                let mainImg = d.mainImage.data;
+                if (mainImg && !mainImg.startsWith('http')) {
+                    const res = await uploadBase64ToCloudinary(mainImg, 'Events');
+                    if (res.success) mainImg = res.url;
+                }
                 updates.push('main_image = ?');
-                args.push(d.mainImage.data);
+                args.push(mainImg);
             }
             if (d.sponsors !== undefined) {
+                if (Array.isArray(d.sponsors)) {
+                    for (let sp of d.sponsors) {
+                        if (sp.logo && sp.logo.data && !sp.logo.data.startsWith('http')) {
+                            const res = await uploadBase64ToCloudinary(sp.logo.data, 'Sponsors');
+                            if (res.success) { sp.logo = res.url; } else { sp.logo = ''; }
+                        } else if (sp.logo && sp.logo.data && sp.logo.data.startsWith('http')) {
+                            sp.logo = sp.logo.data;
+                        }
+                    }
+                }
                 updates.push('sponsors = ?');
                 args.push(JSON.stringify(d.sponsors));
             }
@@ -1431,10 +1457,15 @@ app.post('/api', async (req, res) => {
             if (Array.isArray(d.gallery) && d.gallery.length > 0) {
                 for (const b64 of d.gallery) {
                     if (b64 && b64.data) {
+                        let galImg = b64.data;
+                        if (galImg && !galImg.startsWith('http')) {
+                            const res = await uploadBase64ToCloudinary(galImg, 'Event_Gallery');
+                            if (res.success) galImg = res.url;
+                        }
                         const galId = 'GAL-' + Date.now() + Math.floor(Math.random() * 1000);
                         await db.execute({
-                            sql: "INSERT INTO event_gallery (gallery_id, event_id, image_url, uploaded_date, status, sort_order) VALUES (?, ?, ?, ?, 'APPROVED', 99)",
-                            args: [galId, d.eventId, b64.data, new Date().toISOString()]
+                            sql: \"INSERT INTO event_gallery (gallery_id, event_id, image_url, uploaded_date, status, sort_order) VALUES (?, ?, ?, ?, 'APPROVED', 99)\",
+                            args: [galId, d.eventId, galImg, new Date().toISOString()]
                         });
                     }
                 }
