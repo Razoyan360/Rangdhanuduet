@@ -4187,6 +4187,17 @@
         if (window.lucide && typeof lucide.createIcons === 'function') lucide.createIcons();
       }
 
+      const notifBtn = document.getElementById('nav-notification-btn');
+      if (notifBtn) {
+        if (on) {
+          notifBtn.classList.remove('hidden');
+          notifBtn.classList.add('flex');
+        } else {
+          notifBtn.classList.add('hidden');
+          notifBtn.classList.remove('flex');
+        }
+      }
+
       const memberLabel = document.getElementById('mobile-member-label');
       if (memberLabel) memberLabel.textContent = restoring ? 'Restoring...' : (on ? 'My Profile' : 'Sign In');
       const memberTileIcon = document.getElementById('mobile-member-tile-icon');
