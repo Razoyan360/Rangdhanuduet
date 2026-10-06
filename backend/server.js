@@ -1401,6 +1401,8 @@ app.post('/api', async (req, res) => {
         }
         
         if (action === 'adminupdateevent') {
+try { await db.execute({ sql: "INSERT INTO admin_activity (admin_email, action_type, target_id, details) VALUES ('debug@debug.com', 'DEBUG_START', 'adminupdateevent', 'starting')" }); } catch(e){}
+try {
             const d = payload.data || {};
             if (!d.eventId) return res.json({ success: false, message: 'Event ID required' });
             
