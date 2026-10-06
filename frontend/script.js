@@ -14952,8 +14952,9 @@ async function adminUploadReunionPhotos(partNumber) {
       const closeBtn = document.getElementById('mobile-search-close');
       const searchBtn = document.getElementById('mobile-search-btn');
       if (!form) return;
-      const isOpen = open !== undefined ? open : form.classList.contains('w-[calc(100vw-32px)]');
-      if (!isOpen) {
+      const currentlyOpen = form.classList.contains('w-[calc(100vw-32px)]');
+      const shouldOpen = open !== undefined ? open : !currentlyOpen;
+      if (shouldOpen) {
         form.classList.remove('w-9', 'bg-slate-100', 'border-transparent');
         form.classList.add('w-[calc(100vw-32px)]', 'bg-white', 'shadow-md', 'border-slate-200');
         input.classList.remove('opacity-0', 'pointer-events-none');
