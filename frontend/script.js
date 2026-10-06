@@ -589,16 +589,7 @@
        nextCoverSlide() and prevCoverSlide(), none of which existed, so the
        cover never moved and every click threw a ReferenceError. */
     const RD_HOME_SLIDES = [
-      { file: 'IMG_2388.JPG', alt: 'রংধনুর ঐক্য ও ভ্রাতৃত্ব', badge: 'RANGDHANU • DUET', title: 'রংপুরের শিক্ষার্থীদের নিজেদের সংগঠন' },
-      { file: 'IMG_1971.JPG', alt: 'Rangdhanu Familyের সঙ্গে পথচলা', badge: 'COMMUNITY', title: 'একটি পরিবার, বহু প্রজন্মের বন্ধন' },
-      { file: 'IMG_1917.JPG', alt: 'উত্তরবঙ্গের প্রকৌশলীদের মেলবন্ধন', badge: 'ALUMNI', title: 'বর্তমান থেকে প্রাক্তন, সম্পর্কের সেতুবন্ধন' },
-      { file: 'DSC02142.JPG', alt: 'ডুয়েট ক্যাম্পাসের স্মৃতি', badge: 'MEMORIES', title: 'ডুয়েট ক্যাম্পাসে আমাদের সোনালী মুহূর্ত' },
-      { file: 'DSC02197.JPG', alt: 'Rangdhanu Familyের ঐক্য', badge: 'UNITY', title: 'যেখানেই থাকি, বন্ধন থাকে অটুট' },
-      { file: 'DSC02128.JPG', alt: 'Rangdhanu Familyের আড্ডা', badge: 'CAMPUS LIFE', title: 'ক্যাম্পাস জীবনের বাইরে, একটি বড় পরিবার' },
-      { file: 'DSC02178.JPG', alt: 'Rangdhanu Familyের বন্ধন', badge: 'RANGDHANU FAMILY', title: 'বিপদে-আনন্দে একসঙ্গে' },
-      { file: 'IMG_5210.JPG', alt: 'রংধনুর আয়োজন', badge: 'ACTIVITIES', title: 'শিক্ষা, সংস্কৃতি, ক্রীড়া ও সামাজিক কার্যক্রম' },
-      { file: '817A4451 (1).JPG', alt: 'ডুয়েটিয়ানদের মিলনমেলা', badge: 'NETWORK', title: 'রংপুর থেকে ডুয়েট, সবাই এক জায়গায়' },
-      { file: 'IMG (84).JPG', alt: 'রংধনু ডুয়েটের স্মরণীয় মুহূর্ত', badge: 'OUR STORY', title: 'যেথায় থাকুক যে যেখানে, রংধনু আছে মনে প্রাণে' }
+      { file: 'slide-home.jpg', alt: 'Rangdhanu DUET', badge: 'RANGDHANU • DUET', title: 'রংধনু ডুয়েট পরিবার' }
     ];
     const RD_SLIDE_MS = 6500;
 
