@@ -6085,7 +6085,7 @@
         const imgInput = f.querySelector('[name="mainImage"]');
         let imgObj = null;
         if (imgInput.files && imgInput.files.length > 0) {
-          imgObj = await filePayload(imgInput.files[0], 1600);
+          imgObj = await filePayload(imgInput.files[0], 1200);
         }
 
         const payload = {
@@ -11822,7 +11822,7 @@ f.reset();
         const data = { noticeId: editing || '', kind: kind, title: title, body: body, show: show ? 'YES' : 'NO' };
         /* filePayload leaves a PDF exactly as it is and only shrinks an image
            that is larger than 2400px, so the download stays high resolution. */
-        if (kind === 'FILE' && file) data.file = await filePayload(file, 1600);
+        if (kind === 'FILE' && file) data.file = await filePayload(file, 800);
         const r = await apiPost('savenotice', { data: data });
         RD_ADMIN.nbEdit = '';
         RD_ADMIN.busy = '';
@@ -13473,7 +13473,7 @@ f.reset();
       
       const imgInput = form.querySelector('[data-ev-image="mainImage"]');
       if (imgInput && imgInput.files && imgInput.files.length > 0) {
-        data.mainImage = await filePayload(imgInput.files[0], 1600);
+        data.mainImage = await filePayload(imgInput.files[0], 1200);
         changed++;
       }
 
@@ -13494,11 +13494,12 @@ f.reset();
         changed++;
       }
 
-      const galInput = form.querySelector('[data-ev-image="gallery"]');
+      if (RD_ADMIN.evQuill && RD_ADMIN.evEdit === id) { const fd = RD_ADMIN.evQuill.root.innerHTML; const oldFd = (row.raw || {})['Full Description'] || ''; if (fd !== oldFd) { data.fullDesc = fd; changed++; } }
+        const galInput = form.querySelector('[data-ev-image="gallery"]');
       if (galInput && galInput.files && galInput.files.length > 0) {
         data.gallery = [];
         for (const file of galInput.files) {
-          data.gallery.push(await filePayload(file, 1600));
+          data.gallery.push(await filePayload(file, 800));
         }
         changed++;
       }
