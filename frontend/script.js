@@ -13518,9 +13518,14 @@ f.reset();
         return;
       }
       RD_ADMIN.busy = id;
-      renderAdmin();
-      try {
-        const r = await apiPost('adminupdateevent', { data: data });
+        renderAdmin();
+        try {
+          let fullGallery = data.gallery || [];
+          data.gallery = fullGallery.slice(0, 3);
+          const r = await apiPost('adminupdateevent', { data: data });
+          for (let i = 3; i < fullGallery.length; i += 3) {
+            await apiPost('adminupdateevent', { data: { eventId: id, gallery: fullGallery.slice(i, i+3) } });
+          }
         RD_ADMIN.evEdit = '';
         RD_ADMIN.busy = '';
         showToast(r.message || 'The event is updated.', 'success', 'Event updated', { backTo: 'admin' });
