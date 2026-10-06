@@ -526,13 +526,13 @@
 
 <!-- NAVBAR -->
 <header class="sticky top-0 z-40 shadow-sm transition-all duration-300 glass-nav">
-  <div class="relative z-10 w-full px-4 sm:px-6 lg:px-8 h-20 xl:h-16 flex items-center justify-between gap-2 xl:gap-4">
+  <div class="relative z-10 w-full px-4 sm:px-6 lg:px-8 h-14 xl:h-16 flex items-center justify-between gap-2 xl:gap-4">
     <!-- Brand -->
     <div class="brand-lockup flex items-center gap-2 sm:gap-3 group cursor-pointer shrink-0 xl:pr-6" onclick="brandLockupClick(this)">
-      <div class="w-10 h-10 xl:w-12 xl:h-12 rounded-full xl:bg-transparent bg-[#f0f9ff] flex items-center justify-center overflow-hidden xl:border-none border-[rgba(14,165,233,.35)] shadow-sm shrink-0">
-        <img alt="Rangdhanu DUET Logo" src="logo.png" class="w-8 h-8 xl:w-10 xl:h-10 object-contain xl:p-0 p-[0.1rem]" fetchpriority="high" decoding="async"/>
+      <div class="w-9 h-9 xl:w-12 xl:h-12 rounded-full xl:bg-transparent bg-[#f0f9ff] flex items-center justify-center overflow-hidden xl:border-none border-[rgba(14,165,233,.35)] shadow-sm shrink-0">
+        <img alt="Rangdhanu DUET Logo" src="logo.png" class="w-7 h-7 xl:w-10 xl:h-10 object-contain xl:p-0 p-[0.1rem]" fetchpriority="high" decoding="async"/>
       </div>
-      <span class="xl:text-[18px] text-[clamp(.95rem,3vw,1.2rem)] font-extrabold text-slate-800 tracking-wide uppercase brand-name-override whitespace-nowrap">RANGDHANU DUET</span>
+      <span class="xl:text-[18px] text-[16px] font-extrabold text-slate-800 tracking-wide uppercase brand-name-override whitespace-nowrap">RANGDHANU DUET</span>
     </div>
 
     <!-- Center: Links (Desktop Only) -->
@@ -556,7 +556,7 @@
     </nav>
 
     <!-- Right: Search, Actions, Mobile Buttons -->
-    <div class="flex items-center gap-2 xl:gap-3 shrink-0">
+    <div class="flex items-center gap-1.5 xl:gap-3 shrink-0">
       
       <!-- Search Bar -->
       <form class="hidden xl:flex items-center bg-slate-100 hover:bg-slate-200 transition-colors rounded-full px-3 py-2 border border-transparent focus-within:bg-white focus-within:border-slate-300 focus-within:shadow-sm group" onsubmit="event.preventDefault(); submitDesktopSearch()">
@@ -564,21 +564,32 @@
         <input type="text" id="desktop-search-input" placeholder="Search..." class="bg-transparent border-none outline-none text-[14.5px] text-slate-700 w-40 focus:w-64 transition-all placeholder:text-slate-400 ml-2 font-medium">
       </form>
 
+      <!-- Mobile Expanding Search Form -->
+      <form id="mobile-search-form" class="xl:hidden absolute right-4 top-1/2 -translate-y-1/2 flex items-center bg-slate-100/50 border border-transparent rounded-full overflow-hidden transition-all duration-300 ease-in-out w-10 h-10 z-20" onsubmit="event.preventDefault(); submitMobileSearch()">
+        <button type="button" id="mobile-search-btn" class="w-10 h-10 shrink-0 flex items-center justify-center text-slate-600 hover:text-blue-600 transition-colors rounded-full z-10" onclick="toggleMobileSearch()">
+          <i data-lucide="search" class="w-[18px] h-[18px]"></i>
+        </button>
+        <input type="text" id="mobile-search-input" placeholder="Search..." class="bg-transparent border-none outline-none text-[15px] text-slate-700 w-full pl-1 pr-2 opacity-0 transition-opacity duration-200 pointer-events-none">
+        <button type="button" id="mobile-search-close" class="w-10 h-10 shrink-0 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors opacity-0 pointer-events-none" onclick="toggleMobileSearch(false)">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </form>
+
       <!-- Actions -->
-      <div class="hidden xl:flex items-center gap-2 border-l border-slate-200 pl-4">
-        <!-- Notification / Alerts -->
-        <button id="nav-notification-btn" class="hidden w-10 h-10 rounded-full items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors relative" title="Notifications" onclick="openNotificationPanel()">
+      <div class="flex items-center gap-1.5 xl:gap-2 xl:border-l border-slate-200 xl:pl-4">
+        <!-- Notification / Alerts (Visible on both Mobile & Desktop) -->
+        <button id="nav-notification-btn" class="hidden w-10 h-10 rounded-full items-center justify-center text-slate-600 hover:bg-slate-100 hover:text-slate-800 transition-colors relative" title="Notifications" onclick="openNotificationPanel()">
           <i data-lucide="bell" class="w-5 h-5"></i>
           <span class="absolute top-2 right-2.5 w-2 h-2 bg-rose-500 rounded-full border border-white"></span>
         </button>
 
-        <!-- Profile Avatar -->
-        <button id="nav-member-btn" type="button" class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 text-slate-500 flex items-center justify-center hover:ring-2 ring-blue-500/20 ring-offset-2 transition-all shadow-sm overflow-hidden" title="My Profile" onclick="rdMemberNavClick()" data-page="my-profile">
+        <!-- Profile Avatar (Desktop Only) -->
+        <button id="nav-member-btn" type="button" class="hidden xl:flex w-10 h-10 rounded-full bg-slate-100 border border-slate-200 text-slate-500 items-center justify-center hover:ring-2 ring-blue-500/20 ring-offset-2 transition-all shadow-sm overflow-hidden" title="My Profile" onclick="rdMemberNavClick()" data-page="my-profile">
            <i data-lucide="user" class="w-5 h-5" id="nav-member-icon"></i>
         </button>
         
         <div id="nav-admin-menu" class="hidden items-center gap-1">
-          <button type="button" class="w-10 h-10 rounded-full flex items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors relative" title="Admin Dashboard" onclick="switchPage('admin')">
+          <button type="button" class="hidden xl:flex w-10 h-10 rounded-full items-center justify-center text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors relative" title="Admin Dashboard" onclick="switchPage('admin')">
             <i data-lucide="shield-check" class="w-5 h-5"></i>
             <span id="nav-admin-badge" class="hidden absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border border-white"></span>
           </button>
@@ -590,12 +601,6 @@
           <button id="nav-membership-cta" class="nav-cta hidden" onclick="switchPage('register')">Membership Application</button>
         </div>
       </div>
-      <button id="mobile-member-btn" type="button" aria-label="Member sign in" class="xl:hidden p-3 rounded-2xl bg-white border border-slate-200 text-slate-700 hover:bg-sky-50 cursor-pointer" onclick="rdMemberNavClick()">
-        <i id="mobile-member-icon" class="w-6 h-6" data-lucide="log-in"></i>
-      </button>
-      <button id="mobile-menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu" class="xl:hidden p-3 rounded-2xl bg-slate-50 border border-slate-200 text-slate-600 hover:bg-sky-100 cursor-pointer" onclick="toggleMobileMenu(event)">
-        <i id="mobile-menu-icon" class="w-6 h-6" data-lucide="menu"></i>
-      </button>
     </div>
   </div>
   <!-- Mobile menu -->

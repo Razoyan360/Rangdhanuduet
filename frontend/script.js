@@ -252,13 +252,14 @@
     }
 
     function getPageFromLocation(allowSubPages = true) {
-        let basePathRegex = new RegExp('^' + (window.RD_BASE_PATH || '').replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&') + '/?');
+        let escapeRegex = function(s) { return s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'); };
+        let basePathRegex = new RegExp('^' + escapeRegex(window.RD_BASE_PATH || '') + '/?');
         let rawPage = window.location.pathname.replace(basePathRegex, '').trim();
         if (!rawPage) rawPage = window.location.hash.replace('#','').trim();
-        /* A shared profile link is #profile/<memberId>. It resolves to the public
-           profile sub-page (parent: the directory) so a cold load of the link
-           lands on the alumni list and then opens the card. */
-        if (/^profile\/.+/.test(rawPage)) rawPage = 'profile';
+      /* A shared profile link is #profile/<memberId>. It resolves to the public
+         profile sub-page (parent: the directory) so a cold load of the link
+         lands on the alumni list and then opens the card. */
+      if (/^profile\/.+/.test(rawPage)) rawPage = 'profile';
         if (/^events\/.+/.test(rawPage)) rawPage = 'event-detail';
       const aliases = { directory: 'alumni', family: 'alumni', pdacc: 'prokoushali', signin: 'member-signin', notice: 'noticeboard', status: 'notice' };
       const page = aliases[rawPage] || rawPage;
@@ -273,8 +274,9 @@
     }
 
     /* The member id carried by a #profile/<id> share link, or null. */
-    function rdSharedProfileId() {
-      let basePathRegex = new RegExp('^' + (window.RD_BASE_PATH || '').replace(/[-/\\^$*+?.()|[\]{}]/g, '\\const m = /^#?profile\/(.+)$/.exec((window.location.pathname + window.location.hash).replace(/^\/Rangdhanuduet\//i, '/').replace(/^\/Rangdhanu-\//i, '/').replace(/^\//, '') || '');') + '/?');
+      function rdSharedProfileId() {
+        let escapeRegex = function(s) { return s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'); };
+        let basePathRegex = new RegExp('^' + escapeRegex(window.RD_BASE_PATH || '') + '/?');
         const m = /^#?profile\/(.+)$/.exec((window.location.pathname + window.location.hash).replace(basePathRegex, '') || '');
       return m ? decodeURIComponent(m[1].trim()) : null;
     }
@@ -294,8 +296,9 @@
         const bpP = window.RD_BASE_PATH || ''; history.replaceState({ page: 'profile' }, '', bpP + '/profile/' + encodeURIComponent(memberId));
     }
 
-    function rdSharedEventId() {
-        let basePathRegex = new RegExp('^' + (window.RD_BASE_PATH || '').replace(/[-/\\^$*+?.()|[\]{}]/g, '\\const m = /^#?events\/(.+)$/.exec((window.location.pathname + window.location.hash).replace(/^\/Rangdhanuduet\//i, '/').replace(/^\/Rangdhanu-\//i, '/').replace(/^\//, '') || '');') + '/?');
+      function rdSharedEventId() {
+        let escapeRegex = function(s) { return s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'); };
+        let basePathRegex = new RegExp('^' + escapeRegex(window.RD_BASE_PATH || '') + '/?');
         const m = /^#?events\/(.+)$/.exec((window.location.pathname + window.location.hash).replace(basePathRegex, '') || '');
         return m ? decodeURIComponent(m[1].trim()) : null;
       }
@@ -14930,3 +14933,46 @@ async function adminUploadReunionPhotos(partNumber) {
         });
     });
 
+
+
+    window.toggleMobileSearch = function(open) {
+      const form = document.getElementById('mobile-search-form');
+      const input = document.getElementById('mobile-search-input');
+      const closeBtn = document.getElementById('mobile-search-close');
+      const searchBtn = document.getElementById('mobile-search-btn');
+      if (!form) return;
+      const isOpen = open !== undefined ? open : form.classList.contains('w-[calc(100vw-32px)]');
+      if (!isOpen) {
+        form.classList.remove('w-10', 'bg-slate-100/50', 'border-transparent');
+        form.classList.add('w-[calc(100vw-32px)]', 'bg-white', 'shadow-md', 'border-slate-200');
+        input.classList.remove('opacity-0', 'pointer-events-none');
+        input.classList.add('opacity-100');
+        closeBtn.classList.remove('opacity-0', 'pointer-events-none');
+        closeBtn.classList.add('opacity-100');
+        searchBtn.classList.add('text-blue-600');
+        setTimeout(() => input.focus(), 100);
+      } else {
+        form.classList.add('w-10', 'bg-slate-100/50', 'border-transparent');
+        form.classList.remove('w-[calc(100vw-32px)]', 'bg-white', 'shadow-md', 'border-slate-200');
+        input.classList.add('opacity-0', 'pointer-events-none');
+        input.classList.remove('opacity-100');
+        closeBtn.classList.add('opacity-0', 'pointer-events-none');
+        closeBtn.classList.remove('opacity-100');
+        searchBtn.classList.remove('text-blue-600');
+        input.blur();
+      }
+    };
+
+    window.submitMobileSearch = function() {
+      var input = document.getElementById('mobile-search-input');
+      if (input && input.value.trim() !== '') {
+        switchPage('search');
+        var pageInput = document.getElementById('search-page-input');
+        if (pageInput) {
+          pageInput.value = input.value.trim();
+          if (typeof performUniversalSearch === 'function') performUniversalSearch();
+        }
+        toggleMobileSearch(false);
+        input.value = '';
+      }
+    };
